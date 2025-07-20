@@ -18,23 +18,20 @@ const roundTitle = document.getElementById('round-title');
 const topicSelectionArea = document.getElementById('topic-selection-area');
 const topicPrompt = document.getElementById('topic-prompt');
 const topicGrid = document.getElementById('topic-grid');
-const topicSuggestions = document.getElementById('topic-suggestions');
-const currentTopicName = document.getElementById('current-topic-name');
-const suggestionList = document.getElementById('suggestion-list');
-const selectCurrentTopicBtn = document.getElementById('select-current-topic');
 const selectedTopicsList = document.getElementById('selected-topic-list');
 const confirmTopicsBtn = document.getElementById('confirm-topics');
+
+// Modal elements
+const topicModal = document.getElementById('topic-modal');
+const modalTopicTitle = document.getElementById('modal-topic-title');
+const suggestionList = document.getElementById('suggestion-list');
+const closeModal = document.querySelector('.close');
 
 // Statement creation elements
 const inputArea = document.getElementById('input-area');
 const inputPrompt = document.getElementById('input-prompt');
 const currentTopicDiv = document.getElementById('current-topic');
 const topicDisplay = document.getElementById('topic-display');
-const seeTopicBtn = document.getElementById('see-topic-btn');
-const topicHelp = document.getElementById('topic-help');
-const helpTopicName = document.getElementById('help-topic-name');
-const helpSuggestionList = document.getElementById('help-suggestion-list');
-const hideTopicHelpBtn = document.getElementById('hide-topic-help');
 const statement1Input = document.getElementById('statement1');
 const statement2Input = document.getElementById('statement2');
 const statement3Input = document.getElementById('statement3');
@@ -66,8 +63,6 @@ let currentRound = 1;
 let scores = { 1: 0, 2: 0 };
 let selectedTopics = [];
 let currentTopic;
-let currentTopicKey; // Add this to store the topic key
-let currentPreviewTopic = null; // For showing suggestions
 let statements = [];
 let truthIndex;
 let selectedTruthIndex = -1;
@@ -392,20 +387,15 @@ function createTopicGrid() {
         `;
         
         topicCard.addEventListener('click', () => {
-            showTopicSuggestions(topicKey, topic);
+            showTopicModal(topicKey, topic);
         });
         
         topicGrid.appendChild(topicCard);
     });
 }
 
-function showTopicSuggestions(topicKey, topic) {
-    // Update preview state
-    currentPreviewTopic = topicKey;
-    updateTopicCardsPreview();
-    
-    // Show suggestions
-    currentTopicName.textContent = topic.title;
+function showTopicModal(topicKey, topic) {
+    modalTopicTitle.textContent = topic.title;
     
     suggestionList.innerHTML = '';
     topic.suggestions.forEach(suggestion => {
@@ -414,47 +404,31 @@ function showTopicSuggestions(topicKey, topic) {
         suggestionList.appendChild(li);
     });
     
-    topicSuggestions.classList.remove('hidden');
+    topicModal.classList.remove('hidden');
     
-    // Show/hide select button based on selection status
-    if (selectedTopics.includes(topicKey)) {
-        selectCurrentTopicBtn.classList.add('hidden');
-    } else {
-        selectCurrentTopicBtn.classList.remove('hidden');
-        selectCurrentTopicBtn.onclick = () => selectTopic(topicKey);
+    // Add select button to modal if not already selected
+    if (!selectedTopics.includes(topicKey)) {
+        const selectBtn = document.createElement('button');
+        selectBtn.textContent = 'Select This Topic';
+        selectBtn.className = 'select-topic-btn';
+        selectBtn.onclick = () => selectTopic(topicKey);
+        document.querySelector('.modal-content').appendChild(selectBtn);
     }
-}
-
-function updateTopicCardsPreview() {
-    document.querySelectorAll('.topic-card').forEach(card => {
-        const topicKey = card.dataset.topic;
-        card.classList.toggle('preview', topicKey === currentPreviewTopic);
-        card.classList.toggle('selected', selectedTopics.includes(topicKey));
-    });
 }
 
 function selectTopic(topicKey) {
-    console.log('Selecting topic:', topicKey); // Debug log
-    if (selectedTopics.includes(topicKey)) {
-        console.log('Topic already selected'); // Debug log
-        return;
-    }
+    if (selectedTopics.includes(topicKey)) return;
     if (selectedTopics.length >= 5) {
         alert('You can select maximum 5 topics.');
         return;
     }
     
     selectedTopics.push(topicKey);
-    console.log('Selected topics now:', selectedTopics); // Debug log
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
-    
-    // Hide suggestions after selection
-    topicSuggestions.classList.add('hidden');
-    currentPreviewTopic = null;
+    updateTopicCards();
+    closeTopicModal();
     
     if (selectedTopics.length >= 3) {
-        console.log('Showing confirm button'); // Debug log
         confirmTopicsBtn.classList.remove('hidden');
     }
 }
@@ -477,7 +451,7 @@ function updateSelectedTopicsList() {
 function removeTopic(topicKey) {
     selectedTopics = selectedTopics.filter(t => t !== topicKey);
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
+    updateTopicCards();
     
     if (selectedTopics.length < 3) {
         confirmTopicsBtn.classList.add('hidden');
@@ -485,51 +459,32 @@ function removeTopic(topicKey) {
 }
 
 function updateTopicCards() {
-    updateTopicCardsPreview();
+    document.querySelectorAll('.topic-card').forEach(card => {
+        const topicKey = card.dataset.topic;
+        card.classList.toggle('selected', selectedTopics.includes(topicKey));
+    });
 }
+
+function closeTopicModal() {
+    topicModal.classList.add('hidden');
+    // Remove any select buttons
+    document.querySelectorAll('.select-topic-btn').forEach(btn => btn.remove());
+}
+
+// Modal close events
+closeModal.addEventListener('click', closeTopicModal);
+window.addEventListener('click', (e) => {
+    if (e.target === topicModal) {
+        closeTopicModal();
+    }
+});
 
 // Confirm topics selection
 confirmTopicsBtn.addEventListener('click', () => {
-    console.log('Confirm topics clicked, selected topics:', selectedTopics); // Debug log
-    console.log('Room name:', roomName); // Debug log
     if (selectedTopics.length >= 3) {
-        if (!roomName) {
-            console.error('Room name is not set!'); // Debug log
-            alert('Room name error. Please refresh and try again.');
-            return;
-        }
-        console.log('Sending topics selected event to server'); // Debug log
         socket.emit('topics selected', roomName, selectedTopics);
         topicSelectionArea.classList.add('hidden');
-        topicSuggestions.classList.add('hidden');
-        currentPreviewTopic = null;
-    } else {
-        console.log('Not enough topics selected:', selectedTopics.length); // Debug log
-        alert('Please select at least 3 topics.');
     }
-});
-
-// See topic suggestions during statement creation
-seeTopicBtn.addEventListener('click', () => {
-    if (currentTopic) {
-        helpTopicName.textContent = currentTopic.title;
-        
-        helpSuggestionList.innerHTML = '';
-        currentTopic.suggestions.forEach(suggestion => {
-            const li = document.createElement('li');
-            li.textContent = suggestion;
-            helpSuggestionList.appendChild(li);
-        });
-        
-        topicHelp.classList.remove('hidden');
-        seeTopicBtn.style.display = 'none'; // Hide the see topic button when help is shown
-    }
-});
-
-// Hide topic suggestions
-hideTopicHelpBtn.addEventListener('click', () => {
-    topicHelp.classList.add('hidden');
-    seeTopicBtn.style.display = 'inline-block'; // Show the see topic button again
 });
 
 // Statement submission
@@ -551,9 +506,8 @@ submitStatementsBtn.addEventListener('click', (e) => {
     
     selectedTruthIndex = parseInt(selectedRadio.value);
     
-    socket.emit('submit statements', roomName, statements, selectedTruthIndex, currentTopicKey);
+    socket.emit('submit statements', roomName, statements, selectedTruthIndex, currentTopic);
     inputArea.classList.add('hidden');
-    topicHelp.classList.add('hidden'); // Hide help area when submitting
 });
 
 // Guess buttons
@@ -571,7 +525,6 @@ nextRoundBtn.addEventListener('click', () => {
 
 // Socket event handlers
 socket.on('room created', (room, player, rounds) => {
-    console.log('Room created:', room, player, rounds); // Debug log
     roomName = room;
     playerNumber = player;
     totalRounds = rounds;
@@ -579,30 +532,18 @@ socket.on('room created', (room, player, rounds) => {
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = `You are Player ${playerNumber}`;
     gameStatusDisplay.textContent = 'Waiting for Player 2 to join...';
-    
-    // Hide all game areas initially
-    topicSelectionArea.classList.add('hidden');
-    inputArea.classList.add('hidden');
-    guessArea.classList.add('hidden');
 });
 
 socket.on('room joined', (room, player, rounds) => {
-    console.log('Room joined:', room, player, rounds); // Debug log
     roomName = room;
     playerNumber = player;
     totalRounds = rounds;
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = `You are Player ${playerNumber}`;
-    
-    // Hide all game areas initially
-    topicSelectionArea.classList.add('hidden');
-    inputArea.classList.add('hidden');
-    guessArea.classList.add('hidden');
 });
 
 socket.on('start topic selection', (targetPlayer, round) => {
-    console.log('Start topic selection:', targetPlayer, round); // Debug log
     currentRound = round;
     roundTitle.textContent = `Round ${round}`;
     
@@ -611,43 +552,26 @@ socket.on('start topic selection', (targetPlayer, round) => {
     topicPrompt.textContent = `Select 3-5 topics for Player ${targetPlayer} to create statements about:`;
     
     selectedTopics = [];
-    currentPreviewTopic = null;
     createTopicGrid();
     updateSelectedTopicsList();
     confirmTopicsBtn.classList.add('hidden');
-    topicSuggestions.classList.add('hidden');
     
-    // Hide other areas - especially input area
+    // Hide other areas
     inputArea.classList.add('hidden');
     guessArea.classList.add('hidden');
     currentTopicDiv.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
-    topicHelp.classList.add('hidden');
 });
 
-socket.on('start statement creation', (topicKey, round) => {
-    console.log('Received start statement creation:', topicKey, round); // Debug log
+socket.on('start statement creation', (topic, round) => {
     currentRound = round;
     roundTitle.textContent = `Round ${round}`;
-    currentTopicKey = topicKey; // Store the topic key
-    currentTopic = topics[topicKey]; // Store the topic object
-    
-    if (!currentTopic) {
-        console.error('Topic not found:', topicKey); // Debug log
-        console.log('Available topics:', Object.keys(topics)); // Debug log
-        return;
-    }
-    
-    console.log('Current topic:', currentTopic.title); // Debug log
+    currentTopic = topics[topic];
     
     // Show statement creation
     inputArea.classList.remove('hidden');
     currentTopicDiv.classList.remove('hidden');
     topicDisplay.textContent = currentTopic.title;
-    
-    // Reset topic help visibility
-    topicHelp.classList.add('hidden');
-    seeTopicBtn.style.display = 'inline-block';
     
     inputPrompt.textContent = 'Create 3 statements about this topic. Mark which one is TRUE.';
     
@@ -665,9 +589,9 @@ socket.on('start statement creation', (topicKey, round) => {
     opponentTopicDiv.classList.add('hidden');
 });
 
-socket.on('statements submitted', (submittedStatements, topicKey) => {
+socket.on('statements submitted', (submittedStatements, topic) => {
     statements = submittedStatements;
-    currentTopic = topics[topicKey]; // Get topic object from key
+    currentTopic = topics[topic];
     
     // Show guessing area
     guessArea.classList.remove('hidden');
@@ -722,7 +646,6 @@ socket.on('game over', (finalScores) => {
 });
 
 socket.on('status update', (status) => {
-    console.log('Status update:', status); // Debug log
     gameStatusDisplay.textContent = status;
 });
 

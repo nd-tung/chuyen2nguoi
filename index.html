@@ -31,6 +31,19 @@
                 </div>
             </div>
             
+            <div class="game-settings">
+                <h3 id="settings-title">Game Settings:</h3>
+                <div class="setting-group">
+                    <label for="round-count" id="rounds-label">Number of Rounds:</label>
+                    <select id="round-count">
+                        <option value="3">3 Rounds</option>
+                        <option value="5" selected>5 Rounds</option>
+                        <option value="7">7 Rounds</option>
+                        <option value="10">10 Rounds</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="room-section">
                 <input type="text" id="room-name" placeholder="Enter Room Name">
                 <button id="join-room">Join Room</button>
@@ -41,11 +54,37 @@
             <div id="game-info">
                 <p id="player-number"></p>
                 <p id="score-display"></p>
+                <p id="game-status" class="status-message"></p>
                 <button id="exit-game" class="exit-btn">Exit Game</button>
             </div>
             <h2 id="round-title"></h2>
+            
+            <div id="topic-selection-area" class="hidden">
+                <p id="topic-prompt"></p>
+                <div id="topic-grid" class="topic-grid"></div>
+                <div id="topic-suggestions" class="topic-suggestions hidden">
+                    <h4 id="suggestions-title">Suggested answers for <span id="current-topic-name"></span>:</h4>
+                    <ul id="suggestion-list"></ul>
+                    <button id="select-current-topic" class="hidden">Select This Topic</button>
+                </div>
+                <div id="selected-topics">
+                    <h4 id="selected-topics-title">Selected Topics:</h4>
+                    <div id="selected-topic-list"></div>
+                    <button id="confirm-topics" class="hidden">Confirm Topic Selection</button>
+                </div>
+            </div>
+            
             <div id="input-area">
                 <p id="input-prompt"></p>
+                <div id="current-topic" class="current-topic hidden">
+                    <h4>Your Topic: <span id="topic-display"></span></h4>
+                    <button id="see-topic-btn" class="see-topic-btn">See Topic Suggestions</button>
+                </div>
+                <div id="topic-help" class="topic-suggestions hidden">
+                    <h4>Suggestions for <span id="help-topic-name"></span>:</h4>
+                    <ul id="help-suggestion-list"></ul>
+                    <button id="hide-topic-help" class="hide-help-btn">Hide Suggestions</button>
+                </div>
                 <div class="statement-input-group">
                     <input type="text" id="statement1" placeholder="Statement 1">
                     <label class="radio-label">
@@ -71,6 +110,9 @@
             </div>
             <div id="guess-area" class="hidden">
                 <p id="guess-prompt"></p>
+                <div id="opponent-topic" class="current-topic hidden">
+                    <h4>Topic: <span id="opponent-topic-display"></span></h4>
+                </div>
                 <button class="statement-btn" id="statement-btn-1"></button>
                 <button class="statement-btn" id="statement-btn-2"></button>
                 <button class="statement-btn" id="statement-btn-3"></button>

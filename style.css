@@ -81,6 +81,291 @@ h1, h2 {
     line-height: 1.5;
 }
 
+    
+.game-settings {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.game-settings h3 {
+    color: #007bff;
+    margin-top: 0;
+    text-align: center;
+}
+
+.setting-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.setting-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.setting-group select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.status-message {
+    font-style: italic;
+    color: #6c757d;
+    margin: 10px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Topic Selection Styles */
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.topic-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+.topic-card:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+    transform: translateY(-2px);
+}
+
+.topic-card.selected {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.topic-card.preview {
+    background: #e7f3ff;
+    border-color: #007bff;
+}
+
+.topic-card.adult {
+    border-color: #dc3545;
+    background: #f8d7da;
+}
+
+.topic-card.adult:hover {
+    background: #f5c6cb;
+    border-color: #dc3545;
+}
+
+.topic-card.adult.selected {
+    background: #dc3545;
+    color: white;
+    border-color: #b21f2d;
+}
+
+.topic-card.adult.preview {
+    background: #f8d7da;
+    border-color: #dc3545;
+}
+
+.topic-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.topic-card p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.topic-card .age-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #dc3545;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.topic-suggestions {
+    background: #e7f3ff;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.topic-suggestions h4 {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.topic-suggestions ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.topic-suggestions li {
+    margin: 8px 0;
+    line-height: 1.5;
+    font-style: italic;
+    color: #495057;
+}
+
+#select-current-topic {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#select-current-topic:hover {
+    background: #0056b3;
+}
+
+#selected-topics {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+#selected-topics h4 {
+    color: #007bff;
+    margin-top: 0;
+}
+
+#selected-topic-list {
+    margin: 10px 0;
+}
+
+.selected-topic-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.remove-topic {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Current Topic Display */
+.current-topic {
+    background: #e7f3ff;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.current-topic h4 {
+    margin: 0 0 10px 0;
+    color: #007bff;
+    font-size: 18px;
+}
+
+.see-topic-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.see-topic-btn:hover {
+    background: #218838;
+}
+
+.hide-help-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.hide-help-btn:hover {
+    background: #5a6268;
+}
+
+#topic-help {
+    background: #f8f9fa;
+    border: 2px solid #28a745;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+#topic-help h4 {
+    color: #28a745;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#topic-help ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+#topic-help li {
+    margin: 6px 0;
+    line-height: 1.4;
+    font-style: italic;
+    color: #495057;
+    font-size: 14px;
+}
+
 .room-section {
     margin-top: 20px;
 }
@@ -236,11 +521,11 @@ button:disabled {
 
 @media (max-width: 600px) {
     #app {
-        padding: 20px;
-        margin: 10px;
+        padding: 15px;
+        margin: 5px;
     }
     
-    .game-instructions {
+    .game-instructions, .game-settings {
         padding: 15px;
     }
     
@@ -257,5 +542,63 @@ button:disabled {
     
     .radio-label {
         justify-content: center;
+    }
+    
+    .topic-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .topic-card {
+        padding: 12px;
+    }
+    
+    .topic-suggestions {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .topic-suggestions h4 {
+        font-size: 16px;
+    }
+    
+    .topic-suggestions li {
+        font-size: 14px;
+        margin: 6px 0;
+    }
+    
+    .setting-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .current-topic, .status-message {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .see-topic-btn, .hide-help-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    
+    #topic-help {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    #topic-help h4 {
+        font-size: 16px;
+    }
+    
+    #topic-help li {
+        font-size: 13px;
+        margin: 5px 0;
+    }
+    
+    #suggestion-list, #help-suggestion-list {
+        padding-left: 15px;
     }
 }
