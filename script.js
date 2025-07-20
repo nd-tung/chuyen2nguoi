@@ -67,7 +67,10 @@ socket.on('disconnect', () => {
 
 joinRoomBtn.addEventListener('click', () => {
     roomName = roomNameInput.value.trim();
+    console.log('Join button clicked, room name:', roomName);
+    
     if (roomName && roomName.length >= 3) {
+        console.log('Emitting create or join event');
         socket.emit('create or join', roomName);
         joinRoomBtn.disabled = true;
         joinRoomBtn.textContent = 'Joining...';
@@ -77,6 +80,7 @@ joinRoomBtn.addEventListener('click', () => {
 });
 
 socket.on('room created', (room, player) => {
+    console.log('Room created event received:', room, player);
     roomName = room;
     playerNumber = player;
     welcomeScreen.classList.add('hidden');
@@ -85,18 +89,28 @@ socket.on('room created', (room, player) => {
     inputPrompt.textContent = 'Waiting for Player 2 to join...';
     resultMessage.textContent = `Room "${room}" created. Share this room name with another player.`;
     resultMessage.style.color = '#007bff';
+    
+    // Re-enable button in case of issues
+    joinRoomBtn.disabled = false;
+    joinRoomBtn.textContent = 'Join Room';
 });
 
 socket.on('room joined', (room, player) => {
+    console.log('Room joined event received:', room, player);
     roomName = room;
     playerNumber = player;
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = `You are Player ${playerNumber}`;
     inputPrompt.textContent = 'Game starting...';
+    
+    // Re-enable button in case of issues
+    joinRoomBtn.disabled = false;
+    joinRoomBtn.textContent = 'Join Room';
 });
 
 socket.on('room full', () => {
+    console.log('Room full event received');
     alert('This room is full. Please try a different room name.');
     joinRoomBtn.disabled = false;
     joinRoomBtn.textContent = 'Join Room';
