@@ -1,0 +1,21 @@
+run = "node server.js"
+entrypoint = "server.js"
+
+[packager]
+language = "nodejs"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+
+[languages.javascript]
+pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
+
+[env]
+XDG_CONFIG_HOME = "/home/runner/.config"
+
+[nix]
+channel = "stable-22_11"
+
+[deployment]
+run = ["sh", "-c", "node server.js"]

@@ -200,13 +200,26 @@ playAgainBtn.addEventListener('click', () => {
 exitGameBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to exit the game?')) {
         socket.disconnect();
-        location.reload();
+        gameScreen.classList.add('hidden');
+        endScreen.classList.add('hidden');
+        welcomeScreen.classList.remove('hidden');
+        
+        // Reset game state
+        round = 1;
+        scores = { 1: 0, 2: 0 };
+        roomNameInput.value = '';
     }
 });
 
 exitFinalBtn.addEventListener('click', () => {
     socket.disconnect();
-    location.reload();
+    endScreen.classList.add('hidden');
+    welcomeScreen.classList.remove('hidden');
+    
+    // Reset game state
+    round = 1;
+    scores = { 1: 0, 2: 0 };
+    roomNameInput.value = '';
 });
 
 function startRound() {
