@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Truths and a Lie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="welcome-screen">
+            <h1>Two Truths and a Lie</h1>
+            <input type="text" id="room-name" placeholder="Enter Room Name">
+            <button id="join-room">Join Room</button>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div id="game-info">
+                <p id="player-number"></p>
+                <p id="score-display"></p>
+                <button id="exit-game" class="exit-btn">Exit Game</button>
+            </div>
+            <h2 id="round-title"></h2>
+            <div id="input-area">
+                <p id="input-prompt"></p>
+                <div class="statement-input-group">
+                    <input type="text" id="statement1" placeholder="Statement 1">
+                    <label class="radio-label">
+                        <input type="radio" name="truth-selection" value="0" id="radio-1">
+                        <span class="radio-text">Truth</span>
+                    </label>
+                </div>
+                <div class="statement-input-group">
+                    <input type="text" id="statement2" placeholder="Statement 2">
+                    <label class="radio-label">
+                        <input type="radio" name="truth-selection" value="1" id="radio-2">
+                        <span class="radio-text">Truth</span>
+                    </label>
+                </div>
+                <div class="statement-input-group">
+                    <input type="text" id="statement3" placeholder="Statement 3">
+                    <label class="radio-label">
+                        <input type="radio" name="truth-selection" value="2" id="radio-3">
+                        <span class="radio-text">Truth</span>
+                    </label>
+                </div>
+                <button id="submit-statements">Submit</button>
+            </div>
+            <div id="guess-area" class="hidden">
+                <p id="guess-prompt"></p>
+                <button class="statement-btn" id="statement-btn-1"></button>
+                <button class="statement-btn" id="statement-btn-2"></button>
+                <button class="statement-btn" id="statement-btn-3"></button>
+            </div>
+            <p id="result-message"></p>
+            <button id="next-round" class="hidden">Next Round</button>
+        </div>
+
+        <div id="end-screen" class="hidden">
+            <h2>Game Over!</h2>
+            <p id="final-score"></p>
+            <p id="winner"></p>
+            <button id="play-again">Play Again</button>
+            <button id="exit-final" class="exit-btn">Exit to Menu</button>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

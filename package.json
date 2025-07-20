@@ -1,0 +1,14 @@
+{
+  "name": "two-truths-and-a-lie",
+  "version": "1.0.0",
+  "description": "A web-based game of Two Truths and a Lie for two players.",
+  "main": "server.js",
+  "scripts": {
+    "start": "PORT=8080 node server.js",
+    "dev": "PORT=8080 node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.0"
+  }
+}
