@@ -13,8 +13,8 @@ let rooms = {};
 io.on('connection', (socket) => {
     console.log('a user connected:', socket.id);
 
-    socket.on('create or join', (room, roundCount = 5) => {
-        console.log(`User ${socket.id} wants to create or join room: ${room} with ${roundCount} rounds`);
+    socket.on('create or join', (room, roundCount = 5, playerName = 'Anonymous') => {
+        console.log(`User ${socket.id} wants to create or join room: ${room} with ${roundCount} rounds as ${playerName}`);
         
         if (!rooms[room]) {
             console.log(`Creating new room: ${room}`);
@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
                 statementCreator: null, // who is creating statements
                 selectedTopics: [],
                 currentTopic: null,
+                playerNames: { 1: playerName, 2: 'Player 2' },
                 gameState: {
                     scores: { 1: 0, 2: 0 },
                     player1Turn: false,
@@ -35,17 +36,22 @@ io.on('connection', (socket) => {
                 }
             };
             socket.join(room);
-            rooms[room].players[socket.id] = { player: 1 };
+            rooms[room].players[socket.id] = { player: 1, name: playerName };
             rooms[room].playerCount++;
-            console.log(`User ${socket.id} created room ${room} as Player 1`);
-            socket.emit('room created', room, 1, roundCount);
+            console.log(`User ${socket.id} created room ${room} as Player 1 (${playerName})`);
+            socket.emit('room created', room, 1, roundCount, rooms[room].playerNames);
         } else if (rooms[room].playerCount < 2) {
             console.log(`User ${socket.id} joining existing room: ${room}`);
             socket.join(room);
-            rooms[room].players[socket.id] = { player: 2 };
+            rooms[room].players[socket.id] = { player: 2, name: playerName };
+            rooms[room].playerNames[2] = playerName;
             rooms[room].playerCount++;
-            console.log(`User ${socket.id} joined room ${room} as Player 2`);
-            socket.emit('room joined', room, 2, rooms[room].totalRounds);
+            console.log(`User ${socket.id} joined room ${room} as Player 2 (${playerName})`);
+            socket.emit('room joined', room, 2, rooms[room].totalRounds, rooms[room].playerNames);
+            
+            // Notify all players about updated names
+            io.to(room).emit('player names updated', rooms[room].playerNames);
+            
             // Start the game with topic selection
             startTopicSelectionPhase(room);
         } else {
@@ -135,7 +141,7 @@ io.on('connection', (socket) => {
                 
                 if (rooms[room].currentRound > totalRounds) {
                     // Game over
-                    io.in(room).emit('game over', rooms[room].gameState.scores);
+                    io.in(room).emit('game over', rooms[room].gameState.scores, rooms[room].playerNames);
                 } else {
                     // Start next round
                     rooms[room].topicSelector = 2;

@@ -5,14 +5,24 @@ const welcomeScreen = document.getElementById('welcome-screen');
 const gameScreen = document.getElementById('game-screen');
 const endScreen = document.getElementById('end-screen');
 
+const playerNameInput = document.getElementById('player-name');
 const roomNameInput = document.getElementById('room-name');
 const joinRoomBtn = document.getElementById('join-room');
 const roundCountSelect = document.getElementById('round-count');
 
 const playerNumberDisplay = document.getElementById('player-number');
+const playerNameDisplay = document.getElementById('player-name-display');
 const scoreDisplay = document.getElementById('score-display');
 const gameStatusDisplay = document.getElementById('game-status');
 const roundTitle = document.getElementById('round-title');
+
+// Scoreboard elements
+const player1Name = document.getElementById('player1-name');
+const player1Points = document.getElementById('player1-points');
+const player2Name = document.getElementById('player2-name');
+const player2Points = document.getElementById('player2-points');
+const player1Score = document.getElementById('player1-score');
+const player2Score = document.getElementById('player2-score');
 
 // Topic selection elements
 const topicSelectionArea = document.getElementById('topic-selection-area');
@@ -61,6 +71,8 @@ const langViBtn = document.getElementById('lang-vi');
 // Game state
 let roomName;
 let playerNumber;
+let playerName;
+let playerNames = { 1: 'Player 1', 2: 'Player 2' };
 let totalRounds = 5;
 let currentRound = 1;
 let scores = { 1: 0, 2: 0 };
@@ -211,7 +223,7 @@ const topics = {
     // Adult topics (18+)
     dating: {
         title: 'Dating & Relationships',
-        description: 'Share your romantic experiences (18+)',
+        description: 'Share your romantic experiences',
         suggestions: [
             'I\'ve been on over 100 first dates in the past year',
             'I met my current partner in a police station',
@@ -223,7 +235,7 @@ const topics = {
     },
     party: {
         title: 'Party & Nightlife',
-        description: 'Tell us about your wildest nights (18+)',
+        description: 'Tell us about your wildest nights',
         suggestions: [
             'I once danced on a table at a wedding and broke it',
             'I\'ve never been drunk in my entire life',
@@ -235,7 +247,7 @@ const topics = {
     },
     secrets: {
         title: 'Deep Dark Secrets',
-        description: 'Share something nobody knows about you (18+)',
+        description: 'Share something nobody knows about you',
         suggestions: [
             'I have a tattoo in a place nobody will ever see',
             'I once shoplifted as a teenager and still feel guilty',
@@ -247,7 +259,7 @@ const topics = {
     },
     adult_embarrassing: {
         title: 'Adult Embarrassing Moments',
-        description: 'Your most mortifying adult experiences (18+)',
+        description: 'Your most mortifying adult experiences',
         suggestions: [
             'I accidentally sent intimate photos to my entire work group chat',
             'I got caught making out in a public place by security',
@@ -259,7 +271,7 @@ const topics = {
     },
     wild_experiences: {
         title: 'Wild Life Experiences',
-        description: 'Your craziest adult adventures (18+)',
+        description: 'Your craziest adult adventures',
         suggestions: [
             'I went skinny dipping in a public fountain at midnight',
             'I joined the mile high club on a 12-hour flight',
@@ -271,7 +283,7 @@ const topics = {
     },
     adult_confessions: {
         title: 'Personal Confessions',
-        description: 'Things you\'ve never admitted to anyone (18+)',
+        description: 'Things you\'ve never admitted to anyone',
         suggestions: [
             'I\'ve faked being sick to avoid social events over 50 times',
             'I stalked my ex on social media for 2 years after we broke up',
@@ -283,7 +295,7 @@ const topics = {
     },
     money_secrets: {
         title: 'Money & Secrets',
-        description: 'Financial confessions and money stories (18+)',
+        description: 'Financial confessions and money stories',
         suggestions: [
             'I have a secret bank account my partner doesn\'t know about',
             'I once spent $5000 on a single shopping spree and hid it',
@@ -294,8 +306,8 @@ const topics = {
         isAdult: true
     },
     guilty_pleasures: {
-        title: 'Guilty Pleasures',
-        description: 'Your secret indulgences (18+)',
+        title: '18+',
+        description: 'Your secret indulgences',
         suggestions: [
             'I watch reality TV shows and know all the drama by heart',
             'I collect something really weird that I\'m embarrassed about',
@@ -445,8 +457,8 @@ const topicsVi = {
 
     // Chủ đề 18+ 
     dating: {
-        title: 'Hẹn Hò & Tình Cảm (18+)',
-        description: 'Chia sẻ trải nghiệm tình cảm của bạn (18+)',
+        title: 'Hẹn Hò & Tình Cảm',
+        description: 'Chia sẻ trải nghiệm tình cảm của bạn',
         suggestions: [
             'Tôi đã hẹn hò trên 100 lần trong năm qua',
             'Tôi gặp người yêu hiện tại ở đồn cảnh sát',
@@ -457,8 +469,8 @@ const topicsVi = {
         isAdult: true
     },
     party: {
-        title: 'Tiệc Tung & Cuộc Sống Đêm (18+)',
-        description: 'Kể về những đêm điên rồ nhất của bạn (18+)',
+        title: 'Tiệc Tung & Cuộc Sống Đêm',
+        description: 'Kể về những đêm điên rồ nhất của bạn',
         suggestions: [
             'Tôi từng nhảy lên bàn trong đám cưới và làm gãy nó',
             'Tôi chưa bao giờ say rượu trong đời',
@@ -469,8 +481,8 @@ const topicsVi = {
         isAdult: true
     },
     secrets: {
-        title: 'Bí Mật Sâu Kín (18+)',
-        description: 'Chia sẻ điều không ai biết về bạn (18+)',
+        title: 'Bí Mật Sâu Kín',
+        description: 'Chia sẻ điều không ai biết về bạn',
         suggestions: [
             'Tôi có hình xăm ở nơi không ai có thể thấy',
             'Tôi từng ăn cắp vặt lúc còn trẻ và vẫn cảm thấy tội lỗi',
@@ -481,8 +493,8 @@ const topicsVi = {
         isAdult: true
     },
     adult_embarrassing: {
-        title: 'Khoảnh Khắc Xấu Hổ Người Lớn (18+)',
-        description: 'Những trải nghiệm đáng xấu hổ nhất khi trưởng thành (18+)',
+        title: 'Khoảnh Khắc Xấu Hổ Người Lớn',
+        description: 'Những trải nghiệm đáng xấu hổ nhất khi trưởng thành',
         suggestions: [
             'Tôi vô tình gửi ảnh nhạy cảm cho cả nhóm chat công ty',
             'Tôi bị bảo vệ bắt gặp hôn hít ở nơi công cộng',
@@ -493,8 +505,8 @@ const topicsVi = {
         isAdult: true
     },
     wild_experiences: {
-        title: 'Trải Nghiệm Hoang Dã (18+)',
-        description: 'Những cuộc phiêu lưu điên rồ nhất của bạn (18+)',
+        title: 'Trải Nghiệm Hoang Dã',
+        description: 'Những cuộc phiêu lưu điên rồ nhất của bạn',
         suggestions: [
             'Tôi đã tắm tiên ở đài phun nước công cộng lúc nửa đêm',
             'Tôi gia nhập "câu lạc bộ dặm cao" trên chuyến bay 12 tiếng',
@@ -505,8 +517,8 @@ const topicsVi = {
         isAdult: true
     },
     adult_confessions: {
-        title: 'Thú Nhận Cá Nhân (18+)',
-        description: 'Những điều bạn chưa bao giờ thừa nhận với ai (18+)',
+        title: 'Thú Nhận Cá Nhân',
+        description: 'Những điều bạn chưa bao giờ thừa nhận với ai',
         suggestions: [
             'Tôi đã giả ốm để tránh sự kiện xã hội hơn 50 lần',
             'Tôi theo dõi người yêu cũ trên mạng xã hội 2 năm sau khi chia tay',
@@ -517,7 +529,7 @@ const topicsVi = {
         isAdult: true
     },
     money_secrets: {
-        title: 'Tiền Bạc & Bí Mật (18+)',
+        title: 'Tiền Bạc & Bí Mật',
         description: 'Những thú nhận về tài chính',
         suggestions: [
             'Tôi có một tài khoản ngân hàng bí mật mà người yêu không biết',
@@ -529,7 +541,19 @@ const topicsVi = {
         isAdult: true
     },
     guilty_pleasures: {
-        title: 'Thú Vui Tội Lỗi (18+)',
+        title: 'Thú Vui Tội Lỗi',
+        description: 'Những thú vui bí mật của bạn',
+        suggestions: [
+            'Tôi xem reality show và thuộc lòng tất cả drama',
+            'Tôi sưu tập thứ gì đó rất kỳ lạ mà xấu hổ không dám kể',
+            'Tôi nghiện một game mobile và tiêu tiền vào đó',
+            'Tôi ăn kem vào bữa sáng thường xuyên hơn đồ ăn sáng thật',
+            'Tôi giả vờ tinh tế nhưng thích những thứ tầm thường nhất'
+        ],
+        isAdult: true
+    },
+    guilty_pleasures: {
+        title: '18+',
         description: 'Những thú vui bí mật của bạn',
         suggestions: [
             'Tôi xem reality show và thuộc lòng tất cả drama',
@@ -554,6 +578,7 @@ const translations = {
         instructionsTitle: 'How to Play:',
         settingsTitle: 'Game Settings:',
         roundsLabel: 'Number of Rounds:',
+        playerName: 'Player Name',
         roomPlaceholder: 'Enter Room Name',
         joinRoom: 'Join Room',
         topicSelectionPrompt: 'Select 1 topic for Player {player} to create statements about:',
@@ -585,6 +610,7 @@ const translations = {
         whichIsTrue: 'Which statement is TRUE?',
         submitGuess: 'Submit Guess',
         seeTopicHelp: 'See Topic',
+        specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
             'Each player takes turns creating 3 statements about themselves',
@@ -600,6 +626,7 @@ const translations = {
         instructionsTitle: 'Cách Chơi:',
         settingsTitle: 'Cài Đặt Game:',
         roundsLabel: 'Số Vòng Chơi:',
+        playerName: 'Tên Người Chơi',
         roomPlaceholder: 'Nhập Tên Phòng',
         joinRoom: 'Tham Gia Phòng',
         topicSelectionPrompt: 'Chọn 1 chủ đề cho Người chơi {player} tạo câu nói:',
@@ -631,6 +658,7 @@ const translations = {
         whichIsTrue: 'Câu nói nào là ĐÚNG?',
         submitGuess: 'Gửi Đáp Án',
         seeTopicHelp: 'Xem Chủ Đề',
+        specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
             'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
@@ -682,16 +710,36 @@ document.addEventListener('DOMContentLoaded', function() {
         joinRoomBtn.addEventListener('click', () => {
             console.log('Join room button clicked');
             roomName = roomNameInput.value.trim();
+            playerName = playerNameInput.value.trim();
             totalRounds = parseInt(roundCountSelect.value);
             
-            if (roomName && roomName.length >= 3) {
+            // Reset input styles
+            playerNameInput.classList.remove('error', 'success');
+            roomNameInput.classList.remove('error', 'success');
+            
+            let hasError = false;
+            
+            if (!playerName) {
+                playerNameInput.classList.add('error');
+                alert('Please enter your name.');
+                hasError = true;
+            } else {
+                playerNameInput.classList.add('success');
+            }
+            
+            if (!roomName || roomName.length < 3) {
+                roomNameInput.classList.add('error');
+                if (!hasError) alert('Please enter a room name with at least 3 characters.');
+                hasError = true;
+            } else {
+                roomNameInput.classList.add('success');
+            }
+            
+            if (!hasError) {
                 console.log('Emitting create or join event');
-                socket.emit('create or join', roomName, totalRounds);
+                socket.emit('create or join', roomName, totalRounds, playerName);
                 joinRoomBtn.disabled = true;
                 joinRoomBtn.textContent = 'Joining...';
-            } else {
-                console.log('Room name validation failed');
-                alert('Please enter a room name with at least 3 characters.');
             }
         });
     }
@@ -737,6 +785,9 @@ function updateLanguageContent() {
         
         const roomNameInput = document.getElementById('room-name');
         if (roomNameInput) roomNameInput.placeholder = t.roomPlaceholder;
+        
+        const playerNameInput = document.getElementById('player-name');
+        if (playerNameInput) playerNameInput.placeholder = t.playerName;
         
         const joinRoomBtn = document.getElementById('join-room');
         if (joinRoomBtn) joinRoomBtn.textContent = t.joinRoom;
@@ -821,7 +872,6 @@ function createTopicGrid() {
         topicCard.innerHTML = `
             <h4>${topic.title}</h4>
             <p>${topic.description}</p>
-            ${topic.isAdult ? `<span class="age-badge">${t.adultContent}</span>` : ''}
         `;
         
         topicCard.addEventListener('click', () => {
@@ -837,7 +887,25 @@ function showTopicSuggestions(topicKey, topic) {
     currentPreviewTopic = topicKey;
     updateTopicCardsPreview();
     
-    // Show suggestions
+    // Special handling for the "18+" topic
+    if (topicKey === 'guilty_pleasures') {
+        // Show a special message instead of suggestions
+        const t = translations[currentLanguage];
+        currentTopicName.textContent = topic.title;
+        suggestionList.innerHTML = `<li class="special-message">${t.specialMessage}</li>`;
+        topicSuggestions.classList.remove('hidden');
+        
+        // Show/hide select button based on selection status
+        if (selectedTopics.includes(topicKey)) {
+            selectCurrentTopicBtn.classList.add('hidden');
+        } else {
+            selectCurrentTopicBtn.classList.remove('hidden');
+            selectCurrentTopicBtn.onclick = () => selectTopic(topicKey);
+        }
+        return;
+    }
+    
+    // Show suggestions for all other topics
     currentTopicName.textContent = topic.title;
     
     suggestionList.innerHTML = '';
@@ -1005,15 +1073,21 @@ nextRoundBtn.addEventListener('click', () => {
 });
 
 // Socket event handlers
-socket.on('room created', (room, player, rounds) => {
-    console.log('Room created:', room, player, rounds); // Debug log
+socket.on('room created', (room, player, rounds, names) => {
+    console.log('Room created:', room, player, rounds, names); // Debug log
     roomName = room;
     playerNumber = player;
     totalRounds = rounds;
+    if (names) playerNames = names;
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
-    playerNumberDisplay.textContent = `You are Player ${playerNumber}`;
+    playerNumberDisplay.textContent = `Player ${playerNumber}`;
+    if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Anonymous';
     gameStatusDisplay.textContent = 'Waiting for Player 2 to join...';
+    
+    // Initialize scoreboard
+    updatePlayerNames(playerNames);
+    updateScores();
     
     // Hide all game areas initially
     topicSelectionArea.classList.add('hidden');
@@ -1021,14 +1095,20 @@ socket.on('room created', (room, player, rounds) => {
     guessArea.classList.add('hidden');
 });
 
-socket.on('room joined', (room, player, rounds) => {
-    console.log('Room joined:', room, player, rounds); // Debug log
+socket.on('room joined', (room, player, rounds, names) => {
+    console.log('Room joined:', room, player, rounds, names); // Debug log
     roomName = room;
     playerNumber = player;
     totalRounds = rounds;
+    if (names) playerNames = names;
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
-    playerNumberDisplay.textContent = `You are Player ${playerNumber}`;
+    playerNumberDisplay.textContent = `Player ${playerNumber}`;
+    if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Anonymous';
+    
+    // Initialize scoreboard
+    updatePlayerNames(playerNames);
+    updateScores();
     
     // Hide all game areas initially
     topicSelectionArea.classList.add('hidden');
@@ -1140,20 +1220,24 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores) => {
     opponentTopicDiv.classList.add('hidden');
 });
 
-socket.on('game over', (finalScores) => {
+socket.on('game over', (finalScores, names) => {
     scores = finalScores;
+    if (names) playerNames = names;
     gameScreen.classList.add('hidden');
     endScreen.classList.remove('hidden');
     
     const finalScore = document.getElementById('final-score');
     const winner = document.getElementById('winner');
     
-    finalScore.textContent = `Player 1: ${scores[1]} - Player 2: ${scores[2]}`;
+    const player1Name = playerNames[1] || 'Player 1';
+    const player2Name = playerNames[2] || 'Player 2';
+    
+    finalScore.textContent = `${player1Name}: ${scores[1]} - ${player2Name}: ${scores[2]}`;
     
     if (scores[1] > scores[2]) {
-        winner.textContent = 'Player 1 wins!';
+        winner.textContent = `${player1Name} wins!`;
     } else if (scores[2] > scores[1]) {
-        winner.textContent = 'Player 2 wins!';
+        winner.textContent = `${player2Name} wins!`;
     } else {
         winner.textContent = "It's a tie!";
     }
@@ -1164,9 +1248,46 @@ socket.on('status update', (status) => {
     gameStatusDisplay.textContent = status;
 });
 
+socket.on('player names updated', (names) => {
+    console.log('Player names updated:', names); // Debug log
+    updatePlayerNames(names);
+});
+
 // Utility functions
 function updateScores() {
-    scoreDisplay.textContent = `Scores: Player 1: ${scores[1]} - Player 2: ${scores[2]}`;
+    if (player1Points && player2Points) {
+        const prevScores = { 1: parseInt(player1Points.textContent) || 0, 2: parseInt(player2Points.textContent) || 0 };
+        
+        player1Points.textContent = scores[1];
+        player2Points.textContent = scores[2];
+        
+        // Add score update animation if score changed
+        if (prevScores[1] !== scores[1]) {
+            player1Score.classList.add('score-updated');
+            setTimeout(() => player1Score.classList.remove('score-updated'), 600);
+        }
+        if (prevScores[2] !== scores[2]) {
+            player2Score.classList.add('score-updated');
+            setTimeout(() => player2Score.classList.remove('score-updated'), 600);
+        }
+        
+        // Update current player highlighting
+        player1Score.classList.toggle('current-player', playerNumber === 1);
+        player2Score.classList.toggle('current-player', playerNumber === 2);
+    }
+    
+    // Keep the old scoreDisplay for backward compatibility if it exists
+    if (scoreDisplay) {
+        scoreDisplay.textContent = `Scores: ${playerNames[1] || 'Player 1'}: ${scores[1]} - ${playerNames[2] || 'Player 2'}: ${scores[2]}`;
+    }
+}
+
+function updatePlayerNames(names) {
+    playerNames = names;
+    if (player1Name && player2Name) {
+        player1Name.textContent = names[1] || 'Player 1';
+        player2Name.textContent = names[2] || 'Player 2';
+    }
 }
 
 // Exit game functionality
@@ -1175,6 +1296,22 @@ exitGameBtn.addEventListener('click', () => {
         location.reload();
     }
 });
+
+// Play again functionality
+const playAgainBtn = document.getElementById('play-again');
+const exitFinalBtn = document.getElementById('exit-final');
+
+if (playAgainBtn) {
+    playAgainBtn.addEventListener('click', () => {
+        location.reload();
+    });
+}
+
+if (exitFinalBtn) {
+    exitFinalBtn.addEventListener('click', () => {
+        location.reload();
+    });
+}
 
 // Radio button selection handling
 document.addEventListener('change', (e) => {
