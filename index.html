@@ -9,9 +9,32 @@
 <body>
     <div id="app">
         <div id="welcome-screen">
-            <h1>Two Truths and a Lie</h1>
-            <input type="text" id="room-name" placeholder="Enter Room Name">
-            <button id="join-room">Join Room</button>
+            <div class="language-selector">
+                <button id="lang-en" class="lang-btn active">English</button>
+                <button id="lang-vi" class="lang-btn">Tiếng Việt</button>
+            </div>
+            
+            <h1 id="main-title">Two Truths and a Lie</h1>
+            
+            <div class="game-instructions">
+                <h3 id="instructions-title">How to Play:</h3>
+                <div id="instructions-content">
+                    <ol>
+                        <li>Two players join the same room</li>
+                        <li>Each player takes turns creating 3 statements about themselves</li>
+                        <li>2 statements are lies, 1 statement is the truth</li>
+                        <li>Mark which statement is TRUE using the radio button</li>
+                        <li>The other player tries to guess which one is the truth</li>
+                        <li>Score points for correct guesses!</li>
+                        <li>Play 5 rounds and see who wins!</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="room-section">
+                <input type="text" id="room-name" placeholder="Enter Room Name">
+                <button id="join-room">Join Room</button>
+            </div>
         </div>
 
         <div id="game-screen" class="hidden">

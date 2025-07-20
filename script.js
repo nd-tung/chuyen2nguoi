@@ -32,6 +32,13 @@ const playAgainBtn = document.getElementById('play-again');
 const exitGameBtn = document.getElementById('exit-game');
 const exitFinalBtn = document.getElementById('exit-final');
 
+// Language elements
+const langEnBtn = document.getElementById('lang-en');
+const langViBtn = document.getElementById('lang-vi');
+const mainTitle = document.getElementById('main-title');
+const instructionsTitle = document.getElementById('instructions-title');
+const instructionsContent = document.getElementById('instructions-content');
+
 let roomName;
 let playerNumber;
 let currentPlayer, guessingPlayer;
@@ -41,6 +48,155 @@ const totalRounds = 5;
 let statements = [];
 let truthIndex;
 let selectedTruthIndex = -1;
+let currentLanguage = 'en';
+
+// Language translations
+const translations = {
+    en: {
+        mainTitle: 'Two Truths and a Lie',
+        instructionsTitle: 'How to Play:',
+        instructions: [
+            'Two players join the same room',
+            'Each player takes turns creating 3 statements about themselves',
+            '2 statements are lies, 1 statement is the truth',
+            'Mark which statement is TRUE using the radio button',
+            'The other player tries to guess which one is the truth',
+            'Score points for correct guesses!',
+            'Play 5 rounds and see who wins!'
+        ],
+        roomPlaceholder: 'Enter Room Name',
+        joinRoom: 'Join Room',
+        joining: 'Joining...',
+        exitGame: 'Exit Game',
+        playerNumber: 'You are Player',
+        scores: 'Scores: Player 1:',
+        round: 'Round',
+        waitingPlayer2: 'Waiting for Player 2 to join...',
+        enterStatements: 'Enter 3 statements about yourself. Select the radio button for the ONE that is TRUE.',
+        waiting: 'Waiting for Player',
+        statement: 'Statement',
+        truth: 'Truth',
+        submit: 'Submit',
+        whichTruth: 'Which one is the TRUTH?',
+        correct: 'Correct! You found the truth!',
+        wrong: 'Wrong! The truth was:',
+        nextRound: 'Next Round',
+        playAgain: 'Play Again',
+        roomCreated: 'Room created. Share this room name with another player.',
+        roomFull: 'This room is full. Please try a different room name.',
+        fillStatements: 'Please fill in all three statements.',
+        selectTruth: 'Please select which statement is the TRUTH by clicking a radio button.',
+        roomNotSet: 'Room name not set. Please refresh and try again.',
+        winner: 'wins!',
+        tie: "It's a tie!",
+        gameStarting: 'Game starting...'
+    },
+    vi: {
+        mainTitle: 'Hai Sự Thật Một Lời Dối',
+        instructionsTitle: 'Cách Chơi:',
+        instructions: [
+            'Hai người chơi tham gia cùng một phòng',
+            'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
+            '2 câu là dối trá, 1 câu là sự thật',
+            'Đánh dấu câu nào là SỰ THẬT bằng nút radio',
+            'Người chơi kia cố gắng đoán câu nào là sự thật',
+            'Ghi điểm khi đoán đúng!',
+            'Chơi 5 vòng và xem ai thắng!'
+        ],
+        roomPlaceholder: 'Nhập Tên Phòng',
+        joinRoom: 'Vào Phòng',
+        joining: 'Đang vào...',
+        exitGame: 'Thoát Game',
+        playerNumber: 'Bạn là Người chơi',
+        scores: 'Điểm số: Người chơi 1:',
+        round: 'Vòng',
+        waitingPlayer2: 'Đang chờ Người chơi 2 tham gia...',
+        enterStatements: 'Nhập 3 câu nói về bản thân. Chọn nút radio cho câu duy nhất là SỰ THẬT.',
+        waiting: 'Đang chờ Người chơi',
+        statement: 'Câu',
+        truth: 'Thật',
+        submit: 'Gửi',
+        whichTruth: 'Câu nào là SỰ THẬT?',
+        correct: 'Đúng! Bạn đã tìm ra sự thật!',
+        wrong: 'Sai! Sự thật là:',
+        nextRound: 'Vòng Tiếp',
+        playAgain: 'Chơi Lại',
+        roomCreated: 'Phòng đã tạo. Chia sẻ tên phòng này với người chơi khác.',
+        roomFull: 'Phòng này đã đầy. Vui lòng thử tên phòng khác.',
+        fillStatements: 'Vui lòng điền đủ cả ba câu.',
+        selectTruth: 'Vui lòng chọn câu nào là SỰ THẬT bằng cách nhấn nút radio.',
+        roomNotSet: 'Tên phòng chưa được đặt. Vui lòng làm mới và thử lại.',
+        winner: 'thắng!',
+        tie: 'Hòa!',
+        gameStarting: 'Game đang bắt đầu...'
+    }
+};
+
+// Language switching
+langEnBtn.addEventListener('click', () => switchLanguage('en'));
+langViBtn.addEventListener('click', () => switchLanguage('vi'));
+
+function switchLanguage(lang) {
+    currentLanguage = lang;
+    
+    // Update active button
+    langEnBtn.classList.toggle('active', lang === 'en');
+    langViBtn.classList.toggle('active', lang === 'vi');
+    
+    // Update content
+    updateLanguageContent();
+}
+
+function updateLanguageContent() {
+    const t = translations[currentLanguage];
+    
+    // Welcome screen
+    mainTitle.textContent = t.mainTitle;
+    instructionsTitle.textContent = t.instructionsTitle;
+    
+    // Instructions list
+    instructionsContent.innerHTML = '<ol>' + 
+        t.instructions.map(instruction => `<li>${instruction}</li>`).join('') + 
+        '</ol>';
+    
+    roomNameInput.placeholder = t.roomPlaceholder;
+    
+    if (joinRoomBtn.textContent === 'Join Room' || joinRoomBtn.textContent === 'Vào Phòng') {
+        joinRoomBtn.textContent = t.joinRoom;
+    }
+    
+    // Update other elements if they exist
+    if (exitGameBtn) {
+        exitGameBtn.textContent = t.exitGame;
+    }
+    
+    // Update placeholder texts
+    if (statement1Input) {
+        statement1Input.placeholder = `${t.statement} 1`;
+        statement2Input.placeholder = `${t.statement} 2`;
+        statement3Input.placeholder = `${t.statement} 3`;
+    }
+    
+    // Update radio button labels
+    document.querySelectorAll('.radio-text').forEach(span => {
+        span.textContent = t.truth;
+    });
+    
+    if (submitStatementsBtn) {
+        submitStatementsBtn.textContent = t.submit;
+    }
+    
+    if (nextRoundBtn) {
+        nextRoundBtn.textContent = t.nextRound;
+    }
+    
+    if (playAgainBtn) {
+        playAgainBtn.textContent = t.playAgain;
+    }
+}
+
+// Initialize language
+updateLanguageContent();
 
 // Add event listeners for radio buttons
 document.addEventListener('change', (e) => {

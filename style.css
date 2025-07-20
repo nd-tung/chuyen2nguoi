@@ -1,24 +1,10 @@
 body {
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: "Helvetica Neue", sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    backgr.radio-label input[type="radio"]:checked + .radio-text {
-    color: #28a745;
-    font-weight: 600;
-}
-
-.radio-label:has(input[type="radio"]:checked) {
-    background-color: #f8fff8;
-    border: 1px solid #28a745;
-}
-
-.statement-input-group.lie-selected input[type="text"] {
-    border-color: #28a745;
-    border-width: 2px;
-    background-color: #f8fff8;
-}adient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #333;
     margin: 0;
     padding: 20px;
@@ -27,7 +13,7 @@ body {
 
 #app {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     padding: 30px;
     background-color: white;
     border-radius: 15px;
@@ -39,8 +25,64 @@ body {
     display: none;
 }
 
+.language-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.lang-btn {
+    padding: 8px 16px;
+    border: 2px solid #007bff;
+    background: white;
+    color: #007bff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.lang-btn:hover {
+    background: #f8f9fa;
+}
+
+.lang-btn.active {
+    background: #007bff;
+    color: white;
+}
+
 h1, h2 {
     color: #007bff;
+    margin: 20px 0;
+}
+
+.game-instructions {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.game-instructions h3 {
+    color: #007bff;
+    margin-top: 0;
+    text-align: center;
+}
+
+.game-instructions ol {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.game-instructions li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.room-section {
+    margin-top: 20px;
 }
 
 input {
@@ -48,96 +90,61 @@ input {
     padding: 12px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    height: 40px;
-    box-sizing: border-box;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 button {
-    width: 100%;
-    padding: 14px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 8px;
+    padding: 12px 20px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
 }
 
-button:hover:not(:disabled) {
+button:hover {
     background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
 button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.statement-btn {
-    background-color: #28a745;
-    margin-bottom: 10px;
-    text-align: left;
-    padding: 15px;
-}
-
-.statement-btn:hover:not(:disabled) {
-    background-color: #218838;
 }
 
 #game-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-}
-
-#result-message {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    border-left: 4px solid #007bff;
-}
-
-#round-title {
-    color: #007bff;
+    align-items: center;
     margin-bottom: 20px;
-    font-size: 24px;
+    flex-wrap: wrap;
 }
 
-#input-prompt, #guess-prompt {
-    font-size: 16px;
-    margin-bottom: 15px;
-    font-weight: 500;
+.exit-btn {
+    background-color: #dc3545;
+    font-size: 14px;
+    padding: 8px 15px;
+}
+
+.exit-btn:hover {
+    background-color: #c82333;
 }
 
 .statement-input-group {
     display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
     align-items: center;
-    justify-content: space-between;
+    margin-bottom: 15px;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .statement-input-group input[type="text"] {
     flex: 1;
     margin-bottom: 0;
-    transition: border-color 0.3s ease;
-    width: auto;
-    min-width: 0;
 }
 
 .radio-label {
@@ -173,17 +180,82 @@ button:disabled {
 }
 
 .radio-label input[type="radio"]:checked + .radio-text {
-    color: #dc3545;
+    color: #28a745;
     font-weight: 600;
 }
 
 .radio-label:has(input[type="radio"]:checked) {
-    background-color: #fff5f5;
-    border: 1px solid #dc3545;
+    background-color: #f8fff8;
+    border: 1px solid #28a745;
 }
 
-.statement-input-group.lie-selected input {
-    border-color: #dc3545;
+.statement-input-group.lie-selected input[type="text"] {
+    border-color: #28a745;
     border-width: 2px;
-    background-color: #fff5f5;
+    background-color: #f8fff8;
+}
+
+#guess-area {
+    margin: 20px 0;
+}
+
+#guess-area button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    text-align: left;
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e9ecef;
+}
+
+#guess-area button:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+}
+
+#result-message {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#end-screen {
+    text-align: center;
+}
+
+#end-screen h2 {
+    color: #28a745;
+}
+
+#final-score, #winner {
+    font-size: 18px;
+    margin: 15px 0;
+}
+
+@media (max-width: 600px) {
+    #app {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .game-instructions {
+        padding: 15px;
+    }
+    
+    #game-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .statement-input-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+    }
+    
+    .radio-label {
+        justify-content: center;
+    }
 }
