@@ -307,29 +307,302 @@ const topics = {
     }
 };
 
+// Vietnamese Topics
+const topicsVi = {
+    // Chủ đề an toàn
+    childhood: {
+        title: 'Kỷ Niệm Tuổi Thơ',
+        description: 'Chia sẻ những câu chuyện khi bạn còn nhỏ',
+        suggestions: [
+            'Tôi bị gãy tay khi ngã xe đạp lúc 8 tuổi',
+            'Tôi có một người bạn tưởng tượng tên Charlie sống trong tủ quần áo',
+            'Tôi đã thắng giải nhất cuộc thi hát tài năng ở trường',
+            'Gia đình tôi chuyển nhà 5 lần trước khi tôi 10 tuổi',
+            'Tôi sợ bóng tối cho đến khi 12 tuổi'
+        ],
+        isAdult: false
+    },
+    school: {
+        title: 'Thời Học Sinh',
+        description: 'Kể cho chúng tôi về trải nghiệm giáo dục của bạn',
+        suggestions: [
+            'Tôi là lớp trưởng ở trường cấp 3',
+            'Tôi thi bằng lái xe trượt 3 lần mới đỗ',
+            'Tôi bỏ lễ tốt nghiệp để ôn thi cuối kỳ',
+            'Tôi từng bị đình chỉ vì làm trò đùa vô hại',
+            'Tôi từng thích thầy giáo Toán lớp 9'
+        ],
+        isAdult: false
+    },
+    travel: {
+        title: 'Cuộc Phiêu Lưu Du Lịch',
+        description: 'Chia sẻ trải nghiệm du lịch hoặc điểm đến mơ ước',
+        suggestions: [
+            'Tôi đã đi qua cả 7 châu lục',
+            'Tôi bị lạc ở Tokyo 6 tiếng mà không biết tiếng Nhật',
+            'Tôi đã nhảy dù ở New Zealand',
+            'Tôi chưa bao giờ rời khỏi quê hương',
+            'Tôi sống ở hostel 3 tháng khi du lịch bụi'
+        ],
+        isAdult: false
+    },
+    food: {
+        title: 'Ẩm Thực & Nấu Ăn',
+        description: 'Kể về trải nghiệm ẩm thực của bạn',
+        suggestions: [
+            'Tôi từng ăn côn trùng ở một nhà hàng Thái Lan',
+            'Tôi bị dị ứng chocolate và thường xuyên khóc vì điều đó',
+            'Tôi có thể nấu một bữa ăn 5 món hoàn hảo từ trí nhớ',
+            'Tôi chưa bao giờ ăn sushi trong đời',
+            'Tôi đã làm đầu bếp ở nhà hàng 2 năm'
+        ],
+        isAdult: false
+    },
+    pets: {
+        title: 'Thú Cưng & Động Vật',
+        description: 'Chia sẻ câu chuyện về động vật trong cuộc sống bạn',
+        suggestions: [
+            'Tôi có một con rắn cưng trốn trong tường nhà nhiều tháng',
+            'Tôi bí mật rất sợ bướm',
+            'Tôi huấn luyện chó mang đồ ăn nhẹ từ bếp ra cho tôi',
+            'Tôi đã cứu hơn 20 con mèo hoang trong đời',
+            'Tôi từng bị một con ngỗng điên đuổi ở công viên'
+        ],
+        isAdult: false
+    },
+    hobbies: {
+        title: 'Sở Thích & Quan Tâm',
+        description: 'Nói về những gì bạn làm trong thời gian rảnh',
+        suggestions: [
+            'Tôi có thể giải rubik dưới 30 giây',
+            'Tôi sưu tập thiệp cũ từ những năm 1920',
+            'Tôi chưa bao giờ xem phim Star Wars',
+            'Tôi có thể chơi 4 loại nhạc cụ khác nhau',
+            'Tôi đan khăn cho các trại người vô gia cư mỗi mùa đông'
+        ],
+        isAdult: false
+    },
+    work: {
+        title: 'Công Việc & Sự Nghiệp',
+        description: 'Chia sẻ trải nghiệm từ đời sống nghề nghiệp',
+        suggestions: [
+            'Tôi từng thuyết trình cho 500 người trong mơ mà chỉ mặc đồ lót',
+            'Tôi có công việc hiện tại vì đã giúp sếp tương lai trong thang máy',
+            'Tôi đã bị sa thải từ 3 công việc khác nhau',
+            'Tôi từng làm chú hề sinh nhật chuyên nghiệp cho trẻ em',
+            'Tôi kiếm tiền từ sở thích phụ nhiều hơn công việc chính'
+        ],
+        isAdult: false
+    },
+    fears: {
+        title: 'Nỗi Sợ & Ám Ảnh',
+        description: 'Điều gì khiến bạn sợ hãi hoặc lo lắng?',
+        suggestions: [
+            'Tôi sợ bướm và chạy trốn khi nhìn thấy chúng',
+            'Tôi kiểm tra dưới gầm giường mỗi đêm trước khi ngủ',
+            'Tôi không thể ngủ nếu không có đèn ngủ',
+            'Tôi chưa bao giờ đi tàu lượn siêu tốc vì sợ độ cao',
+            'Tôi khó thở trong thang máy và leo bộ lên tầng 10'
+        ],
+        isAdult: false
+    },
+    talents: {
+        title: 'Tài Năng Ẩn',
+        description: 'Bạn có những kỹ năng bí mật gì?',
+        suggestions: [
+            'Tôi có thể tung hứng 5 quả bóng cùng lúc',
+            'Tôi nói thành thạo 6 thứ tiếng',
+            'Tôi có thể chạm mũi bằng lưỡi',
+            'Tôi có thính giác tuyệt đối, nhận diện được mọi nốt nhạc',
+            'Tôi có thể giải toán phức tạp trong đầu ngay lập tức'
+        ],
+        isAdult: false
+    },
+    embarrassing: {
+        title: 'Khoảnh Khắc Xấu Hổ',
+        description: 'Chia sẻ những trải nghiệm đáng xấu hổ',
+        suggestions: [
+            'Tôi từng đi cả ngày với giấy vệ sinh dính ở giày',
+            'Tôi từng gọi cô giáo là "mẹ" trước cả lớp',
+            'Tôi vẫy tay lại với ai đó đang vẫy cho người phía sau tôi',
+            'Tôi ngủ gật trong đám cưới của chính mình',
+            'Tôi vô tình gửi tin nhắn tình cảm cho sếp thay vì người yêu'
+        ],
+        isAdult: false
+    },
+    family: {
+        title: 'Câu Chuyện Gia Đình',
+        description: 'Chia sẻ về gia đình và người thân',
+        suggestions: [
+            'Tôi có 15 anh chị em họ và nhớ tên được hết',
+            'Bố mẹ tôi gặp nhau trong thang máy bị kẹt',
+            'Tôi được sinh ra trong xe taxi trên đường đến bệnh viện',
+            'Tôi có người anh/chị em sinh đôi mà ít ai biết',
+            'Gia đình tôi từng nổi tiếng địa phương vì lý do kỳ lạ'
+        ],
+        isAdult: false
+    },
+
+    // Chủ đề 18+ 
+    dating: {
+        title: 'Hẹn Hò & Tình Cảm (18+)',
+        description: 'Chia sẻ trải nghiệm tình cảm của bạn (18+)',
+        suggestions: [
+            'Tôi đã hẹn hò trên 100 lần trong năm qua',
+            'Tôi gặp người yêu hiện tại ở đồn cảnh sát',
+            'Tôi chưa bao giờ có mối quan hệ nào dài hơn 3 tháng',
+            'Tôi từng hẹn hò với 2 người cùng tên cùng lúc',
+            'Tôi chia tay ai đó qua tin nhắn vào ngày sinh nhật họ'
+        ],
+        isAdult: true
+    },
+    party: {
+        title: 'Tiệc Tung & Cuộc Sống Đêm (18+)',
+        description: 'Kể về những đêm điên rồ nhất của bạn (18+)',
+        suggestions: [
+            'Tôi từng nhảy lên bàn trong đám cưới và làm gãy nó',
+            'Tôi chưa bao giờ say rượu trong đời',
+            'Tôi tỉnh dậy ở thành phố khác mà không nhớ mình đến đó thế nào',
+            'Tôi bị đuổi khỏi quán karaoke vì hát quá to',
+            'Tôi từng tiệc tùng với một người nổi tiếng và có ảnh chứng minh'
+        ],
+        isAdult: true
+    },
+    secrets: {
+        title: 'Bí Mật Sâu Kín (18+)',
+        description: 'Chia sẻ điều không ai biết về bạn (18+)',
+        suggestions: [
+            'Tôi có hình xăm ở nơi không ai có thể thấy',
+            'Tôi từng ăn cắp vặt lúc còn trẻ và vẫn cảm thấy tội lỗi',
+            'Tôi bí mật đọc tiểu thuyết tình cảm và có hơn 200 cuốn',
+            'Tôi chưa bao giờ kể với gia đình về nghề nghiệp thật của mình',
+            'Tôi có giấy tờ giả và vẫn mang theo dù đã hơn 30 tuổi'
+        ],
+        isAdult: true
+    },
+    adult_embarrassing: {
+        title: 'Khoảnh Khắc Xấu Hổ Người Lớn (18+)',
+        description: 'Những trải nghiệm đáng xấu hổ nhất khi trưởng thành (18+)',
+        suggestions: [
+            'Tôi vô tình gửi ảnh nhạy cảm cho cả nhóm chat công ty',
+            'Tôi bị bảo vệ bắt gặp hôn hít ở nơi công cộng',
+            'Tôi đã nôn lên người ta trong buổi hẹn hò đầu tiên',
+            'Tôi ngủ gật trong lúc... quan hệ thân mật',
+            'Tôi vô tình đi nhầm căn hộ và vào tận phòng ngủ người ta'
+        ],
+        isAdult: true
+    },
+    wild_experiences: {
+        title: 'Trải Nghiệm Hoang Dã (18+)',
+        description: 'Những cuộc phiêu lưu điên rồ nhất của bạn (18+)',
+        suggestions: [
+            'Tôi đã tắm tiên ở đài phun nước công cộng lúc nửa đêm',
+            'Tôi gia nhập "câu lạc bộ dặm cao" trên chuyến bay 12 tiếng',
+            'Tôi kết hôn với người chỉ quen 24 tiếng ở Vegas',
+            'Tôi chưa bao giờ làm gì hoang dã hay phiêu lưu trong đời',
+            'Tôi từng chạy trần qua sân bóng đá trong trận đấu'
+        ],
+        isAdult: true
+    },
+    adult_confessions: {
+        title: 'Thú Nhận Cá Nhân (18+)',
+        description: 'Những điều bạn chưa bao giờ thừa nhận với ai (18+)',
+        suggestions: [
+            'Tôi đã giả ốm để tránh sự kiện xã hội hơn 50 lần',
+            'Tôi theo dõi người yêu cũ trên mạng xã hội 2 năm sau khi chia tay',
+            'Tôi nói dối về tuổi trên app hẹn hò 5 tuổi',
+            'Tôi từng giả mạo danh tính trực tuyến 6 tháng',
+            'Tôi chưa bao giờ thực sự thích quan hệ thân mật nhưng giả vờ thích'
+        ],
+        isAdult: true
+    },
+    money_secrets: {
+        title: 'Tiền Bạc & Bí Mật (18+)',
+        description: 'Những thú nhận về tài chính',
+        suggestions: [
+            'Tôi có một tài khoản ngân hàng bí mật mà người yêu không biết',
+            'Tôi từng tiêu 100 triệu trong một lần mua sắm và giấu diếm',
+            'Tôi chưa bao giờ khai thuế đúng cách và sợ bị phát hiện',
+            'Tôi kiếm tiền từ một công việc phụ đáng xấu hổ',
+            'Tôi đang ngập đến cổ trong nợ nần mà không ai biết'
+        ],
+        isAdult: true
+    },
+    guilty_pleasures: {
+        title: 'Thú Vui Tội Lỗi (18+)',
+        description: 'Những thú vui bí mật của bạn',
+        suggestions: [
+            'Tôi xem reality show và thuộc lòng tất cả drama',
+            'Tôi sưu tập thứ gì đó rất kỳ lạ mà xấu hổ không dám kể',
+            'Tôi nghiện một game mobile và tiêu tiền vào đó',
+            'Tôi ăn kem vào bữa sáng thường xuyên hơn đồ ăn sáng thật',
+            'Tôi giả vờ tinh tế nhưng thích những thứ tầm thường nhất'
+        ],
+        isAdult: true
+    }
+};
+
+// Get topics based on current language
+function getCurrentTopics() {
+    return currentLanguage === 'vi' ? topicsVi : topics;
+}
+
 // Language translations (extended)
 const translations = {
     en: {
-        // ... (keep existing translations and add new ones)
         mainTitle: 'Two Truths and a Lie',
+        instructionsTitle: 'How to Play:',
         settingsTitle: 'Game Settings:',
         roundsLabel: 'Number of Rounds:',
-        topicSelectionPrompt: 'Select 3-5 topics for Player {player} to create statements about:',
+        roomPlaceholder: 'Enter Room Name',
+        joinRoom: 'Join Room',
+        topicSelectionPrompt: 'Select 1 topic for Player {player} to create statements about:',
         selectedTopicsTitle: 'Selected Topics:',
         confirmTopics: 'Confirm Topic Selection',
         currentTopic: 'Your Topic:',
         suggestedAnswers: 'Suggested answers:',
-        selectingTopics: 'Player {player} is selecting topics for you...',
+        selectingTopics: 'Player {player} is selecting a topic for you...',
         creatingStatements: 'Player {player} is creating statements...',
         waitingGuess: 'Player {player} is making their guess...',
-        adultContent: '18+'
+        adultContent: '18+',
+        playerNumber: 'You are Player {player}',
+        waiting: 'Waiting for other player...',
+        gameStarted: 'Game Started!',
+        roundOf: 'Round {current} of {total}',
+        yourTurn: 'Your turn to create statements',
+        guessingTime: 'Time to guess!',
+        correctGuess: 'Correct! +1 point',
+        wrongGuess: 'Wrong guess!',
+        finalScore: 'Final Score',
+        winner: 'Winner: Player {player}',
+        tie: 'It\'s a tie!',
+        playAgain: 'Play Again',
+        statement1: 'Statement 1:',
+        statement2: 'Statement 2:',
+        statement3: 'Statement 3:',
+        markTruth: 'Mark the TRUE statement',
+        submitStatements: 'Submit Statements',
+        whichIsTrue: 'Which statement is TRUE?',
+        submitGuess: 'Submit Guess',
+        seeTopicHelp: 'See Topic',
+        instructions: [
+            'Two players join the same room',
+            'Each player takes turns creating 3 statements about themselves',
+            '2 statements are lies, 1 statement is the truth',
+            'Mark which statement is TRUE using the radio button',
+            'The other player tries to guess which one is the truth',
+            'Score points for correct guesses!',
+            'Play multiple rounds and see who wins!'
+        ]
     },
     vi: {
-        // ... (keep existing translations and add new ones)
         mainTitle: 'Hai Sự Thật Một Lời Dối',
+        instructionsTitle: 'Cách Chơi:',
         settingsTitle: 'Cài Đặt Game:',
         roundsLabel: 'Số Vòng Chơi:',
-        topicSelectionPrompt: 'Chọn 3-5 chủ đề cho Người chơi {player} tạo câu nói:',
+        roomPlaceholder: 'Nhập Tên Phòng',
+        joinRoom: 'Tham Gia Phòng',
+        topicSelectionPrompt: 'Chọn 1 chủ đề cho Người chơi {player} tạo câu nói:',
         selectedTopicsTitle: 'Chủ Đề Đã Chọn:',
         confirmTopics: 'Xác Nhận Chọn Chủ Đề',
         currentTopic: 'Chủ Đề Của Bạn:',
@@ -337,58 +610,218 @@ const translations = {
         selectingTopics: 'Người chơi {player} đang chọn chủ đề cho bạn...',
         creatingStatements: 'Người chơi {player} đang tạo câu nói...',
         waitingGuess: 'Người chơi {player} đang đoán...',
-        adultContent: '18+'
+        adultContent: '18+',
+        playerNumber: 'Bạn là Người chơi {player}',
+        waiting: 'Đang chờ người chơi khác...',
+        gameStarted: 'Game Bắt Đầu!',
+        roundOf: 'Vòng {current} / {total}',
+        yourTurn: 'Lượt của bạn tạo câu nói',
+        guessingTime: 'Đến lúc đoán!',
+        correctGuess: 'Đúng rồi! +1 điểm',
+        wrongGuess: 'Đoán sai!',
+        finalScore: 'Điểm Cuối Cùng',
+        winner: 'Người Thắng: Người chơi {player}',
+        tie: 'Hòa!',
+        playAgain: 'Chơi Lại',
+        statement1: 'Câu nói 1:',
+        statement2: 'Câu nói 2:',
+        statement3: 'Câu nói 3:',
+        markTruth: 'Đánh dấu câu nói ĐÚNG',
+        submitStatements: 'Gửi Các Câu Nói',
+        whichIsTrue: 'Câu nói nào là ĐÚNG?',
+        submitGuess: 'Gửi Đáp Án',
+        seeTopicHelp: 'Xem Chủ Đề',
+        instructions: [
+            'Hai người chơi tham gia cùng một phòng',
+            'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
+            '2 câu nói là dối trá, 1 câu nói là sự thật',
+            'Đánh dấu câu nói ĐÚNG bằng nút tròn',
+            'Người chơi kia cố gắng đoán câu nào là sự thật',
+            'Ghi điểm khi đoán đúng!',
+            'Chơi nhiều vòng và xem ai thắng!'
+        ]
     }
 };
 
 // Initialize
-updateLanguageContent();
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking elements...');
+    console.log('langEnBtn:', document.getElementById('lang-en'));
+    console.log('langViBtn:', document.getElementById('lang-vi'));
+    console.log('joinRoomBtn:', document.getElementById('join-room'));
+    console.log('roomNameInput:', document.getElementById('room-name'));
+    
+    updateLanguageContent();
+    
+    console.log('Setting up event listeners...');
+    
+    // Language switching
+    const langEnBtn = document.getElementById('lang-en');
+    const langViBtn = document.getElementById('lang-vi');
+    
+    if (langEnBtn) {
+        langEnBtn.addEventListener('click', () => {
+            console.log('English button clicked');
+            switchLanguage('en');
+        });
+    }
+    
+    if (langViBtn) {
+        langViBtn.addEventListener('click', () => {
+            console.log('Vietnamese button clicked');
+            switchLanguage('vi');
+        });
+    }
+    
+    // Join room button
+    const joinRoomBtn = document.getElementById('join-room');
+    const roomNameInput = document.getElementById('room-name');
+    const roundCountSelect = document.getElementById('round-count');
+    
+    if (joinRoomBtn) {
+        joinRoomBtn.addEventListener('click', () => {
+            console.log('Join room button clicked');
+            roomName = roomNameInput.value.trim();
+            totalRounds = parseInt(roundCountSelect.value);
+            
+            if (roomName && roomName.length >= 3) {
+                console.log('Emitting create or join event');
+                socket.emit('create or join', roomName, totalRounds);
+                joinRoomBtn.disabled = true;
+                joinRoomBtn.textContent = 'Joining...';
+            } else {
+                console.log('Room name validation failed');
+                alert('Please enter a room name with at least 3 characters.');
+            }
+        });
+    }
+});
 
-// Language switching
-langEnBtn.addEventListener('click', () => switchLanguage('en'));
-langViBtn.addEventListener('click', () => switchLanguage('vi'));
+// Remove duplicate initialization
+// console.log('Checking DOM elements...');
+// console.log('langEnBtn:', langEnBtn);
+// console.log('langViBtn:', langViBtn);
+// console.log('joinRoomBtn:', joinRoomBtn);
+// console.log('roomNameInput:', roomNameInput);
+
+// updateLanguageContent();
 
 function switchLanguage(lang) {
+    console.log('Switching language to:', lang);
     currentLanguage = lang;
-    langEnBtn.classList.toggle('active', lang === 'en');
-    langViBtn.classList.toggle('active', lang === 'vi');
+    const langEnBtn = document.getElementById('lang-en');
+    const langViBtn = document.getElementById('lang-vi');
+    
+    if (langEnBtn) langEnBtn.classList.toggle('active', lang === 'en');
+    if (langViBtn) langViBtn.classList.toggle('active', lang === 'vi');
     updateLanguageContent();
 }
 
 function updateLanguageContent() {
     const t = translations[currentLanguage];
-    // Update all translatable elements
-    // (Implementation similar to original but extended)
-}
-
-// Event listeners
-joinRoomBtn.addEventListener('click', () => {
-    roomName = roomNameInput.value.trim();
-    totalRounds = parseInt(roundCountSelect.value);
+    console.log('Updating language content to:', currentLanguage);
     
-    if (roomName && roomName.length >= 3) {
-        socket.emit('create or join', roomName, totalRounds);
-        joinRoomBtn.disabled = true;
-        joinRoomBtn.textContent = 'Joining...';
-    } else {
-        alert('Please enter a room name with at least 3 characters.');
+    try {
+        // Update main UI elements
+        const mainTitle = document.getElementById('main-title');
+        if (mainTitle) mainTitle.textContent = t.mainTitle;
+        
+        const instructionsTitle = document.getElementById('instructions-title');
+        if (instructionsTitle) instructionsTitle.textContent = t.instructionsTitle;
+        
+        const settingsTitle = document.getElementById('settings-title');
+        if (settingsTitle) settingsTitle.textContent = t.settingsTitle;
+        
+        const roundsLabel = document.getElementById('rounds-label');
+        if (roundsLabel) roundsLabel.textContent = t.roundsLabel;
+        
+        const roomNameInput = document.getElementById('room-name');
+        if (roomNameInput) roomNameInput.placeholder = t.roomPlaceholder;
+        
+        const joinRoomBtn = document.getElementById('join-room');
+        if (joinRoomBtn) joinRoomBtn.textContent = t.joinRoom;
+        
+        // Update instructions list
+        const instructionsList = document.querySelector('#instructions-content ol');
+        if (instructionsList) {
+            instructionsList.innerHTML = '';
+            t.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.textContent = instruction;
+                instructionsList.appendChild(li);
+            });
+        }
+        
+        // Update topic selection elements
+        if (topicPrompt) {
+            topicPrompt.textContent = t.topicSelectionPrompt.replace('{player}', '2');
+        }
+        if (selectedTopicsTitle) {
+            selectedTopicsTitle.textContent = t.selectedTopicsTitle;
+        }
+        if (confirmTopicsBtn) {
+            confirmTopicsBtn.textContent = t.confirmTopics;
+        }
+        
+        // Update other game elements (only if they exist)
+        const currentTopicLabel = document.getElementById('current-topic-label');
+        if (currentTopicLabel) currentTopicLabel.textContent = t.currentTopic;
+        
+        const suggestedAnswersTitle = document.getElementById('suggested-answers-title');
+        if (suggestedAnswersTitle) suggestedAnswersTitle.textContent = t.suggestedAnswers;
+        
+        if (seeTopicBtn) {
+            seeTopicBtn.textContent = t.seeTopicHelp;
+        }
+        
+        // Update statement labels
+        const statementLabels = document.querySelectorAll('.statement-label');
+        statementLabels.forEach((label, index) => {
+            if (label) {
+                label.textContent = t[`statement${index + 1}`];
+            }
+        });
+        
+        // Update other labels (only if they exist)
+        const markTruthLabel = document.getElementById('mark-truth-label');
+        if (markTruthLabel) markTruthLabel.textContent = t.markTruth;
+        
+        const submitStatementsBtn = document.getElementById('submit-statements-btn');
+        if (submitStatementsBtn) submitStatementsBtn.textContent = t.submitStatements;
+        
+        const guessPrompt = document.getElementById('guess-prompt');
+        if (guessPrompt) guessPrompt.textContent = t.whichIsTrue;
+        
+        const submitGuessBtn = document.getElementById('submit-guess-btn');
+        if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
+        
+        // Recreate topic grid with new language
+        if (topicGrid) {
+            createTopicGrid();
+        }
+        
+        console.log('Language content updated successfully');
+    } catch (error) {
+        console.error('Error updating language content:', error);
     }
-});
+}
 
 // Topic selection functionality
 function createTopicGrid() {
     topicGrid.innerHTML = '';
+    const currentTopics = getCurrentTopics();
     
-    Object.keys(topics).forEach(topicKey => {
-        const topic = topics[topicKey];
+    Object.keys(currentTopics).forEach(topicKey => {
+        const topic = currentTopics[topicKey];
         const topicCard = document.createElement('div');
         topicCard.className = `topic-card ${topic.isAdult ? 'adult' : ''}`;
         topicCard.dataset.topic = topicKey;
         
+        const t = translations[currentLanguage];
         topicCard.innerHTML = `
             <h4>${topic.title}</h4>
             <p>${topic.description}</p>
-            ${topic.isAdult ? '<span class="age-badge">18+</span>' : ''}
+            ${topic.isAdult ? `<span class="age-badge">${t.adultContent}</span>` : ''}
         `;
         
         topicCard.addEventListener('click', () => {
@@ -439,8 +872,10 @@ function selectTopic(topicKey) {
         console.log('Topic already selected'); // Debug log
         return;
     }
-    if (selectedTopics.length >= 5) {
-        alert('You can select maximum 5 topics.');
+    
+    // Only allow 1 topic selection now
+    if (selectedTopics.length >= 1) {
+        alert('You can only select 1 topic per round.');
         return;
     }
     
@@ -453,17 +888,17 @@ function selectTopic(topicKey) {
     topicSuggestions.classList.add('hidden');
     currentPreviewTopic = null;
     
-    if (selectedTopics.length >= 3) {
-        console.log('Showing confirm button'); // Debug log
-        confirmTopicsBtn.classList.remove('hidden');
-    }
+    // Show confirm button immediately after selecting 1 topic
+    console.log('Showing confirm button'); // Debug log
+    confirmTopicsBtn.classList.remove('hidden');
 }
 
 function updateSelectedTopicsList() {
     selectedTopicsList.innerHTML = '';
+    const currentTopics = getCurrentTopics();
     
     selectedTopics.forEach(topicKey => {
-        const topic = topics[topicKey];
+        const topic = currentTopics[topicKey];
         const item = document.createElement('div');
         item.className = 'selected-topic-item';
         item.innerHTML = `
@@ -492,7 +927,7 @@ function updateTopicCards() {
 confirmTopicsBtn.addEventListener('click', () => {
     console.log('Confirm topics clicked, selected topics:', selectedTopics); // Debug log
     console.log('Room name:', roomName); // Debug log
-    if (selectedTopics.length >= 3) {
+    if (selectedTopics.length >= 1) {
         if (!roomName) {
             console.error('Room name is not set!'); // Debug log
             alert('Room name error. Please refresh and try again.');
@@ -505,7 +940,7 @@ confirmTopicsBtn.addEventListener('click', () => {
         currentPreviewTopic = null;
     } else {
         console.log('Not enough topics selected:', selectedTopics.length); // Debug log
-        alert('Please select at least 3 topics.');
+        alert('Please select at least 1 topic.');
     }
 });
 
@@ -608,7 +1043,7 @@ socket.on('start topic selection', (targetPlayer, round) => {
     
     // Show topic selection
     topicSelectionArea.classList.remove('hidden');
-    topicPrompt.textContent = `Select 3-5 topics for Player ${targetPlayer} to create statements about:`;
+    topicPrompt.textContent = `Select 1 topic for Player ${targetPlayer} to create statements about:`;
     
     selectedTopics = [];
     currentPreviewTopic = null;
@@ -630,11 +1065,12 @@ socket.on('start statement creation', (topicKey, round) => {
     currentRound = round;
     roundTitle.textContent = `Round ${round}`;
     currentTopicKey = topicKey; // Store the topic key
-    currentTopic = topics[topicKey]; // Store the topic object
+    const currentTopics = getCurrentTopics();
+    currentTopic = currentTopics[topicKey]; // Store the topic object
     
     if (!currentTopic) {
         console.error('Topic not found:', topicKey); // Debug log
-        console.log('Available topics:', Object.keys(topics)); // Debug log
+        console.log('Available topics:', Object.keys(currentTopics)); // Debug log
         return;
     }
     
@@ -667,14 +1103,16 @@ socket.on('start statement creation', (topicKey, round) => {
 
 socket.on('statements submitted', (submittedStatements, topicKey) => {
     statements = submittedStatements;
-    currentTopic = topics[topicKey]; // Get topic object from key
+    const currentTopics = getCurrentTopics();
+    currentTopic = currentTopics[topicKey]; // Get topic object from key
     
     // Show guessing area
     guessArea.classList.remove('hidden');
     opponentTopicDiv.classList.remove('hidden');
     opponentTopicDisplay.textContent = currentTopic.title;
     
-    guessPrompt.textContent = 'Which one is the TRUTH?';
+    const t = translations[currentLanguage];
+    guessPrompt.textContent = t.whichIsTrue;
     statementBtn1.textContent = statements[0];
     statementBtn2.textContent = statements[1];
     statementBtn3.textContent = statements[2];
