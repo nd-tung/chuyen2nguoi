@@ -1000,12 +1000,12 @@ function selectTopic(topicKey) {
     
     selectedTopics.push(topicKey);
     console.log('Selected topics now:', selectedTopics); // Debug log
+    currentPreviewTopic = null; // Clear preview before updating cards
     updateSelectedTopicsList();
     updateTopicCardsPreview();
-    
+
     // Hide suggestions after selection
     topicSuggestions.classList.add('hidden');
-    currentPreviewTopic = null;
     
     // Show confirm button immediately after selecting 1 topic
     console.log('Showing confirm button'); // Debug log
