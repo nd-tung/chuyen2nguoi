@@ -1813,3 +1813,84 @@ body.dark-mode #game-info {
     background: #333;
     color: #f8f9fa;
 }
+body.dark-mode #history-screen {
+    background: #333;
+    color: #f8f9fa;
+}
+body.dark-mode #session-detail {
+    background: #333;
+    color: #f8f9fa;
+}
+
+#history-instructions {
+    margin: 6px 0 12px;
+    font-style: italic;
+    color: #555;
+}
+
+body.dark-mode #history-instructions {
+    color: #ccc;
+}
+
+#history-screen {
+    text-align: center;
+}
+
+#history-screen ul {
+    list-style: none;
+    padding: 0;
+}
+
+#history-screen li.history-item {
+    margin: 8px 0;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+#history-screen li.history-item:hover {
+    background-color: #f0f0f0;
+}
+
+body.dark-mode #history-screen li.history-item {
+    border-color: #555;
+}
+
+body.dark-mode #history-screen li.history-item:hover {
+    background-color: #444;
+}
+
+.detail-icon {
+    font-size: 1.1em;
+    color: #888;
+}
+
+body.dark-mode .detail-icon {
+    color: #bbb;
+}
+
+#session-detail li {
+    margin: 6px 0;
+    text-align: left;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    flex: 1 1 150px;
+}
+
+#session-detail {
+    margin-top: 15px;
+}
+
