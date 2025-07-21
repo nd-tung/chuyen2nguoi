@@ -88,8 +88,8 @@ let scores = { 1: 0, 2: 0 };
 let currentGameRounds = [];
 let selectedTopics = [];
 let currentTopic;
-let currentTopicKey; // Add this to store the topic key
-let currentPreviewTopic = null; // For showing suggestions
+let currentTopicKey; // Store the topic key
+let highlightedTopic = null; // Currently highlighted topic
 let statements = [];
 let truthIndex;
 let selectedTruthIndex = -1;
@@ -666,12 +666,15 @@ const translations = {
         seeTopicHelp: 'See Topic',
         darkMode: 'Dark Mode',
         lightMode: 'Light Mode',
+        nextTurn: 'Next Turn',
+        nextRound: 'Next Round',
+        showResults: 'Show Results',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
             'Each player takes turns creating 3 statements about themselves',
             '2 statements are lies, 1 statement is the truth',
-            'Mark which statement is TRUE using the radio button',
+            'Mark which statement is TRUE using the check icon',
             'The other player tries to guess which one is the truth',
             'Score points for correct guesses!',
             'Play multiple rounds and see who wins!'
@@ -716,12 +719,15 @@ const translations = {
         seeTopicHelp: 'Xem Chủ Đề',
         darkMode: 'Chế độ tối',
         lightMode: 'Chế độ sáng',
+        nextTurn: 'Lượt Tiếp',
+        nextRound: 'Vòng Tiếp',
+        showResults: 'Xem Kết Quả',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
             'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
             '2 câu nói là dối trá, 1 câu nói là sự thật',
-            'Đánh dấu câu nói ĐÚNG bằng nút tròn',
+            'Đánh dấu câu nói ĐÚNG bằng biểu tượng dấu tích',
             'Người chơi kia cố gắng đoán câu nào là sự thật',
             'Ghi điểm khi đoán đúng!',
             'Chơi nhiều vòng và xem ai thắng!'
@@ -915,6 +921,8 @@ function updateLanguageContent() {
         
         const guessPrompt = document.getElementById('guess-prompt');
         if (guessPrompt) guessPrompt.textContent = t.whichIsTrue;
+
+        if (nextRoundBtn) nextRoundBtn.textContent = t.nextRound;
         
         const submitGuessBtn = document.getElementById('submit-guess-btn');
         if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
@@ -975,9 +983,8 @@ function createTopicGrid() {
 }
 
 function showTopicSuggestions(topicKey, topic) {
-    // Update preview state
-    currentPreviewTopic = topicKey;
-    updateTopicCardsPreview();
+    highlightedTopic = topicKey;
+    updateTopicCards();
     
     // Special handling for the "18+" topic
     if (topicKey === 'guilty_pleasures') {
@@ -1018,10 +1025,10 @@ function showTopicSuggestions(topicKey, topic) {
     }
 }
 
-function updateTopicCardsPreview() {
+function updateTopicCards() {
     document.querySelectorAll('.topic-card').forEach(card => {
         const topicKey = card.dataset.topic;
-        card.classList.toggle('preview', topicKey === currentPreviewTopic);
+        card.classList.toggle('highlighted', topicKey === highlightedTopic);
         card.classList.toggle('selected', selectedTopics.includes(topicKey));
     });
 }
@@ -1041,12 +1048,10 @@ function selectTopic(topicKey) {
     
     selectedTopics.push(topicKey);
     console.log('Selected topics now:', selectedTopics); // Debug log
+    highlightedTopic = null;
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
-    
-    // Hide suggestions after selection
+    updateTopicCards();
     topicSuggestions.classList.add('hidden');
-    currentPreviewTopic = null;
     
     // Show confirm button immediately after selecting 1 topic
     console.log('Showing confirm button'); // Debug log
@@ -1072,16 +1077,13 @@ function updateSelectedTopicsList() {
 function removeTopic(topicKey) {
     selectedTopics = selectedTopics.filter(t => t !== topicKey);
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
+    updateTopicCards();
     
     if (selectedTopics.length < 3) {
         confirmTopicsBtn.classList.add('hidden');
     }
 }
 
-function updateTopicCards() {
-    updateTopicCardsPreview();
-}
 
 // Confirm topics selection
 confirmTopicsBtn.addEventListener('click', () => {
@@ -1097,7 +1099,7 @@ confirmTopicsBtn.addEventListener('click', () => {
         socket.emit('topics selected', roomName, selectedTopics);
         topicSelectionArea.classList.add('hidden');
         topicSuggestions.classList.add('hidden');
-        currentPreviewTopic = null;
+        highlightedTopic = null;
     } else {
         console.log('Not enough topics selected:', selectedTopics.length); // Debug log
         alert('Please select at least 1 topic.');
@@ -1140,7 +1142,7 @@ submitStatementsBtn.addEventListener('click', (e) => {
     
     const selectedRadio = document.querySelector('input[name="truth-selection"]:checked');
     if (!selectedRadio) {
-        alert("Please select which statement is the TRUTH by clicking a radio button.");
+        alert("Please select which statement is the TRUTH by clicking the check icon.");
         return;
     }
     
@@ -1220,7 +1222,7 @@ socket.on('start topic selection', (targetPlayer, round) => {
     topicPrompt.textContent = `Select 1 topic for Player ${targetPlayer} to create statements about:`;
     
     selectedTopics = [];
-    currentPreviewTopic = null;
+    highlightedTopic = null;
     createTopicGrid();
     updateSelectedTopicsList();
     confirmTopicsBtn.classList.add('hidden');
@@ -1232,6 +1234,9 @@ socket.on('start topic selection', (targetPlayer, round) => {
     currentTopicDiv.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
     topicHelp.classList.add('hidden');
+
+    nextRoundBtn.classList.add('hidden');
+    resultMessage.textContent = '';
 });
 
 socket.on('start statement creation', (topicKey, round) => {
@@ -1273,6 +1278,9 @@ socket.on('start statement creation', (topicKey, round) => {
     topicSelectionArea.classList.add('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
+
+    nextRoundBtn.classList.add('hidden');
+    resultMessage.textContent = '';
 });
 
 socket.on('statements submitted', (submittedStatements, topicKey) => {
@@ -1297,7 +1305,7 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
     currentTopicDiv.classList.add('hidden');
 });
 
-socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, pointsAwarded) => {
+socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext) => {
     scores = newScores;
     updateScores();
 
@@ -1311,6 +1319,13 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, point
         resultMessage.style.color = '#dc3545';
     }
     
+    if (gameOverNext) {
+        nextRoundBtn.textContent = translations[currentLanguage].showResults || 'Show Results';
+    } else if (roundOver) {
+        nextRoundBtn.textContent = translations[currentLanguage].nextRound || 'Next Round';
+    } else {
+        nextRoundBtn.textContent = translations[currentLanguage].nextTurn || 'Next Turn';
+    }
     nextRoundBtn.classList.remove('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
@@ -1379,6 +1394,23 @@ socket.on('status update', (status) => {
 socket.on('player names updated', (names) => {
     console.log('Player names updated:', names); // Debug log
     updatePlayerNames(names);
+});
+
+socket.on('player joined', (names) => {
+    console.log('Player joined:', names);
+    updatePlayerNames(names);
+    gameStatusDisplay.textContent = 'Both players are ready!';
+});
+
+socket.on('player left', (playerNum) => {
+    console.log('Player left:', playerNum);
+    gameStatusDisplay.textContent = `Player ${playerNum} left the game. Waiting for new player...`;
+    topicSelectionArea.classList.add('hidden');
+    inputArea.classList.add('hidden');
+    guessArea.classList.add('hidden');
+    currentTopicDiv.classList.add('hidden');
+    opponentTopicDiv.classList.add('hidden');
+    nextRoundBtn.classList.add('hidden');
 });
 
 // Utility functions
@@ -1454,8 +1486,8 @@ function handleKeyboardNavigation(e) {
         // Close topic suggestions if open
         else if (!topicSuggestions.classList.contains('hidden')) {
             topicSuggestions.classList.add('hidden');
-            currentPreviewTopic = null;
-            updateTopicCardsPreview();
+            highlightedTopic = null;
+            updateTopicCards();
         }
     }
     
@@ -1667,11 +1699,20 @@ function showSessionDetails(item) {
 document.addEventListener('change', (e) => {
     if (e.target.name === 'truth-selection') {
         selectedTruthIndex = parseInt(e.target.value);
-        
+
         document.querySelectorAll('.statement-input-group').forEach(group => {
             group.classList.remove('lie-selected');
         });
-        
-        e.target.closest('.statement-input-group').classList.add('lie-selected');
+        document.querySelectorAll('.radio-label').forEach(label => {
+            label.classList.remove('checked');
+        });
+
+        const group = e.target.closest('.statement-input-group');
+        if (group) {
+            group.classList.add('lie-selected');
+            const label = group.querySelector('.radio-label');
+            if (label) label.classList.add('checked');
+        }
     }
 });
+

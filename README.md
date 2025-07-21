@@ -105,7 +105,7 @@ npm run dev
    - Click on topics to see suggested responses before selecting
 4. **Statement Creation Phase**: 
    - Player 1 creates 3 statements about the assigned topic
-   - Mark which statement is TRUE using the radio button
+   - Mark which statement is TRUE by clicking the check icon
 5. **Guessing Phase**: Player 2 tries to identify the true statement
 6. **Role Reversal**: Player 1 now selects topics for Player 2
 7. **Continue**: Play the selected number of rounds - each round has both players taking turns

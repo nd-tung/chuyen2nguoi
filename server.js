@@ -48,10 +48,12 @@ io.on('connection', (socket) => {
             rooms[room].playerCount++;
             console.log(`User ${socket.id} joined room ${room} as Player 2 (${playerName})`);
             socket.emit('room joined', room, 2, rooms[room].totalRounds, rooms[room].playerNames);
-            
+
             // Notify all players about updated names
             io.to(room).emit('player names updated', rooms[room].playerNames);
-            
+            // Inform players that the second participant has joined
+            io.to(room).emit('player joined', rooms[room].playerNames);
+
             // Start the game with topic selection
             startTopicSelectionPhase(room);
         } else {
@@ -112,7 +114,10 @@ io.on('connection', (socket) => {
                 rooms[room].gameState.scores[guesserPlayer] += pts;
             }
 
-            io.in(room).emit('guess result', guessIndex, rooms[room].currentTruthIndex, isCorrect, rooms[room].gameState.scores, rooms[room].currentTopicPoints);
+            const roundOver = rooms[room].gameState.player1Turn && rooms[room].gameState.player2Turn;
+            const gameOverNext = roundOver && rooms[room].currentRound >= rooms[room].totalRounds;
+
+            io.in(room).emit('guess result', guessIndex, rooms[room].currentTruthIndex, isCorrect, rooms[room].gameState.scores, roundOver, gameOverNext);
         }
     });
 
@@ -159,10 +164,16 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
         for (let room in rooms) {
             if (rooms[room].players[socket.id]) {
+                const leavingPlayer = rooms[room].players[socket.id].player;
                 delete rooms[room].players[socket.id];
+                rooms[room].playerNames[leavingPlayer] = `Player ${leavingPlayer}`;
                 rooms[room].playerCount--;
                 if (rooms[room].playerCount === 0) {
                     delete rooms[room];
+                } else {
+                    rooms[room].currentPhase = 'waiting';
+                    io.to(room).emit('player left', leavingPlayer);
+                    io.to(room).emit('player names updated', rooms[room].playerNames);
                 }
                 break;
             }
