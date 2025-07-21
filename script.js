@@ -683,6 +683,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Setting up event listeners...');
     
+    // Add keyboard navigation support
+    document.addEventListener('keydown', handleKeyboardNavigation);
+    
+    // Add desktop enhancements
+    if (window.innerWidth >= 768) {
+        addDesktopEnhancements();
+    }
+    
     // Language switching
     const langEnBtn = document.getElementById('lang-en');
     const langViBtn = document.getElementById('lang-vi');
@@ -867,6 +875,7 @@ function createTopicGrid() {
         const topicCard = document.createElement('div');
         topicCard.className = `topic-card ${topic.isAdult ? 'adult' : ''}`;
         topicCard.dataset.topic = topicKey;
+        topicCard.tabIndex = 0; // Make focusable for keyboard navigation
         
         const t = translations[currentLanguage];
         topicCard.innerHTML = `
@@ -874,8 +883,17 @@ function createTopicGrid() {
             <p>${topic.description}</p>
         `;
         
+        // Mouse click handler
         topicCard.addEventListener('click', () => {
             showTopicSuggestions(topicKey, topic);
+        });
+        
+        // Keyboard handler
+        topicCard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                showTopicSuggestions(topicKey, topic);
+            }
         });
         
         topicGrid.appendChild(topicCard);
@@ -1246,6 +1264,11 @@ socket.on('game over', (finalScores, names) => {
 socket.on('status update', (status) => {
     console.log('Status update:', status); // Debug log
     gameStatusDisplay.textContent = status;
+    
+    // Update status indicator for desktop
+    if (window.innerWidth >= 768) {
+        updateStatusIndicator(status);
+    }
 });
 
 socket.on('player names updated', (names) => {
@@ -1254,6 +1277,138 @@ socket.on('player names updated', (names) => {
 });
 
 // Utility functions
+function addDesktopEnhancements() {
+    // Add tooltips to buttons and interactive elements
+    const elementsWithTooltips = [
+        { selector: '#join-room', tooltip: 'Press Enter to join quickly' },
+        { selector: '.exit-btn', tooltip: 'Leave the current game' },
+        { selector: '.see-topic-btn', tooltip: 'Get inspiration for your statements' },
+        { selector: '.hide-help-btn', tooltip: 'Close topic suggestions' },
+        { selector: '#lang-en', tooltip: 'Switch to English' },
+        { selector: '#lang-vi', tooltip: 'Chuyển sang Tiếng Việt' }
+    ];
+    
+    elementsWithTooltips.forEach(item => {
+        const element = document.querySelector(item.selector);
+        if (element) {
+            element.classList.add('tooltip');
+            element.setAttribute('data-tooltip', item.tooltip);
+        }
+    });
+    
+    // Add status indicators
+    const statusDisplay = document.getElementById('game-status');
+    if (statusDisplay) {
+        statusDisplay.innerHTML += '<span class="status-indicator waiting"></span>';
+    }
+    
+    // Enhanced visual feedback for form validation
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('error', 'success');
+            if (this.value.trim()) {
+                this.classList.add('success');
+            }
+        });
+    });
+}
+
+function updateStatusIndicator(status) {
+    const indicator = document.querySelector('.status-indicator');
+    if (indicator) {
+        indicator.className = 'status-indicator';
+        
+        if (status.includes('waiting') || status.includes('Waiting')) {
+            indicator.classList.add('waiting');
+        } else if (status.includes('selecting') || status.includes('creating') || status.includes('making')) {
+            indicator.classList.add('thinking');
+        } else if (status.includes('Started') || status.includes('turn')) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.add('waiting');
+        }
+    }
+}
+
+function handleKeyboardNavigation(e) {
+    // Enter key to join room
+    if (e.key === 'Enter' && !welcomeScreen.classList.contains('hidden')) {
+        const joinBtn = document.getElementById('join-room');
+        if (joinBtn && !joinBtn.disabled) {
+            joinBtn.click();
+        }
+    }
+    
+    // ESC key to exit/close modals
+    if (e.key === 'Escape') {
+        // Close topic help if open
+        if (!topicHelp.classList.contains('hidden')) {
+            hideTopicHelpBtn.click();
+        }
+        // Close topic suggestions if open
+        else if (!topicSuggestions.classList.contains('hidden')) {
+            topicSuggestions.classList.add('hidden');
+            currentPreviewTopic = null;
+            updateTopicCardsPreview();
+        }
+    }
+    
+    // Number keys for quick statement selection during guessing
+    if (!guessArea.classList.contains('hidden')) {
+        if (e.key >= '1' && e.key <= '3') {
+            const buttonIndex = parseInt(e.key) - 1;
+            const buttons = [statementBtn1, statementBtn2, statementBtn3];
+            if (buttons[buttonIndex]) {
+                buttons[buttonIndex].click();
+            }
+        }
+    }
+    
+    // Arrow keys for topic navigation (desktop only)
+    if (window.innerWidth >= 768 && !topicSelectionArea.classList.contains('hidden')) {
+        const topicCards = document.querySelectorAll('.topic-card');
+        const focusedCard = document.activeElement;
+        
+        if (topicCards.length > 0 && e.key.startsWith('Arrow')) {
+            e.preventDefault();
+            let currentIndex = Array.from(topicCards).indexOf(focusedCard);
+            
+            if (currentIndex === -1) {
+                // No card focused, focus first one
+                topicCards[0].focus();
+                return;
+            }
+            
+            let newIndex = currentIndex;
+            const cols = window.innerWidth >= 1400 ? 4 : window.innerWidth >= 992 ? 3 : 2;
+            
+            switch (e.key) {
+                case 'ArrowLeft':
+                    newIndex = currentIndex > 0 ? currentIndex - 1 : topicCards.length - 1;
+                    break;
+                case 'ArrowRight':
+                    newIndex = currentIndex < topicCards.length - 1 ? currentIndex + 1 : 0;
+                    break;
+                case 'ArrowUp':
+                    newIndex = currentIndex - cols;
+                    if (newIndex < 0) newIndex = currentIndex + (Math.ceil(topicCards.length / cols) - 1) * cols;
+                    if (newIndex >= topicCards.length) newIndex = topicCards.length - 1;
+                    break;
+                case 'ArrowDown':
+                    newIndex = currentIndex + cols;
+                    if (newIndex >= topicCards.length) newIndex = currentIndex - (Math.ceil(topicCards.length / cols) - 1) * cols;
+                    if (newIndex < 0) newIndex = 0;
+                    break;
+            }
+            
+            if (newIndex !== currentIndex && topicCards[newIndex]) {
+                topicCards[newIndex].focus();
+            }
+        }
+    }
+}
+
 function updateScores() {
     if (player1Points && player2Points) {
         const prevScores = { 1: parseInt(player1Points.textContent) || 0, 2: parseInt(player2Points.textContent) || 0 };
