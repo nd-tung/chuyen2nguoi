@@ -74,7 +74,13 @@ const backToHistoryBtn = document.getElementById('back-to-history');
 const clearHistoryBtn = document.getElementById('clear-history');
 const backToMenuBtn = document.getElementById('back-to-menu');
 
-// Language elements
+// Side Menu elements
+const menuBtn = document.getElementById('menu-btn');
+const sideMenu = document.getElementById('side-menu');
+const closeMenuBtn = document.getElementById('close-menu');
+const menuOverlay = document.getElementById('menu-overlay');
+
+// Language elements (now in side menu)
 const langEnBtn = document.getElementById('lang-en');
 const langViBtn = document.getElementById('lang-vi');
 const themeToggleBtn = document.getElementById('theme-toggle');
@@ -737,6 +743,33 @@ const translations = {
     }
 };
 
+// Side Menu Functions
+function openSideMenu() {
+    sideMenu.classList.add('open');
+    menuOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+}
+
+function closeSideMenu() {
+    sideMenu.classList.remove('open');
+    menuOverlay.classList.remove('active');
+    document.body.style.overflow = 'auto'; // Re-enable scrolling
+}
+
+function updateMenuActiveStates() {
+    // Update language button states
+    langEnBtn.classList.toggle('active', currentLanguage === 'en');
+    langViBtn.classList.toggle('active', currentLanguage === 'vi');
+}
+
+function updateThemeButtonText() {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const darkModeText = currentLanguage === 'en' ? 'Light Mode' : 'Chế độ sáng';
+    const lightModeText = currentLanguage === 'en' ? 'Dark Mode' : 'Chế độ tối';
+    
+    themeToggleBtn.textContent = isDarkMode ? darkModeText : lightModeText;
+}
+
 // Initialize
 function initializeApp() {
     console.log('DOM loaded, checking elements...');
@@ -785,10 +818,30 @@ function initializeApp() {
         }, 1000);
     }
     
+    // Side Menu functionality
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            openSideMenu();
+        });
+    }
+    
+    if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', () => {
+            closeSideMenu();
+        });
+    }
+    
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', () => {
+            closeSideMenu();
+        });
+    }
+    
     if (langEnBtn) {
         langEnBtn.addEventListener('click', () => {
             console.log('English button clicked');
             switchLanguage('en');
+            updateMenuActiveStates();
         });
     }
     
@@ -796,6 +849,7 @@ function initializeApp() {
         langViBtn.addEventListener('click', () => {
             console.log('Vietnamese button clicked');
             switchLanguage('vi');
+            updateMenuActiveStates();
         });
     }
 
@@ -803,6 +857,7 @@ function initializeApp() {
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             updateLanguageContent();
+            updateThemeButtonText();
         });
     }
     
@@ -968,6 +1023,10 @@ function updateLanguageContent() {
         if (topicGrid) {
             createTopicGrid();
         }
+        
+        // Update menu button states
+        updateMenuActiveStates();
+        updateThemeButtonText();
         
         console.log('Language content updated successfully');
     } catch (error) {
@@ -1512,8 +1571,12 @@ function handleKeyboardNavigation(e) {
     
     // ESC key to exit/close modals
     if (e.key === 'Escape') {
+        // Close side menu if open
+        if (sideMenu.classList.contains('open')) {
+            closeSideMenu();
+        }
         // Close topic help if open
-        if (!topicHelp.classList.contains('hidden')) {
+        else if (!topicHelp.classList.contains('hidden')) {
             hideTopicHelpBtn.click();
         }
         // Close topic suggestions if open

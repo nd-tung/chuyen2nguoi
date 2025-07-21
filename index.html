@@ -7,6 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Side Menu -->
+    <div id="side-menu" class="side-menu">
+        <div class="side-menu-header">
+            <h3>Settings</h3>
+            <button id="close-menu" class="close-menu-btn">&times;</button>
+        </div>
+        <div class="side-menu-content">
+            <div class="menu-section">
+                <h4>Language</h4>
+                <div class="menu-options">
+                    <button id="lang-en" class="menu-option active">English</button>
+                    <button id="lang-vi" class="menu-option">Tiếng Việt</button>
+                </div>
+            </div>
+            <div class="menu-section">
+                <h4>Theme</h4>
+                <div class="menu-options">
+                    <button id="theme-toggle" class="menu-option">Dark Mode</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Menu Button -->
+    <button id="menu-btn" class="menu-btn">☰</button>
+    
+    <!-- Menu Overlay -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
     <div id="welcome-popup">
         <div class="popup-content">
         <p class="quote">"This game helps you get to know each other deeply through personal topics and surprising truths hidden among made-up stories. Have fun!"<br><span class="quote-author">- Duong Tung Nguyen</span></p>
@@ -15,12 +44,6 @@
     </div>
     <div id="app">
         <div id="welcome-screen">
-            <div class="language-selector">
-                <button id="lang-en" class="lang-btn active">English</button>
-                <button id="lang-vi" class="lang-btn">Tiếng Việt</button>
-                <button id="theme-toggle" class="theme-btn">Dark Mode</button>
-            </div>
-            
             <h1 id="main-title">Two Truths and a Lie</h1>
             
             <div class="game-instructions">
