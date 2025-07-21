@@ -1044,6 +1044,11 @@ button:disabled {
     background-color: #f8fff8;
 }
 
+.statement-input-group.lie-selected {
+    background-color: #f8fff8;
+    border: 1px solid #28a745;
+}
+
 #guess-area {
     margin: 20px 0;
 }
