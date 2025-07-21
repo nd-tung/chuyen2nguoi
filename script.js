@@ -88,8 +88,8 @@ let scores = { 1: 0, 2: 0 };
 let currentGameRounds = [];
 let selectedTopics = [];
 let currentTopic;
-let currentTopicKey; // Add this to store the topic key
-let currentPreviewTopic = null; // For showing suggestions
+let currentTopicKey; // Store the topic key
+let highlightedTopic = null; // Currently highlighted topic
 let statements = [];
 let truthIndex;
 let selectedTruthIndex = -1;
@@ -918,10 +918,6 @@ function createTopicGrid() {
         
         // Mouse click handler
         topicCard.addEventListener('click', () => {
-            // Immediately mark as selected if none chosen yet
-            if (!selectedTopics.includes(topicKey) && selectedTopics.length < 1) {
-                selectTopic(topicKey, true);
-            }
             showTopicSuggestions(topicKey, topic);
         });
         
@@ -929,9 +925,6 @@ function createTopicGrid() {
         topicCard.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                if (!selectedTopics.includes(topicKey) && selectedTopics.length < 1) {
-                    selectTopic(topicKey, true);
-                }
                 showTopicSuggestions(topicKey, topic);
             }
         });
@@ -941,14 +934,8 @@ function createTopicGrid() {
 }
 
 function showTopicSuggestions(topicKey, topic) {
-    // Update preview state
-    // Don't show preview if this card is already selected
-    if (selectedTopics.includes(topicKey)) {
-        currentPreviewTopic = null;
-    } else {
-        currentPreviewTopic = topicKey;
-    }
-    updateTopicCardsPreview();
+    highlightedTopic = topicKey;
+    updateTopicCards();
     
     // Special handling for the "18+" topic
     if (topicKey === 'guilty_pleasures') {
@@ -989,15 +976,15 @@ function showTopicSuggestions(topicKey, topic) {
     }
 }
 
-function updateTopicCardsPreview() {
+function updateTopicCards() {
     document.querySelectorAll('.topic-card').forEach(card => {
         const topicKey = card.dataset.topic;
-        card.classList.toggle('preview', topicKey === currentPreviewTopic);
+        card.classList.toggle('highlighted', topicKey === highlightedTopic);
         card.classList.toggle('selected', selectedTopics.includes(topicKey));
     });
 }
 
-function selectTopic(topicKey, keepSuggestionsOpen = false) {
+function selectTopic(topicKey) {
     console.log('Selecting topic:', topicKey); // Debug log
     if (selectedTopics.includes(topicKey)) {
         console.log('Topic already selected'); // Debug log
@@ -1012,14 +999,10 @@ function selectTopic(topicKey, keepSuggestionsOpen = false) {
     
     selectedTopics.push(topicKey);
     console.log('Selected topics now:', selectedTopics); // Debug log
-    currentPreviewTopic = null; // Clear preview before updating cards
+    highlightedTopic = null;
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
-
-    // Hide suggestions after selection unless keeping them open
-    if (!keepSuggestionsOpen) {
-        topicSuggestions.classList.add('hidden');
-    }
+    updateTopicCards();
+    topicSuggestions.classList.add('hidden');
     
     // Show confirm button immediately after selecting 1 topic
     console.log('Showing confirm button'); // Debug log
@@ -1045,16 +1028,13 @@ function updateSelectedTopicsList() {
 function removeTopic(topicKey) {
     selectedTopics = selectedTopics.filter(t => t !== topicKey);
     updateSelectedTopicsList();
-    updateTopicCardsPreview();
+    updateTopicCards();
     
     if (selectedTopics.length < 3) {
         confirmTopicsBtn.classList.add('hidden');
     }
 }
 
-function updateTopicCards() {
-    updateTopicCardsPreview();
-}
 
 // Confirm topics selection
 confirmTopicsBtn.addEventListener('click', () => {
@@ -1070,7 +1050,7 @@ confirmTopicsBtn.addEventListener('click', () => {
         socket.emit('topics selected', roomName, selectedTopics);
         topicSelectionArea.classList.add('hidden');
         topicSuggestions.classList.add('hidden');
-        currentPreviewTopic = null;
+        highlightedTopic = null;
     } else {
         console.log('Not enough topics selected:', selectedTopics.length); // Debug log
         alert('Please select at least 1 topic.');
@@ -1193,7 +1173,7 @@ socket.on('start topic selection', (targetPlayer, round) => {
     topicPrompt.textContent = `Select 1 topic for Player ${targetPlayer} to create statements about:`;
     
     selectedTopics = [];
-    currentPreviewTopic = null;
+    highlightedTopic = null;
     createTopicGrid();
     updateSelectedTopicsList();
     confirmTopicsBtn.classList.add('hidden');
@@ -1454,8 +1434,8 @@ function handleKeyboardNavigation(e) {
         // Close topic suggestions if open
         else if (!topicSuggestions.classList.contains('hidden')) {
             topicSuggestions.classList.add('hidden');
-            currentPreviewTopic = null;
-            updateTopicCardsPreview();
+            highlightedTopic = null;
+            updateTopicCards();
         }
     }
     
