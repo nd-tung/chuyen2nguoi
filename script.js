@@ -1572,14 +1572,22 @@ function renderHistory() {
         historyList.appendChild(li);
         return;
     }
-    history.forEach((item, index) => {
+    history.forEach((item) => {
         const li = document.createElement('li');
+        li.classList.add('history-item');
+
+        const textSpan = document.createElement('span');
         const date = new Date(item.timestamp).toLocaleString();
         const p1 = item.players[1];
         const p2 = item.players[2];
         const winnerText = item.winner === 0 ? 'Tie' : `Winner: ${item.players[item.winner]}`;
-        li.textContent = `${date} - ${p1}: ${item.scores[1]} vs ${p2}: ${item.scores[2]} (${winnerText})`;
-        li.style.cursor = 'pointer';
+        textSpan.textContent = `${date} - ${p1}: ${item.scores[1]} vs ${p2}: ${item.scores[2]} (${winnerText})`;
+        const arrow = document.createElement('span');
+        arrow.classList.add('detail-icon');
+        arrow.innerHTML = '&#9654;';
+        li.appendChild(textSpan);
+        li.appendChild(arrow);
+
         li.addEventListener('click', () => showSessionDetails(item));
         historyList.appendChild(li);
     });
