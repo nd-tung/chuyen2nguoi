@@ -4,7 +4,7 @@ A real-time multiplayer web-based game where players try to guess which of three
 
 ## 🎮 Game Overview
 
-**Two Truths and a Lie** is a classic party game adapted for online play. Two players join a room and take turns creating three statements about themselves - two are lies and one is the truth. The opposing player must guess which statement is true to score points.
+**Two Truths and a Lie** is a classic party game adapted for online play. Two players join a room and take turns creating three statements about themselves - two are lies and one is the truth. The opposing player must guess which statement is true to score points. Topics are graded by sensitivity from 🟢 easy (1 point) up to 🔞 18+ (8 points for the special "18+" topic).
 
 ### Game Features
 
@@ -19,6 +19,47 @@ A real-time multiplayer web-based game where players try to guess which of three
 - 💡 **Suggested answers** to inspire creative statements
 - 📊 **Real-time status updates** showing game phases
 - 🔄 **Strategic topic selection** - players choose topics for opponents
+
+## 📦 Release Notes
+
+| Version | Date | Highlights |
+|---------|------|------------|
+| v0.8 | 2025-07-22 | "18+" topic worth 8 points |
+| v0.7 | 2025-07-21 | Sensitivity-based topic points |
+| v0.6 | 2025-07-21 | Per-topic scoring, 5-point adult topics |
+| v0.5 | 2025-07-21 | Client-side game history |
+| v0.4 | 2025-07-21 | Added developer guide |
+| v0.3 | 2025-07-21 | Dark mode and UI improvements |
+| v0.2 | 2025-07-20 | Bilingual support, responsive tweaks |
+| v0.1 | 2025-07-20 | Initial release |
+
+### v0.7
+- Topics categorized by sensitivity from 1 to 5 points with color-coded cards.
+
+### v0.8
+- The special "18+" topic now awards 8 points for a correct guess.
+
+### v0.6
+- Added per-topic scoring with points shown on topic cards.
+- Adult topics now worth 5 points.
+
+### v0.5
+- Game history is stored locally for reviewing past rounds.
+- Improved history layout and details.
+
+### v0.4
+- Added an AGENTS.md developer guide.
+
+### v0.3
+- Introduced dark mode toggle.
+- Various user interface enhancements.
+
+### v0.2
+- Added English and Vietnamese language support.
+- Enhanced responsiveness for mobile and desktop.
+
+### v0.1
+- First playable release with real-time multiplayer gameplay.
 
 ## 🚀 Quick Start
 

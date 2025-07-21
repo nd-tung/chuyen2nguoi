@@ -562,20 +562,64 @@ const topicsVi = {
         ],
         isAdult: true
     },
-    guilty_pleasures: {
-        title: '18+',
-        description: 'Những thú vui bí mật của bạn',
-        suggestions: [
-            'Tôi xem reality show và thuộc lòng tất cả drama',
-            'Tôi sưu tập thứ gì đó rất kỳ lạ mà xấu hổ không dám kể',
-            'Tôi nghiện một game mobile và tiêu tiền vào đó',
-            'Tôi ăn kem vào bữa sáng thường xuyên hơn đồ ăn sáng thật',
-            'Tôi giả vờ tinh tế nhưng thích những thứ tầm thường nhất'
-        ],
-        isAdult: true
-    }
 };
 
+const topicPoints = {
+    childhood: 1,
+    school: 1,
+    travel: 1,
+    food: 1,
+    pets: 1,
+    hobbies: 1,
+    work: 2,
+    talents: 2,
+    fears: 3,
+    embarrassing: 3,
+    family: 4,
+    dating: 5,
+    party: 5,
+    secrets: 5,
+    adult_embarrassing: 5,
+    wild_experiences: 5,
+    adult_confessions: 5,
+    money_secrets: 5,
+    guilty_pleasures: 8
+};
+
+function getTopicClass(points) {
+    if (points >= 5) return 'adult';
+    if (points === 4) return 'deep';
+    if (points === 3) return 'sensitive';
+    if (points === 2) return 'moderate';
+    return 'easy';
+}
+
+function getTopicIcon(points) {
+    if (points >= 5) {
+        return '🔥';
+    }
+    switch (points) {
+        case 4:
+            return '🔥';
+        case 3:
+            return '🔴';
+        case 2:
+            return '🟡';
+        default:
+            return '🟢';
+    }
+}
+
+function assignTopicPoints(topicSet) {
+    Object.entries(topicSet).forEach(([key, t]) => {
+        if (!t.points) {
+            t.points = topicPoints[key] !== undefined ? topicPoints[key] : (t.isAdult ? 5 : 1);
+        }
+    });
+}
+
+assignTopicPoints(topics);
+assignTopicPoints(topicsVi);
 // Get topics based on current language
 function getCurrentTopics() {
     return currentLanguage === 'vi' ? topicsVi : topics;
@@ -606,7 +650,7 @@ const translations = {
         roundOf: 'Round {current} of {total}',
         yourTurn: 'Your turn to create statements',
         guessingTime: 'Time to guess!',
-        correctGuess: 'Correct! +1 point',
+        correctGuess: 'Correct! +{points} point(s)',
         wrongGuess: 'Wrong guess!',
         finalScore: 'Final Score',
         winner: 'Winner: Player {player}',
@@ -659,7 +703,7 @@ const translations = {
         roundOf: 'Vòng {current} / {total}',
         yourTurn: 'Lượt của bạn tạo câu nói',
         guessingTime: 'Đến lúc đoán!',
-        correctGuess: 'Đúng rồi! +1 điểm',
+        correctGuess: 'Đúng rồi! +{points} điểm',
         wrongGuess: 'Đoán sai!',
         finalScore: 'Điểm Cuối Cùng',
         winner: 'Người Thắng: Người chơi {player}',
@@ -906,12 +950,17 @@ function createTopicGrid() {
     Object.keys(currentTopics).forEach(topicKey => {
         const topic = currentTopics[topicKey];
         const topicCard = document.createElement('div');
-        topicCard.className = `topic-card ${topic.isAdult ? 'adult' : ''}`;
+        const cls = getTopicClass(topic.points);
+        topicCard.className = `topic-card ${cls}`;
         topicCard.dataset.topic = topicKey;
         topicCard.tabIndex = 0; // Make focusable for keyboard navigation
-        
+
         const t = translations[currentLanguage];
+        const iconBadge = `<span class="icon-badge">${getTopicIcon(topic.points)}</span>`;
+        const pointsBadge = `<span class="points-badge">${topic.points} pts</span>`;
         topicCard.innerHTML = `
+            ${iconBadge}
+            ${pointsBadge}
             <h4>${topic.title}</h4>
             <p>${topic.description}</p>
         `;
@@ -1018,7 +1067,7 @@ function updateSelectedTopicsList() {
         const item = document.createElement('div');
         item.className = 'selected-topic-item';
         item.innerHTML = `
-            <span>${topic.title}</span>
+            <span>${topic.title} (${topic.points} pts)</span>
             <button class="remove-topic" onclick="removeTopic('${topicKey}')">Remove</button>
         `;
         selectedTopicsList.appendChild(item);
@@ -1099,7 +1148,7 @@ submitStatementsBtn.addEventListener('click', (e) => {
     
     selectedTruthIndex = parseInt(selectedRadio.value);
     
-    socket.emit('submit statements', roomName, statements, selectedTruthIndex, currentTopicKey);
+    socket.emit('submit statements', roomName, statements, selectedTruthIndex, currentTopicKey, currentTopic.points);
     inputArea.classList.add('hidden');
     topicHelp.classList.add('hidden'); // Hide help area when submitting
 });
@@ -1259,9 +1308,11 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
 socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext) => {
     scores = newScores;
     updateScores();
-    
+
     if (isCorrect) {
-        resultMessage.textContent = 'Correct! You found the truth!';
+        const t = translations[currentLanguage];
+        const msgTemplate = (t.correctGuess || 'Correct! +{points} point(s)').replace('{points}', pointsAwarded);
+        resultMessage.textContent = msgTemplate;
         resultMessage.style.color = '#28a745';
     } else {
         resultMessage.textContent = `Wrong! The truth was: "${statements[correctIndex]}"`;
@@ -1286,7 +1337,8 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, round
         statements: [...statements],
         truthIndex: correctIndex,
         guessIndex,
-        isCorrect
+        isCorrect,
+        points: isCorrect ? pointsAwarded : 0
     });
 });
 

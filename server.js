@@ -75,11 +75,12 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('submit statements', (room, statements, truthIndex, topic) => {
+    socket.on('submit statements', (room, statements, truthIndex, topic, points = 1) => {
         if (rooms[room]) {
             rooms[room].currentStatements = statements;
             rooms[room].currentTruthIndex = truthIndex;
             rooms[room].currentTopic = topic;
+            rooms[room].currentTopicPoints = points;
             rooms[room].currentPhase = 'guessing';
             // Notify the guesser
             const guesserSocketId = Object.keys(rooms[room].players).find(
@@ -109,9 +110,10 @@ io.on('connection', (socket) => {
                 rooms[room].gameState.scores = { 1: 0, 2: 0 };
             }
             if (isCorrect) {
-                rooms[room].gameState.scores[guesserPlayer]++;
+                const pts = rooms[room].currentTopicPoints || 1;
+                rooms[room].gameState.scores[guesserPlayer] += pts;
             }
-            
+
             const roundOver = rooms[room].gameState.player1Turn && rooms[room].gameState.player2Turn;
             const gameOverNext = roundOver && rooms[room].currentRound >= rooms[room].totalRounds;
 
