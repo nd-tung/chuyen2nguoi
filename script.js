@@ -795,6 +795,10 @@ function initializeApp() {
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
+            const icon = themeToggleBtn.querySelector('.theme-icon');
+            if (icon) {
+                icon.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            }
             updateLanguageContent();
         });
     }
@@ -952,7 +956,7 @@ function updateLanguageContent() {
         if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
 
         if (themeToggleBtn) {
-            themeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? t.lightMode : t.darkMode;
+            themeToggleBtn.title = document.body.classList.contains('dark-mode') ? t.lightMode : t.darkMode;
         }
 
         // Recreate topic grid with new language
