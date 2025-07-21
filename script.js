@@ -666,8 +666,8 @@ const translations = {
         whichIsTrue: 'Which statement is TRUE?',
         submitGuess: 'Submit Guess',
         seeTopicHelp: 'See Topic',
-        darkMode: 'Dark Mode',
-        lightMode: 'Light Mode',
+        darkOn: 'Dark Mode: ON',
+        darkOff: 'Dark Mode: OFF',
         nextTurn: 'Next Turn',
         nextRound: 'Next Round',
         showResults: 'Show Results',
@@ -719,8 +719,8 @@ const translations = {
         whichIsTrue: 'Câu nói nào là ĐÚNG?',
         submitGuess: 'Gửi Đáp Án',
         seeTopicHelp: 'Xem Chủ Đề',
-        darkMode: 'Chế độ tối',
-        lightMode: 'Chế độ sáng',
+        darkOn: 'Chế độ tối: Bật',
+        darkOff: 'Chế độ tối: Tắt',
         nextTurn: 'Lượt Tiếp',
         nextRound: 'Vòng Tiếp',
         showResults: 'Xem Kết Quả',
@@ -952,7 +952,7 @@ function updateLanguageContent() {
         if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
 
         if (themeToggleBtn) {
-            themeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? t.lightMode : t.darkMode;
+            themeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? t.darkOn : t.darkOff;
         }
 
         // Recreate topic grid with new language

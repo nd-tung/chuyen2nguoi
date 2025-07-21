@@ -376,7 +376,7 @@ body {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     min-height: 44px;
-    min-width: 80px;
+    min-width: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
