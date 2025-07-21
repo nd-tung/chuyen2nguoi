@@ -52,13 +52,16 @@ body {
     .room-section {
         text-align: center;
         margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
     }
-    
+
     .input-group {
-        display: inline-block;
-        width: 45%;
-        margin: 0 2.5% 15px;
-        vertical-align: top;
+        flex: 1 1 200px;
+        margin: 0 10px 15px;
     }
     
     .input-group input {
@@ -1274,10 +1277,15 @@ button:disabled {
     /* Input groups mobile optimization */
     .room-section {
         margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
     }
-    
+
     .input-group {
-        margin-bottom: 15px;
+        margin-bottom: 0;
+        width: 100%;
     }
     
     .input-group input {
