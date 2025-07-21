@@ -813,6 +813,7 @@ function initializeApp() {
     if (closeSidebarBtn && sidebar) {
         closeSidebarBtn.addEventListener('click', () => {
             sidebar.classList.remove('open');
+            sidebar.classList.add('hidden');
         });
     }
     

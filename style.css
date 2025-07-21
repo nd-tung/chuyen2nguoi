@@ -1983,6 +1983,13 @@ body.dark-mode .detail-icon {
     gap: 10px;
 }
 
+/* Ensure sidebar buttons share equal width */
+#sidebar .lang-btn,
+#sidebar .theme-btn {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 #open-sidebar.menu-btn,
 .menu-btn {
     position: fixed;
