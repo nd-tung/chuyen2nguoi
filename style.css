@@ -1834,6 +1834,29 @@ body.dark-mode #session-detail {
 #history-screen li {
     margin: 8px 0;
     cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+body.dark-mode #history-screen li {
+    border-color: #555;
+}
+
+#session-detail li {
+    margin: 6px 0;
+    text-align: left;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    flex: 1 1 150px;
 }
 
 #session-detail {
