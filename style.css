@@ -1927,12 +1927,9 @@ body.dark-mode .detail-icon {
     margin-bottom: 20px;
 }
 
-#welcome-popup button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+
+#welcome-popup .countdown {
+    font-weight: bold;
+    margin-top: 10px;
 }
 

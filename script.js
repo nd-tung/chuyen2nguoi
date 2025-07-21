@@ -715,13 +715,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const langEnBtn = document.getElementById('lang-en');
     const langViBtn = document.getElementById('lang-vi');
 
-    // Welcome popup handling
-    const startPopupBtn = document.getElementById('start-popup');
+    // Welcome popup handling with countdown
     const welcomePopup = document.getElementById('welcome-popup');
-    if (startPopupBtn && welcomePopup) {
-        startPopupBtn.addEventListener('click', () => {
-            welcomePopup.classList.add('hidden');
-        });
+    const countdownEl = document.getElementById('countdown');
+    if (welcomePopup) {
+        let countdown = 5;
+        if (countdownEl) countdownEl.textContent = `Starting in ${countdown}...`;
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                if (countdownEl) countdownEl.textContent = `Starting in ${countdown}...`;
+            } else {
+                clearInterval(timer);
+                welcomePopup.classList.add('hidden');
+            }
+        }, 1000);
     }
     
     if (langEnBtn) {
