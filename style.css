@@ -1018,22 +1018,11 @@ button:disabled {
     transition: color 0.2s ease;
 }
 
-.radio-label:has(input[type="radio"]:checked) .radio-icon {
+.radio-label.checked .radio-icon {
     color: #28a745;
 }
 
-.radio-text {
-    font-weight: 500;
-    color: #6c757d;
-    transition: color 0.2s ease;
-}
-
-.radio-label input[type="radio"]:checked + .radio-text {
-    color: #28a745;
-    font-weight: 600;
-}
-
-.radio-label:has(input[type="radio"]:checked) {
+.radio-label.checked {
     background-color: #f8fff8;
     border: 1px solid #28a745;
 }
@@ -1506,7 +1495,7 @@ button:disabled {
         transition: color 0.2s ease;
     }
 
-    .radio-label:has(input[type="radio"]:checked) .radio-icon {
+    .radio-label.checked .radio-icon {
         color: #007bff;
     }
     

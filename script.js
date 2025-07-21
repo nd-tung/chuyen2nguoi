@@ -1653,11 +1653,19 @@ function showSessionDetails(item) {
 document.addEventListener('change', (e) => {
     if (e.target.name === 'truth-selection') {
         selectedTruthIndex = parseInt(e.target.value);
-        
+
         document.querySelectorAll('.statement-input-group').forEach(group => {
             group.classList.remove('lie-selected');
         });
-        
-        e.target.closest('.statement-input-group').classList.add('lie-selected');
+        document.querySelectorAll('.radio-label').forEach(label => {
+            label.classList.remove('checked');
+        });
+
+        const group = e.target.closest('.statement-input-group');
+        if (group) {
+            group.classList.add('lie-selected');
+            const label = group.querySelector('.radio-label');
+            if (label) label.classList.add('checked');
+        }
     }
 });
