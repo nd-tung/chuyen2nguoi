@@ -714,6 +714,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Language switching
     const langEnBtn = document.getElementById('lang-en');
     const langViBtn = document.getElementById('lang-vi');
+
+    // Welcome popup handling
+    const startPopupBtn = document.getElementById('start-popup');
+    const welcomePopup = document.getElementById('welcome-popup');
+    if (startPopupBtn && welcomePopup) {
+        startPopupBtn.addEventListener('click', () => {
+            welcomePopup.classList.add('hidden');
+        });
+    }
     
     if (langEnBtn) {
         langEnBtn.addEventListener('click', () => {
