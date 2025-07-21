@@ -14,12 +14,20 @@
         </div>
     </div>
     <div id="app">
-        <div id="welcome-screen">
+        <div class="top-controls">
             <div class="language-selector">
-                <button id="lang-en" class="lang-btn active">English</button>
-                <button id="lang-vi" class="lang-btn">Tiếng Việt</button>
-                <button id="theme-toggle" class="theme-btn">Dark Mode</button>
+                <button id="lang-en" class="lang-btn active" aria-label="English">
+                    <span class="flag-icon">🇬🇧</span>
+                </button>
+                <button id="lang-vi" class="lang-btn" aria-label="Vietnamese">
+                    <span class="flag-icon">🇻🇳</span>
+                </button>
             </div>
+            <button id="theme-toggle" class="theme-btn" title="Dark Mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        <div id="welcome-screen">
             
             <h1 id="main-title">Two Truths and a Lie</h1>
             

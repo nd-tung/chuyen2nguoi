@@ -22,6 +22,7 @@ body {
     /* Improve mobile scrolling */
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Desktop-first optimizations - Fixed Order */
@@ -329,6 +330,7 @@ body {
     overflow-x: hidden;
     word-wrap: break-word;
     position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Tablet layout */
@@ -357,11 +359,21 @@ body {
     display: none !important;
 }
 
+.top-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+    pointer-events: none;
+}
+
 .language-selector {
     display: flex;
-    justify-content: center;
     gap: 10px;
-    margin-bottom: 20px;
+    pointer-events: auto;
 }
 
 .lang-btn {
@@ -382,6 +394,16 @@ body {
     justify-content: center;
 }
 
+.flag-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.theme-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
 .lang-btn:hover {
     background: #f8f9fa;
 }
@@ -392,6 +414,9 @@ body {
 }
 
 .theme-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
     padding: 8px 16px;
     border: 2px solid #6c757d;
     background: white;
@@ -403,10 +428,11 @@ body {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     min-height: 44px;
-    min-width: 100px;
+    min-width: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: auto;
 }
 
 .theme-btn:hover {
@@ -1622,6 +1648,17 @@ button:disabled {
 @media (max-width: 480px) {
     #app {
         padding: 5px;
+    }
+
+    .top-controls {
+        top: 5px;
+        left: 5px;
+        right: 5px;
+    }
+
+    .lang-btn,
+    .theme-btn {
+        padding: 6px 10px;
     }
     
     #welcome-screen {
