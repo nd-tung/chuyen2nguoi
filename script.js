@@ -78,6 +78,9 @@ const backToMenuBtn = document.getElementById('back-to-menu');
 const langEnBtn = document.getElementById('lang-en');
 const langViBtn = document.getElementById('lang-vi');
 const themeToggleBtn = document.getElementById('theme-toggle');
+const menuBtn = document.getElementById('menu-btn');
+const sidebar = document.getElementById('sidebar');
+const closeSidebarBtn = document.getElementById('close-sidebar');
 
 // Game state
 let roomName;
@@ -796,6 +799,18 @@ function initializeApp() {
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             updateLanguageContent();
+        });
+    }
+
+    if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+    }
+
+    if (closeSidebarBtn && sidebar) {
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
         });
     }
     
