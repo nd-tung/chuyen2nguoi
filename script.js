@@ -622,6 +622,9 @@ const translations = {
         seeTopicHelp: 'See Topic',
         darkMode: 'Dark Mode',
         lightMode: 'Light Mode',
+        nextTurn: 'Next Turn',
+        nextRound: 'Next Round',
+        showResults: 'Show Results',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
@@ -672,6 +675,9 @@ const translations = {
         seeTopicHelp: 'Xem Chủ Đề',
         darkMode: 'Chế độ tối',
         lightMode: 'Chế độ sáng',
+        nextTurn: 'Lượt Tiếp',
+        nextRound: 'Vòng Tiếp',
+        showResults: 'Xem Kết Quả',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
@@ -871,6 +877,8 @@ function updateLanguageContent() {
         
         const guessPrompt = document.getElementById('guess-prompt');
         if (guessPrompt) guessPrompt.textContent = t.whichIsTrue;
+
+        if (nextRoundBtn) nextRoundBtn.textContent = t.nextRound;
         
         const submitGuessBtn = document.getElementById('submit-guess-btn');
         if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
@@ -1183,6 +1191,9 @@ socket.on('start topic selection', (targetPlayer, round) => {
     currentTopicDiv.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
     topicHelp.classList.add('hidden');
+
+    nextRoundBtn.classList.add('hidden');
+    resultMessage.textContent = '';
 });
 
 socket.on('start statement creation', (topicKey, round) => {
@@ -1224,6 +1235,9 @@ socket.on('start statement creation', (topicKey, round) => {
     topicSelectionArea.classList.add('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
+
+    nextRoundBtn.classList.add('hidden');
+    resultMessage.textContent = '';
 });
 
 socket.on('statements submitted', (submittedStatements, topicKey) => {
@@ -1248,7 +1262,7 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
     currentTopicDiv.classList.add('hidden');
 });
 
-socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores) => {
+socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext) => {
     scores = newScores;
     updateScores();
     
@@ -1260,6 +1274,13 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores) => {
         resultMessage.style.color = '#dc3545';
     }
     
+    if (gameOverNext) {
+        nextRoundBtn.textContent = translations[currentLanguage].showResults || 'Show Results';
+    } else if (roundOver) {
+        nextRoundBtn.textContent = translations[currentLanguage].nextRound || 'Next Round';
+    } else {
+        nextRoundBtn.textContent = translations[currentLanguage].nextTurn || 'Next Turn';
+    }
     nextRoundBtn.classList.remove('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
@@ -1327,6 +1348,23 @@ socket.on('status update', (status) => {
 socket.on('player names updated', (names) => {
     console.log('Player names updated:', names); // Debug log
     updatePlayerNames(names);
+});
+
+socket.on('player joined', (names) => {
+    console.log('Player joined:', names);
+    updatePlayerNames(names);
+    gameStatusDisplay.textContent = 'Both players are ready!';
+});
+
+socket.on('player left', (playerNum) => {
+    console.log('Player left:', playerNum);
+    gameStatusDisplay.textContent = `Player ${playerNum} left the game. Waiting for new player...`;
+    topicSelectionArea.classList.add('hidden');
+    inputArea.classList.add('hidden');
+    guessArea.classList.add('hidden');
+    currentTopicDiv.classList.add('hidden');
+    opponentTopicDiv.classList.add('hidden');
+    nextRoundBtn.classList.add('hidden');
 });
 
 // Utility functions
