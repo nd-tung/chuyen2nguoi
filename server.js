@@ -109,15 +109,15 @@ io.on('connection', (socket) => {
             if (!rooms[room].gameState.scores) {
                 rooms[room].gameState.scores = { 1: 0, 2: 0 };
             }
+            const pts = rooms[room].currentTopicPoints || 1;
             if (isCorrect) {
-                const pts = rooms[room].currentTopicPoints || 1;
                 rooms[room].gameState.scores[guesserPlayer] += pts;
             }
 
             const roundOver = rooms[room].gameState.player1Turn && rooms[room].gameState.player2Turn;
             const gameOverNext = roundOver && rooms[room].currentRound >= rooms[room].totalRounds;
 
-            io.in(room).emit('guess result', guessIndex, rooms[room].currentTruthIndex, isCorrect, rooms[room].gameState.scores, roundOver, gameOverNext);
+            io.in(room).emit('guess result', guessIndex, rooms[room].currentTruthIndex, isCorrect, rooms[room].gameState.scores, roundOver, gameOverNext, pts);
         }
     });
 

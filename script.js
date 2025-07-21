@@ -33,6 +33,8 @@ const topicSuggestions = document.getElementById('topic-suggestions');
 const currentTopicName = document.getElementById('current-topic-name');
 const suggestionList = document.getElementById('suggestion-list');
 const selectCurrentTopicBtn = document.getElementById('select-current-topic');
+const selectedTopicsTitle = document.getElementById('selected-topics-title');
+const suggestionsTitle = document.getElementById('suggestions-title');
 const selectedTopicsList = document.getElementById('selected-topic-list');
 const confirmTopicsBtn = document.getElementById('confirm-topics');
 
@@ -897,8 +899,7 @@ function updateLanguageContent() {
         const currentTopicLabel = document.getElementById('current-topic-label');
         if (currentTopicLabel) currentTopicLabel.textContent = t.currentTopic;
         
-        const suggestedAnswersTitle = document.getElementById('suggested-answers-title');
-        if (suggestedAnswersTitle) suggestedAnswersTitle.textContent = t.suggestedAnswers;
+        if (suggestionsTitle) suggestionsTitle.textContent = t.suggestedAnswers;
         
         if (seeTopicBtn) {
             seeTopicBtn.textContent = t.seeTopicHelp;
@@ -1305,7 +1306,7 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
     currentTopicDiv.classList.add('hidden');
 });
 
-socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext) => {
+socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext, pointsAwarded) => {
     scores = newScores;
     updateScores();
 
