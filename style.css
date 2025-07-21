@@ -1009,11 +1009,17 @@ button:disabled {
 }
 
 .radio-label input[type="radio"] {
-    width: auto;
-    height: auto;
-    margin: 0;
-    cursor: pointer;
-    transform: scale(1.1);
+    display: none;
+}
+
+.radio-icon {
+    font-size: 18px;
+    color: #ccc;
+    transition: color 0.2s ease;
+}
+
+.radio-label:has(input[type="radio"]:checked) .radio-icon {
+    color: #28a745;
 }
 
 .radio-text {
@@ -1485,19 +1491,18 @@ button:disabled {
         border-color: #007bff;
     }
     
-    .radio-label input[type="radio"]:checked + .radio-text {
-        font-weight: bold;
-        color: #007bff;
-    }
-    
     .radio-label input[type="radio"] {
-        margin-right: 8px;
-        transform: scale(1.2);
+        display: none;
     }
-    
-    .radio-text {
-        font-size: 14px;
-        font-weight: 500;
+
+    .radio-icon {
+        font-size: 20px;
+        color: #bbb;
+        transition: color 0.2s ease;
+    }
+
+    .radio-label:has(input[type="radio"]:checked) .radio-icon {
+        color: #007bff;
     }
     
     /* Topic help mobile */
