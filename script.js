@@ -918,6 +918,10 @@ function createTopicGrid() {
         
         // Mouse click handler
         topicCard.addEventListener('click', () => {
+            // Immediately mark as selected if none chosen yet
+            if (!selectedTopics.includes(topicKey) && selectedTopics.length < 1) {
+                selectTopic(topicKey, true);
+            }
             showTopicSuggestions(topicKey, topic);
         });
         
@@ -925,6 +929,9 @@ function createTopicGrid() {
         topicCard.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                if (!selectedTopics.includes(topicKey) && selectedTopics.length < 1) {
+                    selectTopic(topicKey, true);
+                }
                 showTopicSuggestions(topicKey, topic);
             }
         });
@@ -985,7 +992,7 @@ function updateTopicCardsPreview() {
     });
 }
 
-function selectTopic(topicKey) {
+function selectTopic(topicKey, keepSuggestionsOpen = false) {
     console.log('Selecting topic:', topicKey); // Debug log
     if (selectedTopics.includes(topicKey)) {
         console.log('Topic already selected'); // Debug log
@@ -1004,8 +1011,10 @@ function selectTopic(topicKey) {
     updateSelectedTopicsList();
     updateTopicCardsPreview();
 
-    // Hide suggestions after selection
-    topicSuggestions.classList.add('hidden');
+    // Hide suggestions after selection unless keeping them open
+    if (!keepSuggestionsOpen) {
+        topicSuggestions.classList.add('hidden');
+    }
     
     // Show confirm button immediately after selecting 1 topic
     console.log('Showing confirm button'); // Debug log
