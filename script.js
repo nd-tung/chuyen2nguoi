@@ -942,7 +942,12 @@ function createTopicGrid() {
 
 function showTopicSuggestions(topicKey, topic) {
     // Update preview state
-    currentPreviewTopic = topicKey;
+    // Don't show preview if this card is already selected
+    if (selectedTopics.includes(topicKey)) {
+        currentPreviewTopic = null;
+    } else {
+        currentPreviewTopic = topicKey;
+    }
     updateTopicCardsPreview();
     
     // Special handling for the "18+" topic

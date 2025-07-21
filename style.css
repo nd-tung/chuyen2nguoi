@@ -525,7 +525,7 @@ h1, h2 {
     border-color: #0056b3;
 }
 
-.topic-card.preview {
+.topic-card.preview:not(.selected) {
     background: #e7f3ff;
     border-color: #007bff;
 }
@@ -546,7 +546,7 @@ h1, h2 {
     border-color: #b21f2d;
 }
 
-.topic-card.adult.preview {
+.topic-card.adult.preview:not(.selected) {
     background: #f8d7da;
     border-color: #dc3545;
 }
