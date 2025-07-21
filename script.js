@@ -67,6 +67,7 @@ const exitGameBtn = document.getElementById('exit-game');
 // Language elements
 const langEnBtn = document.getElementById('lang-en');
 const langViBtn = document.getElementById('lang-vi');
+const themeToggleBtn = document.getElementById('theme-toggle');
 
 // Game state
 let roomName;
@@ -610,6 +611,8 @@ const translations = {
         whichIsTrue: 'Which statement is TRUE?',
         submitGuess: 'Submit Guess',
         seeTopicHelp: 'See Topic',
+        darkMode: 'Dark Mode',
+        lightMode: 'Light Mode',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
@@ -658,6 +661,8 @@ const translations = {
         whichIsTrue: 'Câu nói nào là ĐÚNG?',
         submitGuess: 'Gửi Đáp Án',
         seeTopicHelp: 'Xem Chủ Đề',
+        darkMode: 'Chế độ tối',
+        lightMode: 'Chế độ sáng',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
@@ -706,6 +711,13 @@ document.addEventListener('DOMContentLoaded', function() {
         langViBtn.addEventListener('click', () => {
             console.log('Vietnamese button clicked');
             switchLanguage('vi');
+        });
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            updateLanguageContent();
         });
     }
     
@@ -853,7 +865,11 @@ function updateLanguageContent() {
         
         const submitGuessBtn = document.getElementById('submit-guess-btn');
         if (submitGuessBtn) submitGuessBtn.textContent = t.submitGuess;
-        
+
+        if (themeToggleBtn) {
+            themeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? t.lightMode : t.darkMode;
+        }
+
         // Recreate topic grid with new language
         if (topicGrid) {
             createTopicGrid();

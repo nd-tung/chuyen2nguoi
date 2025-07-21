@@ -388,6 +388,28 @@ body {
     color: white;
 }
 
+.theme-btn {
+    padding: 8px 16px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 44px;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-btn:hover {
+    background: #f8f9fa;
+}
+
 h1, h2 {
     color: #007bff;
     margin: 20px 0;
@@ -1749,7 +1771,37 @@ button:disabled {
         margin: 5px 0;
     }
     
-    #suggestion-list, #help-suggestion-list {
+#suggestion-list, #help-suggestion-list {
         padding-left: 15px;
     }
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background: #121212;
+    color: #f8f9fa;
+}
+
+body.dark-mode #app {
+    background: #222;
+    color: #f8f9fa;
+}
+
+body.dark-mode input {
+    background-color: #333;
+    border-color: #555;
+    color: #f8f9fa;
+}
+
+body.dark-mode button {
+    background-color: #444;
+    color: #f8f9fa;
+    border-color: #666;
+}
+
+body.dark-mode .game-instructions,
+body.dark-mode .game-settings,
+body.dark-mode #game-info {
+    background: #333;
+    color: #f8f9fa;
 }
