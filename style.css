@@ -1813,3 +1813,21 @@ body.dark-mode #game-info {
     background: #333;
     color: #f8f9fa;
 }
+body.dark-mode #history-screen {
+    background: #333;
+    color: #f8f9fa;
+}
+
+#history-screen {
+    text-align: center;
+}
+
+#history-screen ul {
+    list-style: none;
+    padding: 0;
+}
+
+#history-screen li {
+    margin: 8px 0;
+}
+

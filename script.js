@@ -4,6 +4,7 @@ const socket = io();
 const welcomeScreen = document.getElementById('welcome-screen');
 const gameScreen = document.getElementById('game-screen');
 const endScreen = document.getElementById('end-screen');
+const historyScreen = document.getElementById('history-screen');
 
 const playerNameInput = document.getElementById('player-name');
 const roomNameInput = document.getElementById('room-name');
@@ -63,6 +64,10 @@ const statementBtn3 = document.getElementById('statement-btn-3');
 const resultMessage = document.getElementById('result-message');
 const nextRoundBtn = document.getElementById('next-round');
 const exitGameBtn = document.getElementById('exit-game');
+const viewHistoryBtn = document.getElementById('view-history-btn');
+const historyList = document.getElementById('history-list');
+const clearHistoryBtn = document.getElementById('clear-history');
+const backToMenuBtn = document.getElementById('back-to-menu');
 
 // Language elements
 const langEnBtn = document.getElementById('lang-en');
@@ -1268,13 +1273,27 @@ socket.on('game over', (finalScores, names) => {
     
     finalScore.textContent = `${player1Name}: ${scores[1]} - ${player2Name}: ${scores[2]}`;
     
+    let winnerPlayer = 0;
     if (scores[1] > scores[2]) {
         winner.textContent = `${player1Name} wins!`;
+        winnerPlayer = 1;
     } else if (scores[2] > scores[1]) {
         winner.textContent = `${player2Name} wins!`;
+        winnerPlayer = 2;
     } else {
         winner.textContent = "It's a tie!";
     }
+
+    // Save history to localStorage
+    const historyItem = {
+        timestamp: new Date().toISOString(),
+        players: { 1: player1Name, 2: player2Name },
+        scores: { ...scores },
+        winner: winnerPlayer
+    };
+    const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+    history.push(historyItem);
+    localStorage.setItem('gameHistory', JSON.stringify(history));
 });
 
 socket.on('status update', (status) => {
@@ -1481,6 +1500,53 @@ if (playAgainBtn) {
 if (exitFinalBtn) {
     exitFinalBtn.addEventListener('click', () => {
         location.reload();
+    });
+}
+
+if (viewHistoryBtn) {
+    viewHistoryBtn.addEventListener('click', showHistory);
+}
+
+if (backToMenuBtn) {
+    backToMenuBtn.addEventListener('click', () => {
+        historyScreen.classList.add('hidden');
+        welcomeScreen.classList.remove('hidden');
+    });
+}
+
+if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener('click', () => {
+        localStorage.removeItem('gameHistory');
+        renderHistory();
+    });
+}
+
+function showHistory() {
+    welcomeScreen.classList.add('hidden');
+    gameScreen.classList.add('hidden');
+    endScreen.classList.add('hidden');
+    historyScreen.classList.remove('hidden');
+    renderHistory();
+}
+
+function renderHistory() {
+    if (!historyList) return;
+    historyList.innerHTML = '';
+    const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+    if (history.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No history yet';
+        historyList.appendChild(li);
+        return;
+    }
+    history.forEach(item => {
+        const li = document.createElement('li');
+        const date = new Date(item.timestamp).toLocaleString();
+        const p1 = item.players[1];
+        const p2 = item.players[2];
+        const winnerText = item.winner === 0 ? 'Tie' : `Winner: ${item.players[item.winner]}`;
+        li.textContent = `${date} - ${p1}: ${item.scores[1]} vs ${p2}: ${item.scores[2]} (${winnerText})`;
+        historyList.appendChild(li);
     });
 }
 
