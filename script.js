@@ -1402,14 +1402,26 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, round
         resultMessage.style.color = '#dc3545';
     }
     
-    if (gameOverNext) {
-        nextRoundBtn.textContent = translations[currentLanguage].showResults || 'Show Results';
-    } else if (roundOver) {
-        nextRoundBtn.textContent = translations[currentLanguage].nextRound || 'Next Round';
+    // Only show next turn button if the current player was guessing (not creating statements)
+    const wasGuessing = !guessArea.classList.contains('hidden');
+    
+    if (wasGuessing) {
+        // This player was guessing, show them the next turn button
+        if (gameOverNext) {
+            nextRoundBtn.textContent = translations[currentLanguage].showResults || 'Show Results';
+        } else if (roundOver) {
+            nextRoundBtn.textContent = translations[currentLanguage].nextRound || 'Next Round';
+        } else {
+            nextRoundBtn.textContent = translations[currentLanguage].nextTurn || 'Next Turn';
+        }
+        nextRoundBtn.classList.remove('hidden');
     } else {
-        nextRoundBtn.textContent = translations[currentLanguage].nextTurn || 'Next Turn';
+        // This player was creating statements, show them a waiting message
+        const t = translations[currentLanguage];
+        statusMessage.textContent = t.waiting || 'Waiting for other player...';
+        statusMessage.style.color = '#6c757d';
     }
-    nextRoundBtn.classList.remove('hidden');
+    
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
 
