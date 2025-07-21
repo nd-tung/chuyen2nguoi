@@ -583,7 +583,7 @@ const topicPoints = {
     wild_experiences: 5,
     adult_confessions: 5,
     money_secrets: 5,
-    guilty_pleasures: 5
+    guilty_pleasures: 8
 };
 
 function getTopicClass(points) {
@@ -595,9 +595,10 @@ function getTopicClass(points) {
 }
 
 function getTopicIcon(points) {
+    if (points >= 5) {
+        return '🔥';
+    }
     switch (points) {
-        case 5:
-            return '🔥';
         case 4:
             return '🔥';
         case 3:
