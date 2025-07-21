@@ -707,9 +707,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (introPopup && closeIntroBtn) {
         introPopup.classList.remove("hidden");
-        closeIntroBtn.addEventListener("click", () => {
+
+        function hideIntroPopup() {
             introPopup.classList.add("hidden");
-        });
+            closeIntroBtn.removeEventListener("click", hideIntroPopup);
+        }
+
+        closeIntroBtn.addEventListener("click", hideIntroPopup);
     }
     console.log('Setting up event listeners...');
     
