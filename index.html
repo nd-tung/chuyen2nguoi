@@ -24,7 +24,7 @@
                         <li>Two players join the same room</li>
                         <li>Each player takes turns creating 3 statements about themselves</li>
                         <li>2 statements are lies, 1 statement is the truth</li>
-                        <li>Mark which statement is TRUE using the radio button</li>
+                        <li>Mark which statement is TRUE using the check icon</li>
                         <li>The other player tries to guess which one is the truth</li>
                         <li>Score points for correct guesses!</li>
                         <li>Play 5 rounds and see who wins!</li>
@@ -126,23 +126,23 @@
                 </div>
                 <div class="statement-input-group">
                     <input type="text" id="statement1" placeholder="Statement 1">
-                    <label class="radio-label">
+                    <label class="radio-label" title="Mark as truth">
                         <input type="radio" name="truth-selection" value="0" id="radio-1">
-                        <span class="radio-text">Truth</span>
+                        <span class="radio-icon">&#10004;</span>
                     </label>
                 </div>
                 <div class="statement-input-group">
                     <input type="text" id="statement2" placeholder="Statement 2">
-                    <label class="radio-label">
+                    <label class="radio-label" title="Mark as truth">
                         <input type="radio" name="truth-selection" value="1" id="radio-2">
-                        <span class="radio-text">Truth</span>
+                        <span class="radio-icon">&#10004;</span>
                     </label>
                 </div>
                 <div class="statement-input-group">
                     <input type="text" id="statement3" placeholder="Statement 3">
-                    <label class="radio-label">
+                    <label class="radio-label" title="Mark as truth">
                         <input type="radio" name="truth-selection" value="2" id="radio-3">
-                        <span class="radio-text">Truth</span>
+                        <span class="radio-icon">&#10004;</span>
                     </label>
                 </div>
                 <button id="submit-statements">Submit</button>
