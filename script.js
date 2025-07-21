@@ -38,6 +38,7 @@ const currentTopicName = document.getElementById('current-topic-name');
 const suggestionList = document.getElementById('suggestion-list');
 const selectCurrentTopicBtn = document.getElementById('select-current-topic');
 const selectedTopicsList = document.getElementById('selected-topic-list');
+const selectedTopicsTitle = document.getElementById('selected-topics-title');
 const confirmTopicsBtn = document.getElementById('confirm-topics');
 
 // Statement creation elements
@@ -707,13 +708,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (introPopup && closeIntroBtn) {
         introPopup.classList.remove("hidden");
-
-        function hideIntroPopup() {
-            introPopup.classList.add("hidden");
-            closeIntroBtn.removeEventListener("click", hideIntroPopup);
-        }
-
-        closeIntroBtn.addEventListener("click", hideIntroPopup);
+        closeIntroBtn.addEventListener('click', () => {
+            introPopup.classList.add('hidden');
+        });
     }
     console.log('Setting up event listeners...');
     
