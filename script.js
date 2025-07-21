@@ -5,6 +5,10 @@ const welcomeScreen = document.getElementById('welcome-screen');
 const gameScreen = document.getElementById('game-screen');
 const endScreen = document.getElementById('end-screen');
 const historyScreen = document.getElementById('history-screen');
+const introPopup = document.getElementById("intro-popup");
+const introTitle = document.getElementById("intro-title");
+const introMessage = document.getElementById("intro-message");
+const closeIntroBtn = document.getElementById("close-intro");
 
 const playerNameInput = document.getElementById('player-name');
 const roomNameInput = document.getElementById('room-name');
@@ -623,6 +627,9 @@ const translations = {
         darkMode: 'Dark Mode',
         lightMode: 'Light Mode',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
+        introTitle: "Welcome!",
+        introMessage: "This game helps you get to know each other deeply through personal topics and surprising truths hidden among made-up stories. Have fun! - Author: Duong Tung Nguyen",
+        introButton: "Start",
         instructions: [
             'Two players join the same room',
             'Each player takes turns creating 3 statements about themselves',
@@ -673,6 +680,9 @@ const translations = {
         darkMode: 'Chế độ tối',
         lightMode: 'Chế độ sáng',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
+        introTitle: "Chào mừng!",
+        introMessage: "Trò chơi này giúp bạn hiểu nhau sâu sắc thông qua những chủ đề cá nhân và những sự thật bất ngờ ẩn trong các câu chuyện bịa. Chúc bạn chơi vui! - Tác giả: Dương Tùng Nguyễn",
+        introButton: "Bắt đầu",
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
             'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
@@ -695,6 +705,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     updateLanguageContent();
     
+    if (introPopup && closeIntroBtn) {
+        introPopup.classList.remove("hidden");
+        closeIntroBtn.addEventListener("click", () => {
+            introPopup.classList.add("hidden");
+        });
+    }
     console.log('Setting up event listeners...');
     
     // Add keyboard navigation support
@@ -820,6 +836,12 @@ function updateLanguageContent() {
         
         const joinRoomBtn = document.getElementById('join-room');
         if (joinRoomBtn) joinRoomBtn.textContent = t.joinRoom;
+        const introTitleEl = document.getElementById("intro-title");
+        if (introTitleEl) introTitleEl.textContent = t.introTitle;
+        const introMessageEl = document.getElementById("intro-message");
+        if (introMessageEl) introMessageEl.textContent = t.introMessage;
+        const closeIntroBtnEl = document.getElementById("close-intro");
+        if (closeIntroBtnEl) closeIntroBtnEl.textContent = t.introButton;
         
         // Update instructions list
         const instructionsList = document.querySelector('#instructions-content ol');
