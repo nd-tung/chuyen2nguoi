@@ -578,17 +578,6 @@ h1, h2 {
     opacity: 0.8;
 }
 
-.topic-card .age-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: #dc3545;
-    color: white;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-weight: bold;
-}
 .topic-card .icon-badge {
     position: absolute;
     top: 5px;

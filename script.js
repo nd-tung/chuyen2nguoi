@@ -947,11 +947,9 @@ function createTopicGrid() {
         topicCard.tabIndex = 0; // Make focusable for keyboard navigation
 
         const t = translations[currentLanguage];
-        const ageBadge = topic.isAdult ? '<span class="age-badge">18+</span>' : '';
         const iconBadge = `<span class="icon-badge">${getTopicIcon(topic.points)}</span>`;
         const pointsBadge = `<span class="points-badge">${topic.points} pts</span>`;
         topicCard.innerHTML = `
-            ${ageBadge}
             ${iconBadge}
             ${pointsBadge}
             <h4>${topic.title}</h4>

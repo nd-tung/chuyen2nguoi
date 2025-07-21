@@ -383,7 +383,6 @@ function createTopicGrid() {
         topicCard.innerHTML = `
             <h4>${topic.title}</h4>
             <p>${topic.description}</p>
-            ${topic.isAdult ? '<span class="age-badge">18+</span>' : ''}
         `;
         
         topicCard.addEventListener('click', () => {
