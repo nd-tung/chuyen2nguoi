@@ -19,6 +19,7 @@ A real-time multiplayer web-based game where players try to guess which of three
 - 💡 **Suggested answers** to inspire creative statements
 - 📊 **Real-time status updates** showing game phases
 - 🔄 **Strategic topic selection** - players choose topics for opponents
+- 📝 **Remembered player name** so you don't have to re-enter it
 
 ## 📦 Release Notes
 

@@ -744,6 +744,13 @@ function initializeApp() {
     console.log('langViBtn:', document.getElementById('lang-vi'));
     console.log('joinRoomBtn:', document.getElementById('join-room'));
     console.log('roomNameInput:', document.getElementById('room-name'));
+
+    // Load saved player name if available
+    const savedName = localStorage.getItem('playerName');
+    if (savedName && playerNameInput) {
+        playerNameInput.value = savedName;
+        playerName = savedName;
+    }
     
     updateLanguageContent();
     
@@ -834,6 +841,8 @@ function initializeApp() {
             }
             
             if (!hasError) {
+                // Persist player name for next visits
+                localStorage.setItem('playerName', playerName);
                 console.log('Emitting create or join event');
                 socket.emit('create or join', roomName, totalRounds, playerName);
                 joinRoomBtn.disabled = true;
