@@ -1297,13 +1297,13 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
     currentTopicDiv.classList.add('hidden');
 });
 
-socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, topicPoints) => {
+socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, pointsAwarded) => {
     scores = newScores;
     updateScores();
 
     if (isCorrect) {
         const t = translations[currentLanguage];
-        const msgTemplate = (t.correctGuess || 'Correct! +{points} point(s)').replace('{points}', topicPoints);
+        const msgTemplate = (t.correctGuess || 'Correct! +{points} point(s)').replace('{points}', pointsAwarded);
         resultMessage.textContent = msgTemplate;
         resultMessage.style.color = '#28a745';
     } else {
@@ -1323,7 +1323,7 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, topic
         truthIndex: correctIndex,
         guessIndex,
         isCorrect,
-        points: isCorrect ? topicPoints : 0
+        points: isCorrect ? pointsAwarded : 0
     });
 });
 
