@@ -630,7 +630,7 @@ const translations = {
             'Two players join the same room',
             'Each player takes turns creating 3 statements about themselves',
             '2 statements are lies, 1 statement is the truth',
-            'Mark which statement is TRUE by clicking the card or check icon',
+            'Mark which statement is TRUE using the check icon',
             'The other player tries to guess which one is the truth',
             'Score points for correct guesses!',
             'Play multiple rounds and see who wins!'
@@ -683,7 +683,7 @@ const translations = {
             'Hai người chơi tham gia cùng một phòng',
             'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
             '2 câu nói là dối trá, 1 câu nói là sự thật',
-            'Đánh dấu câu nói ĐÚNG bằng cách bấm vào ô hoặc biểu tượng dấu tích',
+            'Đánh dấu câu nói ĐÚNG bằng biểu tượng dấu tích',
             'Người chơi kia cố gắng đoán câu nào là sự thật',
             'Ghi điểm khi đoán đúng!',
             'Chơi nhiều vòng và xem ai thắng!'
@@ -1099,7 +1099,7 @@ submitStatementsBtn.addEventListener('click', (e) => {
     
     const selectedRadio = document.querySelector('input[name="truth-selection"]:checked');
     if (!selectedRadio) {
-        alert("Please select which statement is the TRUTH by clicking a card.");
+        alert("Please select which statement is the TRUTH by clicking the check icon.");
         return;
     }
     
@@ -1670,13 +1670,3 @@ document.addEventListener('change', (e) => {
     }
 });
 
-// Allow selecting the truth by clicking the entire statement card
-document.querySelectorAll('.statement-input-group').forEach(group => {
-    group.addEventListener('click', (e) => {
-        const radio = group.querySelector('input[name="truth-selection"]');
-        if (radio && e.target !== radio) {
-            radio.checked = true;
-            radio.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    });
-});

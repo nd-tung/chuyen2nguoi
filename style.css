@@ -983,7 +983,6 @@ button:disabled {
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    cursor: pointer;
 }
 
 .statement-input-group input[type="text"] {
@@ -1465,7 +1464,6 @@ button:disabled {
         padding: 15px;
         background: #f8f9fa;
         border-radius: 8px;
-        cursor: pointer;
     }
 
     .statement-input-group input[type="text"] {
@@ -1643,7 +1641,6 @@ button:disabled {
     
     .statement-input-group {
         padding: 12px;
-        cursor: pointer;
     }
     
     .statement-btn {
@@ -1723,7 +1720,6 @@ button:disabled {
         flex-direction: column;
         align-items: stretch;
         gap: 5px;
-        cursor: pointer;
     }
 
     .statement-input-group input[type="text"] {
