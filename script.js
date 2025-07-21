@@ -748,6 +748,13 @@ function initializeApp() {
     updateLanguageContent();
     
     console.log('Setting up event listeners...');
+
+    // Prefill player name if saved from previous session
+    const storedName = localStorage.getItem('playerName');
+    if (storedName && playerNameInput) {
+        playerNameInput.value = storedName;
+        playerName = storedName;
+    }
     
     // Add keyboard navigation support
     document.addEventListener('keydown', handleKeyboardNavigation);
@@ -836,6 +843,8 @@ function initializeApp() {
             if (!hasError) {
                 console.log('Emitting create or join event');
                 socket.emit('create or join', roomName, totalRounds, playerName);
+                // Save player name for future sessions
+                localStorage.setItem('playerName', playerName);
                 joinRoomBtn.disabled = true;
                 joinRoomBtn.textContent = 'Joining...';
             }
