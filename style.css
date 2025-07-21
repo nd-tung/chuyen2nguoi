@@ -983,11 +983,13 @@ button:disabled {
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .statement-input-group input[type="text"] {
     flex: 1;
     margin-bottom: 0;
+    cursor: text;
 }
 
 .radio-label {
@@ -1463,12 +1465,14 @@ button:disabled {
         padding: 15px;
         background: #f8f9fa;
         border-radius: 8px;
+        cursor: pointer;
     }
-    
+
     .statement-input-group input[type="text"] {
         font-size: 16px; /* Prevents zoom on iOS */
         padding: 12px;
         margin-bottom: 8px;
+        cursor: text;
     }
     
     .radio-label {
@@ -1639,6 +1643,7 @@ button:disabled {
     
     .statement-input-group {
         padding: 12px;
+        cursor: pointer;
     }
     
     .statement-btn {
@@ -1718,6 +1723,11 @@ button:disabled {
         flex-direction: column;
         align-items: stretch;
         gap: 5px;
+        cursor: pointer;
+    }
+
+    .statement-input-group input[type="text"] {
+        cursor: text;
     }
     
     .radio-label {
