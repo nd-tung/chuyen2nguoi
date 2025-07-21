@@ -1633,6 +1633,7 @@ button:disabled {
     }
     
     .scoreboard {
+        flex-direction: column;
         padding: 10px;
         gap: 10px;
     }
@@ -1670,6 +1671,10 @@ button:disabled {
         padding: 12px;
         font-size: 13px;
         min-height: 45px;
+    }
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 
