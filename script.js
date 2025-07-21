@@ -738,7 +738,7 @@ const translations = {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+function initializeApp() {
     console.log('DOM loaded, checking elements...');
     console.log('langEnBtn:', document.getElementById('lang-en'));
     console.log('langViBtn:', document.getElementById('lang-vi'));
@@ -760,6 +760,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Language switching
     const langEnBtn = document.getElementById('lang-en');
     const langViBtn = document.getElementById('lang-vi');
+
+    // Welcome popup handling with countdown
+    const welcomePopup = document.getElementById('welcome-popup');
+    const countdownEl = document.getElementById('countdown');
+    if (welcomePopup) {
+        let countdown = 5;
+        if (countdownEl) countdownEl.textContent = `Starting in ${countdown}...`;
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                if (countdownEl) countdownEl.textContent = `Starting in ${countdown}...`;
+            } else {
+                clearInterval(timer);
+                welcomePopup.classList.add('hidden');
+            }
+        }, 1000);
+    }
     
     if (langEnBtn) {
         langEnBtn.addEventListener('click', () => {
@@ -824,7 +841,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
 
 // Remove duplicate initialization
 // console.log('Checking DOM elements...');
