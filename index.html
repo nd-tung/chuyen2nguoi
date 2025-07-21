@@ -53,13 +53,18 @@
                     <input type="text" id="room-name" placeholder="Enter Room Name">
                 </div>
                 <button id="join-room">Join Room</button>
+                <button id="view-history-btn">View History</button>
             </div>
-            <button id="view-history-btn">View History</button>
         </div>
 
         <div id="history-screen" class="hidden">
             <h2>Game History</h2>
             <ul id="history-list"></ul>
+            <div id="session-detail" class="hidden">
+                <h3>Session Details</h3>
+                <ul id="detail-list"></ul>
+                <button id="back-to-history">Back</button>
+            </div>
             <button id="clear-history">Clear History</button>
             <button id="back-to-menu">Back to Menu</button>
         </div>

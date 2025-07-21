@@ -66,6 +66,9 @@ const nextRoundBtn = document.getElementById('next-round');
 const exitGameBtn = document.getElementById('exit-game');
 const viewHistoryBtn = document.getElementById('view-history-btn');
 const historyList = document.getElementById('history-list');
+const sessionDetail = document.getElementById('session-detail');
+const detailList = document.getElementById('detail-list');
+const backToHistoryBtn = document.getElementById('back-to-history');
 const clearHistoryBtn = document.getElementById('clear-history');
 const backToMenuBtn = document.getElementById('back-to-menu');
 
@@ -82,6 +85,7 @@ let playerNames = { 1: 'Player 1', 2: 'Player 2' };
 let totalRounds = 5;
 let currentRound = 1;
 let scores = { 1: 0, 2: 0 };
+let currentGameRounds = [];
 let selectedTopics = [];
 let currentTopic;
 let currentTopicKey; // Add this to store the topic key
@@ -1124,9 +1128,10 @@ socket.on('room created', (room, player, rounds, names) => {
     if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Anonymous';
     gameStatusDisplay.textContent = 'Waiting for Player 2 to join...';
     
-    // Initialize scoreboard
+    // Initialize scoreboard and session data
     updatePlayerNames(playerNames);
     updateScores();
+    currentGameRounds = [];
     
     // Hide all game areas initially
     topicSelectionArea.classList.add('hidden');
@@ -1145,9 +1150,10 @@ socket.on('room joined', (room, player, rounds, names) => {
     playerNumberDisplay.textContent = `Player ${playerNumber}`;
     if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Anonymous';
     
-    // Initialize scoreboard
+    // Initialize scoreboard and session data
     updatePlayerNames(playerNames);
     updateScores();
+    currentGameRounds = [];
     
     // Hide all game areas initially
     topicSelectionArea.classList.add('hidden');
@@ -1257,6 +1263,16 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores) => {
     nextRoundBtn.classList.remove('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
+
+    // Record round details for history
+    currentGameRounds.push({
+        round: currentRound,
+        topic: currentTopic ? currentTopic.title : '',
+        statements: [...statements],
+        truthIndex: correctIndex,
+        guessIndex,
+        isCorrect
+    });
 });
 
 socket.on('game over', (finalScores, names) => {
@@ -1289,11 +1305,13 @@ socket.on('game over', (finalScores, names) => {
         timestamp: new Date().toISOString(),
         players: { 1: player1Name, 2: player2Name },
         scores: { ...scores },
-        winner: winnerPlayer
+        winner: winnerPlayer,
+        rounds: currentGameRounds
     };
     const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
     history.push(historyItem);
     localStorage.setItem('gameHistory', JSON.stringify(history));
+    currentGameRounds = [];
 });
 
 socket.on('status update', (status) => {
@@ -1511,6 +1529,8 @@ if (backToMenuBtn) {
     backToMenuBtn.addEventListener('click', () => {
         historyScreen.classList.add('hidden');
         welcomeScreen.classList.remove('hidden');
+        sessionDetail.classList.add('hidden');
+        historyList.classList.remove('hidden');
     });
 }
 
@@ -1521,11 +1541,24 @@ if (clearHistoryBtn) {
     });
 }
 
+if (backToHistoryBtn) {
+    backToHistoryBtn.addEventListener('click', () => {
+        sessionDetail.classList.add('hidden');
+        historyList.classList.remove('hidden');
+        clearHistoryBtn.classList.remove('hidden');
+        backToMenuBtn.classList.remove('hidden');
+    });
+}
+
 function showHistory() {
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.add('hidden');
     endScreen.classList.add('hidden');
     historyScreen.classList.remove('hidden');
+    sessionDetail.classList.add('hidden');
+    historyList.classList.remove('hidden');
+    clearHistoryBtn.classList.remove('hidden');
+    backToMenuBtn.classList.remove('hidden');
     renderHistory();
 }
 
@@ -1539,14 +1572,34 @@ function renderHistory() {
         historyList.appendChild(li);
         return;
     }
-    history.forEach(item => {
+    history.forEach((item, index) => {
         const li = document.createElement('li');
         const date = new Date(item.timestamp).toLocaleString();
         const p1 = item.players[1];
         const p2 = item.players[2];
         const winnerText = item.winner === 0 ? 'Tie' : `Winner: ${item.players[item.winner]}`;
         li.textContent = `${date} - ${p1}: ${item.scores[1]} vs ${p2}: ${item.scores[2]} (${winnerText})`;
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', () => showSessionDetails(item));
         historyList.appendChild(li);
+    });
+}
+
+function showSessionDetails(item) {
+    if (!detailList) return;
+    historyList.classList.add('hidden');
+    clearHistoryBtn.classList.add('hidden');
+    backToMenuBtn.classList.add('hidden');
+    sessionDetail.classList.remove('hidden');
+    detailList.innerHTML = '';
+    const scoreLine = document.createElement('li');
+    scoreLine.textContent = `Final Score: ${item.players[1]} ${item.scores[1]} - ${item.players[2]} ${item.scores[2]}`;
+    detailList.appendChild(scoreLine);
+    item.rounds.forEach(r => {
+        const li = document.createElement('li');
+        const statementsText = r.statements.map((s, i) => `${i + 1}. ${s}${i === r.truthIndex ? ' (True)' : ''}`).join(' | ');
+        li.textContent = `Round ${r.round} (${r.topic}) - ${statementsText}`;
+        detailList.appendChild(li);
     });
 }
 
