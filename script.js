@@ -692,7 +692,7 @@ const translations = {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+function initializeApp() {
     console.log('DOM loaded, checking elements...');
     console.log('langEnBtn:', document.getElementById('lang-en'));
     console.log('langViBtn:', document.getElementById('lang-vi'));
@@ -795,7 +795,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
 
 // Remove duplicate initialization
 // console.log('Checking DOM elements...');
