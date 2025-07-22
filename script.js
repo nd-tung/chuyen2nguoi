@@ -9,6 +9,7 @@ const historyScreen = document.getElementById('history-screen');
 const playerNameInput = document.getElementById('player-name');
 const roomNameInput = document.getElementById('room-name');
 const joinRoomBtn = document.getElementById('join-room');
+const joinViewerBtn = document.getElementById('join-viewer');
 const roundCountSelect = document.getElementById('round-count');
 
 const playerNumberDisplay = document.getElementById('player-number');
@@ -102,6 +103,7 @@ let statements = [];
 let truthIndex;
 let selectedTruthIndex = -1;
 let currentLanguage = 'en';
+let isViewer = false;
 
 // Topics data with suggestions
 const topics = {
@@ -643,6 +645,7 @@ const translations = {
         playerName: 'Player Name',
         roomPlaceholder: 'Enter Room Name',
         joinRoom: 'Join Room',
+        joinViewer: 'Join as Viewer',
         topicSelectionPrompt: 'Select 1 topic for Player {player} to create statements about:',
         selectedTopicsTitle: 'Selected Topics:',
         confirmTopics: 'Confirm Topic Selection',
@@ -696,6 +699,7 @@ const translations = {
         playerName: 'Tên Người Chơi',
         roomPlaceholder: 'Nhập Tên Phòng',
         joinRoom: 'Tham Gia Phòng',
+        joinViewer: 'Xem Trực Tiếp',
         topicSelectionPrompt: 'Chọn 1 chủ đề cho Người chơi {player} tạo câu nói:',
         selectedTopicsTitle: 'Chủ Đề Đã Chọn:',
         confirmTopics: 'Xác Nhận Chọn Chủ Đề',
@@ -863,6 +867,7 @@ function initializeApp() {
     
     // Join room button
     const joinRoomBtn = document.getElementById('join-room');
+    const joinViewerBtn = document.getElementById('join-viewer');
     const roomNameInput = document.getElementById('room-name');
     const roundCountSelect = document.getElementById('round-count');
     
@@ -903,6 +908,23 @@ function initializeApp() {
                 joinRoomBtn.disabled = true;
                 joinRoomBtn.textContent = 'Joining...';
             }
+        });
+    }
+
+    if (joinViewerBtn) {
+        joinViewerBtn.addEventListener('click', () => {
+            roomName = roomNameInput.value.trim();
+            playerName = playerNameInput.value.trim() || 'Viewer';
+            totalRounds = parseInt(roundCountSelect.value);
+
+            if (!roomName || roomName.length < 3) {
+                alert('Please enter a room name with at least 3 characters.');
+                return;
+            }
+            isViewer = true;
+            socket.emit('create or join', roomName, totalRounds, playerName, true);
+            joinViewerBtn.disabled = true;
+            joinViewerBtn.textContent = 'Joining...';
         });
     }
 }
@@ -959,6 +981,8 @@ function updateLanguageContent() {
         
         const joinRoomBtn = document.getElementById('join-room');
         if (joinRoomBtn) joinRoomBtn.textContent = t.joinRoom;
+        const joinViewerBtn = document.getElementById('join-viewer');
+        if (joinViewerBtn) joinViewerBtn.textContent = t.joinViewer;
         
         // Update instructions list
         const instructionsList = document.querySelector('#instructions-content ol');
@@ -1143,6 +1167,9 @@ function selectTopic(topicKey) {
     highlightedTopic = null;
     updateSelectedTopicsList();
     updateTopicCards();
+    if (!isViewer) {
+        socket.emit('topic progress', roomName, selectedTopics);
+    }
     topicSuggestions.classList.add('hidden');
     
     // Show confirm button immediately after selecting 1 topic
@@ -1160,7 +1187,7 @@ function updateSelectedTopicsList() {
         item.className = 'selected-topic-item';
         item.innerHTML = `
             <span>${topic.title} (${topic.points} pts)</span>
-            <button class="remove-topic" onclick="removeTopic('${topicKey}')">Remove</button>
+            ${isViewer ? '' : `<button class="remove-topic" onclick="removeTopic('${topicKey}')">Remove</button>`}
         `;
         selectedTopicsList.appendChild(item);
     });
@@ -1170,6 +1197,9 @@ function removeTopic(topicKey) {
     selectedTopics = selectedTopics.filter(t => t !== topicKey);
     updateSelectedTopicsList();
     updateTopicCards();
+    if (!isViewer) {
+        socket.emit('topic progress', roomName, selectedTopics);
+    }
     
     if (selectedTopics.length < 3) {
         confirmTopicsBtn.classList.add('hidden');
@@ -1187,8 +1217,10 @@ confirmTopicsBtn.addEventListener('click', () => {
             alert('Room name error. Please refresh and try again.');
             return;
         }
-        console.log('Sending topics selected event to server'); // Debug log
-        socket.emit('topics selected', roomName, selectedTopics);
+        if (!isViewer) {
+            console.log('Sending topics selected event to server'); // Debug log
+            socket.emit('topics selected', roomName, selectedTopics);
+        }
         topicSelectionArea.classList.add('hidden');
         topicSuggestions.classList.add('hidden');
         highlightedTopic = null;
@@ -1221,9 +1253,21 @@ hideTopicHelpBtn.addEventListener('click', () => {
     seeTopicBtn.style.display = 'inline-block'; // Show the see topic button again
 });
 
+// Real-time typing updates for viewers
+[statement1Input, statement2Input, statement3Input].forEach(input => {
+    input.addEventListener('input', () => {
+        if (!isViewer) {
+            const currentStatements = [statement1Input.value, statement2Input.value, statement3Input.value];
+            socket.emit('statement typing', roomName, currentStatements);
+        }
+    });
+});
+
 // Statement submission
 submitStatementsBtn.addEventListener('click', (e) => {
     e.preventDefault();
+
+    if (isViewer) return;
     
     statements = [statement1Input.value, statement2Input.value, statement3Input.value];
     
@@ -1248,13 +1292,17 @@ submitStatementsBtn.addEventListener('click', (e) => {
 // Guess buttons
 [statementBtn1, statementBtn2, statementBtn3].forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        socket.emit('guess made', roomName, index);
+        if (!isViewer) {
+            socket.emit('guess made', roomName, index);
+        }
     });
 });
 
 // Next round
 nextRoundBtn.addEventListener('click', () => {
-    socket.emit('next round', roomName);
+    if (!isViewer) {
+        socket.emit('next round', roomName);
+    }
     nextRoundBtn.classList.add('hidden');
 });
 
@@ -1304,6 +1352,44 @@ socket.on('room joined', (room, player, rounds, names) => {
     guessArea.classList.add('hidden');
 });
 
+socket.on('viewer joined', (data) => {
+    console.log('Viewer joined:', data);
+    roomName = data.room;
+    totalRounds = data.rounds;
+    if (data.playerNames) playerNames = data.playerNames;
+    isViewer = true;
+    welcomeScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    playerNumberDisplay.textContent = 'Viewer';
+    if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Viewer';
+    updatePlayerNames(playerNames);
+    updateScores();
+
+    if (data.phase === 'topic_selection') {
+        selectedTopics = data.selectedTopics || [];
+        currentRound = data.round || 1;
+        roundTitle.textContent = `Round ${currentRound}`;
+        createTopicGrid();
+        updateSelectedTopicsList();
+        topicSelectionArea.classList.remove('hidden');
+        inputArea.classList.add('hidden');
+        guessArea.classList.add('hidden');
+    } else if (data.phase === 'statement_creation') {
+        currentRound = data.round || 1;
+        roundTitle.textContent = `Round ${currentRound}`;
+        currentTopicKey = data.currentTopic;
+        const currentTopics = getCurrentTopics();
+        currentTopic = currentTopics[currentTopicKey];
+        inputArea.classList.remove('hidden');
+        currentTopicDiv.classList.remove('hidden');
+        topicDisplay.textContent = currentTopic ? currentTopic.title : '';
+        const typing = data.typing || ['', '', ''];
+        [statement1Input.value, statement2Input.value, statement3Input.value] = typing;
+        document.querySelectorAll('input[name="truth-selection"]').forEach(r => r.disabled = true);
+        [statement1Input, statement2Input, statement3Input].forEach(inp => inp.disabled = true);
+    }
+});
+
 socket.on('start topic selection', (targetPlayer, round) => {
     console.log('Start topic selection:', targetPlayer, round); // Debug log
     currentRound = round;
@@ -1329,6 +1415,60 @@ socket.on('start topic selection', (targetPlayer, round) => {
 
     nextRoundBtn.classList.add('hidden');
     resultMessage.textContent = '';
+});
+
+socket.on('viewer start statement creation', (data) => {
+    if (!isViewer) return;
+    currentRound = data.round;
+    roundTitle.textContent = `Round ${currentRound}`;
+    currentTopicKey = data.topic;
+    const currentTopics = getCurrentTopics();
+    currentTopic = currentTopics[currentTopicKey];
+    inputArea.classList.remove('hidden');
+    currentTopicDiv.classList.remove('hidden');
+    topicDisplay.textContent = currentTopic ? currentTopic.title : '';
+    document.querySelectorAll('input[name="truth-selection"]').forEach(r => r.disabled = true);
+    [statement1Input, statement2Input, statement3Input].forEach(inp => inp.disabled = true);
+});
+
+socket.on('viewer statement typing', (statementsArray) => {
+    if (!isViewer) return;
+    [statement1Input.value, statement2Input.value, statement3Input.value] = statementsArray;
+});
+
+socket.on('viewer statements submitted', (submittedStatements, topicKey) => {
+    if (!isViewer) return;
+    statements = submittedStatements;
+    const currentTopics = getCurrentTopics();
+    currentTopic = currentTopics[topicKey];
+    guessArea.classList.remove('hidden');
+    opponentTopicDiv.classList.remove('hidden');
+    opponentTopicDisplay.textContent = currentTopic.title;
+    statementBtn1.textContent = statements[0];
+    statementBtn2.textContent = statements[1];
+    statementBtn3.textContent = statements[2];
+    topicSelectionArea.classList.add('hidden');
+    inputArea.classList.add('hidden');
+    currentTopicDiv.classList.add('hidden');
+});
+
+socket.on('viewer start topic selection', (data) => {
+    if (!isViewer) return;
+    currentRound = data.round;
+    roundTitle.textContent = `Round ${currentRound}`;
+    selectedTopics = data.selectedTopics || [];
+    createTopicGrid();
+    updateSelectedTopicsList();
+    topicSelectionArea.classList.remove('hidden');
+    inputArea.classList.add('hidden');
+    guessArea.classList.add('hidden');
+});
+
+socket.on('viewer topic progress', (topics) => {
+    if (!isViewer) return;
+    selectedTopics = topics;
+    updateSelectedTopicsList();
+    updateTopicCards();
 });
 
 socket.on('start statement creation', (topicKey, round) => {
@@ -1522,6 +1662,7 @@ function addDesktopEnhancements() {
     // Add tooltips to buttons and interactive elements
     const elementsWithTooltips = [
         { selector: '#join-room', tooltip: 'Press Enter to join quickly' },
+        { selector: '#join-viewer', tooltip: 'Watch the game' },
         { selector: '.exit-btn', tooltip: 'Leave the current game' },
         { selector: '.see-topic-btn', tooltip: 'Get inspiration for your statements' },
         { selector: '.hide-help-btn', tooltip: 'Close topic suggestions' },
