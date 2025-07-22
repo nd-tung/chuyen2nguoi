@@ -85,6 +85,7 @@ const menuOverlay = document.getElementById('menu-overlay');
 const langEnBtn = document.getElementById('lang-en');
 const langViBtn = document.getElementById('lang-vi');
 const themeToggleBtn = document.getElementById('theme-toggle');
+const clearDataBtn = document.getElementById('clear-data');
 
 // Game state
 let roomName;
@@ -680,6 +681,7 @@ const translations = {
         nextTurn: 'Next Turn',
         nextRound: 'Next Round',
         showResults: 'Show Results',
+        clearData: 'Clear Saved Data',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
@@ -734,6 +736,7 @@ const translations = {
         nextTurn: 'Lượt Tiếp',
         nextRound: 'Vòng Tiếp',
         showResults: 'Xem Kết Quả',
+        clearData: 'Xóa Dữ Liệu',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
@@ -770,8 +773,28 @@ function updateThemeButtonText() {
     const isDarkMode = document.body.classList.contains('dark-mode');
     const darkModeText = currentLanguage === 'en' ? 'Light Mode' : 'Chế độ sáng';
     const lightModeText = currentLanguage === 'en' ? 'Dark Mode' : 'Chế độ tối';
-    
+
     themeToggleBtn.textContent = isDarkMode ? darkModeText : lightModeText;
+}
+
+function clearGameData() {
+    // Clear local storage items related to the game
+    localStorage.removeItem('gameHistory');
+    localStorage.removeItem('playerName');
+
+    // Clear cookies
+    document.cookie.split(';').forEach(cookie => {
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
+
+    // Clear caches if available
+    if (window.caches) {
+        caches.keys().then(keys => {
+            keys.forEach(key => caches.delete(key));
+        });
+    }
 }
 
 // Initialize
@@ -862,6 +885,15 @@ function initializeApp() {
             document.body.classList.toggle('dark-mode');
             updateLanguageContent();
             updateThemeButtonText();
+        });
+    }
+
+    if (clearDataBtn) {
+        clearDataBtn.addEventListener('click', () => {
+            if (confirm('Clear saved data and cookies?')) {
+                clearGameData();
+                alert('Data cleared!');
+            }
         });
     }
     
@@ -1041,6 +1073,9 @@ function updateLanguageContent() {
 
         if (themeToggleBtn) {
             themeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? t.lightMode : t.darkMode;
+        }
+        if (clearDataBtn) {
+            clearDataBtn.textContent = t.clearData;
         }
 
         // Recreate topic grid with new language
