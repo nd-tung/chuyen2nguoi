@@ -678,11 +678,6 @@ h1, h2 {
     border-color: #007bff;
 }
 
-.topic-card.adult.highlighted:not(.selected) {
-    background: #f8d7da;
-    border-color: #dc3545;
-}
-
 .topic-card h4 {
     margin: 0 0 10px 0;
     font-size: 16px;
