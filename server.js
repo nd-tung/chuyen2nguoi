@@ -13,14 +13,15 @@ let rooms = {};
 io.on('connection', (socket) => {
     console.log('a user connected:', socket.id);
 
-    socket.on('create or join', (room, roundCount = 5, playerName = 'Anonymous') => {
+    socket.on('create or join', (room, roundCount = 5, playerName = 'Anonymous', isViewer = false) => {
         console.log(`User ${socket.id} wants to create or join room: ${room} with ${roundCount} rounds as ${playerName}`);
-        
+
         if (!rooms[room]) {
             console.log(`Creating new room: ${room}`);
-            rooms[room] = { 
-                players: {}, 
-                playerCount: 0, 
+            rooms[room] = {
+                players: {},
+                viewers: {},
+                playerCount: 0,
                 totalRounds: roundCount,
                 currentRound: 1,
                 currentPhase: 'waiting', // waiting, topic_selection, statement_creation, guessing
@@ -28,12 +29,12 @@ io.on('connection', (socket) => {
                 statementCreator: null, // who is creating statements
                 selectedTopics: [],
                 currentTopic: null,
-                playerNames: { 1: playerName, 2: 'Player 2' },
                 gameState: {
                     scores: { 1: 0, 2: 0 },
                     player1Turn: false,
                     player2Turn: false
-                }
+                },
+                playerNames: { 1: playerName, 2: 'Player 2' }
             };
             socket.join(room);
             rooms[room].players[socket.id] = { player: 1, name: playerName };
@@ -57,12 +58,37 @@ io.on('connection', (socket) => {
             // Start the game with topic selection
             startTopicSelectionPhase(room);
         } else {
-            console.log(`Room ${room} is full, rejecting user ${socket.id}`);
-            socket.emit('room full');
+            if (isViewer) {
+                socket.join(room);
+                if (!rooms[room].viewers) rooms[room].viewers = {};
+                rooms[room].viewers[socket.id] = { name: playerName };
+                console.log(`User ${socket.id} joined room ${room} as Viewer`);
+                socket.emit('viewer joined', {
+                    room,
+                    rounds: rooms[room].totalRounds,
+                    playerNames: rooms[room].playerNames,
+                    phase: rooms[room].currentPhase,
+                    round: rooms[room].currentRound,
+                    selectedTopics: rooms[room].selectedTopics,
+                    typing: rooms[room].currentTyping || []
+                });
+            } else {
+                console.log(`Room ${room} is full, rejecting user ${socket.id}`);
+                socket.emit('room full');
+            }
         }
         
         console.log(`Current rooms:`, Object.keys(rooms));
         console.log(`Room ${room} player count:`, rooms[room]?.playerCount);
+    });
+
+    socket.on('topic progress', (room, selectedTopics) => {
+        if (rooms[room]) {
+            const viewers = rooms[room].viewers || {};
+            Object.keys(viewers).forEach(id => {
+                io.to(id).emit('viewer topic progress', selectedTopics);
+            });
+        }
     });
 
     socket.on('topics selected', (room, selectedTopics) => {
@@ -72,6 +98,16 @@ io.on('connection', (socket) => {
             rooms[room].currentPhase = 'statement_creation';
             console.log(`Starting statement creation phase for room ${room}`); // Debug log
             startStatementCreationPhase(room);
+        }
+    });
+
+    socket.on('statement typing', (room, statements) => {
+        if (rooms[room]) {
+            const viewers = rooms[room].viewers || {};
+            rooms[room].currentTyping = statements;
+            Object.keys(viewers).forEach(id => {
+                io.to(id).emit('viewer statement typing', statements);
+            });
         }
     });
 
@@ -95,6 +131,11 @@ io.on('connection', (socket) => {
                 if (creatorSocketId) {
                     io.to(creatorSocketId).emit('status update', `Player ${rooms[room].players[guesserSocketId].player} is making their guess...`);
                 }
+
+                const viewers = rooms[room].viewers || {};
+                Object.keys(viewers).forEach(id => {
+                    io.to(id).emit('viewer statements submitted', statements, topic);
+                });
             }
         }
     });
@@ -168,12 +209,18 @@ io.on('connection', (socket) => {
                 delete rooms[room].players[socket.id];
                 rooms[room].playerNames[leavingPlayer] = `Player ${leavingPlayer}`;
                 rooms[room].playerCount--;
-                if (rooms[room].playerCount === 0) {
+                if (rooms[room].playerCount === 0 && Object.keys(rooms[room].viewers || {}).length === 0) {
                     delete rooms[room];
                 } else {
                     rooms[room].currentPhase = 'waiting';
                     io.to(room).emit('player left', leavingPlayer);
                     io.to(room).emit('player names updated', rooms[room].playerNames);
+                }
+                break;
+            } else if (rooms[room].viewers && rooms[room].viewers[socket.id]) {
+                delete rooms[room].viewers[socket.id];
+                if (rooms[room].playerCount === 0 && Object.keys(rooms[room].viewers).length === 0) {
+                    delete rooms[room];
                 }
                 break;
             }
@@ -212,11 +259,23 @@ function startTopicSelectionPhase(room) {
         io.to(creatorSocketId).emit('status update', `Player ${roomData.topicSelector} is selecting a topic for you...`);
         console.log(`Sent topic selection start to Player ${roomData.topicSelector}`); // Debug log
     }
+
+    // Inform viewers
+    const viewers = roomData.viewers || {};
+    Object.keys(viewers).forEach(id => {
+        io.to(id).emit('viewer start topic selection', {
+            selector: roomData.topicSelector,
+            creator: roomData.statementCreator,
+            round: roomData.currentRound
+        });
+    });
 }
 
 function startStatementCreationPhase(room) {
     console.log(`Starting statement creation phase for room ${room}`); // Debug log
     const roomData = rooms[room];
+
+    roomData.currentTyping = ['', '', ''];
     
     // Find socket IDs
     const selectorSocketId = Object.keys(roomData.players).find(
@@ -238,6 +297,16 @@ function startStatementCreationPhase(room) {
         io.to(selectorSocketId).emit('status update', `Player ${roomData.statementCreator} is creating statements...`);
         console.log(`Sent statement creation start to Player ${roomData.statementCreator} with topic ${selectedTopicKey}`); // Debug log
     }
+
+    // Inform viewers
+    const viewers = roomData.viewers || {};
+    Object.keys(viewers).forEach(id => {
+        io.to(id).emit('viewer start statement creation', {
+            creator: roomData.statementCreator,
+            topic: selectedTopicKey,
+            round: roomData.currentRound
+        });
+    });
 }
 
 const PORT = process.env.PORT || 3001;
