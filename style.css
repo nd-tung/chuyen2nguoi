@@ -2089,3 +2089,20 @@ body.dark-mode .detail-icon {
     margin-top: 10px;
 }
 
+/* Share link container */
+#share-link-container {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+#share-link-container input {
+    flex: 1;
+    padding: 5px;
+}
+
+#share-link-container button {
+    padding: 5px 10px;
+}
+
