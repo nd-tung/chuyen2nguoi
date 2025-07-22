@@ -119,7 +119,6 @@ function applyViewerMode() {
     document.querySelectorAll(".remove-topic").forEach(btn => btn.classList.add("hidden"));
 }
 
-
 // Topics data with suggestions
 const topics = {
     // Safe topics
