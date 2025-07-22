@@ -99,17 +99,18 @@ npm run dev
 
 1. **Setup Game**: Choose the number of rounds (3, 5, 7, or 10) and enter a room name
 2. **Join Room**: Click "Join Room" and wait for a second player to join
-3. **Topic Selection Phase**: 
+3. **Share Link**: Use the "Copy Link" button to send your room URL to another player
+4. **Topic Selection Phase**:
    - Player 2 selects 3-5 topics from 20 available options for Player 1
    - Topics include both safe and 18+ adult content with suggested answers
    - Click on topics to see suggested responses before selecting
-4. **Statement Creation Phase**: 
+5. **Statement Creation Phase**:
    - Player 1 creates 3 statements about the assigned topic
    - Mark which statement is TRUE by clicking the check icon
-5. **Guessing Phase**: Player 2 tries to identify the true statement
-6. **Role Reversal**: Player 1 now selects topics for Player 2
-7. **Continue**: Play the selected number of rounds - each round has both players taking turns
-8. **Win**: The player with the most correct guesses wins!
+6. **Guessing Phase**: Player 2 tries to identify the true statement
+7. **Role Reversal**: Player 1 now selects topics for Player 2
+8. **Continue**: Play the selected number of rounds - each round has both players taking turns
+9. **Win**: The player with the most correct guesses wins!
 
 ### 🎮 New Enhanced Features
 

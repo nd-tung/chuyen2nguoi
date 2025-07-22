@@ -73,6 +73,9 @@ const detailList = document.getElementById('detail-list');
 const backToHistoryBtn = document.getElementById('back-to-history');
 const clearHistoryBtn = document.getElementById('clear-history');
 const backToMenuBtn = document.getElementById('back-to-menu');
+const shareLinkContainer = document.getElementById('share-link-container');
+const shareLinkInput = document.getElementById('share-link');
+const copyLinkBtn = document.getElementById('copy-link');
 
 // Side Menu elements
 const menuBtn = document.getElementById('menu-btn');
@@ -677,6 +680,7 @@ const translations = {
         nextTurn: 'Next Turn',
         nextRound: 'Next Round',
         showResults: 'Show Results',
+        copyLink: 'Copy Link',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
         instructions: [
             'Two players join the same room',
@@ -730,6 +734,7 @@ const translations = {
         nextTurn: 'Lượt Tiếp',
         nextRound: 'Vòng Tiếp',
         showResults: 'Xem Kết Quả',
+        copyLink: 'Sao chép liên kết',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
@@ -787,6 +792,14 @@ function initializeApp() {
     if (storedName && playerNameInput) {
         playerNameInput.value = storedName;
         playerName = storedName;
+    }
+
+    // Prefill room name if provided via URL
+    const params = new URLSearchParams(window.location.search);
+    const roomFromLink = params.get('room');
+    if (roomFromLink && roomNameInput) {
+        roomNameInput.value = roomFromLink;
+        roomName = roomFromLink;
     }
     
     // Add keyboard navigation support
@@ -905,6 +918,19 @@ function initializeApp() {
             }
         });
     }
+
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', () => {
+            if (shareLinkInput) {
+                navigator.clipboard.writeText(shareLinkInput.value).then(() => {
+                    copyLinkBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyLinkBtn.textContent = translations[currentLanguage].copyLink || 'Copy Link';
+                    }, 1500);
+                });
+            }
+        });
+    }
 }
 
 if (document.readyState === 'loading') {
@@ -959,6 +985,7 @@ function updateLanguageContent() {
         
         const joinRoomBtn = document.getElementById('join-room');
         if (joinRoomBtn) joinRoomBtn.textContent = t.joinRoom;
+        if (copyLinkBtn) copyLinkBtn.textContent = t.copyLink;
         
         // Update instructions list
         const instructionsList = document.querySelector('#instructions-content ol');
@@ -1280,6 +1307,13 @@ socket.on('room created', (room, player, rounds, names) => {
     topicSelectionArea.classList.add('hidden');
     inputArea.classList.add('hidden');
     guessArea.classList.add('hidden');
+
+    if (shareLinkContainer && shareLinkInput) {
+        const link = `${window.location.origin}?room=${encodeURIComponent(roomName)}`;
+        shareLinkInput.value = link;
+        shareLinkContainer.classList.remove('hidden');
+        if (copyLinkBtn) copyLinkBtn.textContent = translations[currentLanguage].copyLink || 'Copy Link';
+    }
 });
 
 socket.on('room joined', (room, player, rounds, names) => {
@@ -1504,6 +1538,7 @@ socket.on('player joined', (names) => {
     console.log('Player joined:', names);
     updatePlayerNames(names);
     gameStatusDisplay.textContent = 'Both players are ready!';
+    if (shareLinkContainer) shareLinkContainer.classList.add('hidden');
 });
 
 socket.on('player left', (playerNum) => {
