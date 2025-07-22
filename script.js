@@ -105,6 +105,20 @@ let selectedTruthIndex = -1;
 let currentLanguage = 'en';
 let isViewer = false;
 
+function applyViewerMode() {
+    const elements = [
+        document.getElementById("confirm-topics"),
+        document.getElementById("submit-statements"),
+        document.getElementById("next-round"),
+        document.getElementById("see-topic-btn"),
+        document.getElementById("hide-topic-help"),
+        document.getElementById("select-current-topic"),
+        document.getElementById("play-again")
+    ];
+    elements.forEach(el => { if (el) el.classList.add("hidden"); });
+    document.querySelectorAll(".remove-topic").forEach(btn => btn.classList.add("hidden"));
+}
+
 // Topics data with suggestions
 const topics = {
     // Safe topics
@@ -922,6 +936,7 @@ function initializeApp() {
                 return;
             }
             isViewer = true;
+            applyViewerMode();
             socket.emit('create or join', roomName, totalRounds, playerName, true);
             joinViewerBtn.disabled = true;
             joinViewerBtn.textContent = 'Joining...';
@@ -1358,6 +1373,7 @@ socket.on('viewer joined', (data) => {
     totalRounds = data.rounds;
     if (data.playerNames) playerNames = data.playerNames;
     isViewer = true;
+    applyViewerMode();
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = 'Viewer';
@@ -1429,6 +1445,7 @@ socket.on('viewer start statement creation', (data) => {
     topicDisplay.textContent = currentTopic ? currentTopic.title : '';
     document.querySelectorAll('input[name="truth-selection"]').forEach(r => r.disabled = true);
     [statement1Input, statement2Input, statement3Input].forEach(inp => inp.disabled = true);
+    applyViewerMode();
 });
 
 socket.on('viewer statement typing', (statementsArray) => {
@@ -1450,6 +1467,7 @@ socket.on('viewer statements submitted', (submittedStatements, topicKey) => {
     topicSelectionArea.classList.add('hidden');
     inputArea.classList.add('hidden');
     currentTopicDiv.classList.add('hidden');
+    applyViewerMode();
 });
 
 socket.on('viewer start topic selection', (data) => {
@@ -1461,6 +1479,7 @@ socket.on('viewer start topic selection', (data) => {
     updateSelectedTopicsList();
     topicSelectionArea.classList.remove('hidden');
     inputArea.classList.add('hidden');
+    applyViewerMode();
     guessArea.classList.add('hidden');
 });
 
@@ -1468,6 +1487,7 @@ socket.on('viewer topic progress', (topics) => {
     if (!isViewer) return;
     selectedTopics = topics;
     updateSelectedTopicsList();
+    applyViewerMode();
     updateTopicCards();
 });
 
@@ -1554,7 +1574,7 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, round
     // Only show next turn button if the current player was guessing (not creating statements)
     const wasGuessing = !guessArea.classList.contains('hidden');
     
-    if (wasGuessing) {
+    if (wasGuessing && !isViewer) {
         // This player was guessing, show them the next turn button
         if (gameOverNext) {
             nextRoundBtn.textContent = translations[currentLanguage].showResults || 'Show Results';
@@ -1564,6 +1584,8 @@ socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, round
             nextRoundBtn.textContent = translations[currentLanguage].nextTurn || 'Next Turn';
         }
         nextRoundBtn.classList.remove('hidden');
+    } else if (wasGuessing && isViewer) {
+        nextRoundBtn.classList.add('hidden');
     } else {
         // This player was creating statements, show them a waiting message
         const t = translations[currentLanguage];
