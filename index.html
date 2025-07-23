@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
     <title>Two Truths and a Lie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -132,6 +135,27 @@
                     <button id="exit-game" class="exit-btn">Exit Game</button>
                 </div>
             </div>
+            
+            <!-- Emoji Interaction Panel -->
+            <div id="emoji-interaction" class="emoji-panel hidden">
+                <div class="emoji-header">
+                    <h4>Quick Reactions</h4>
+                    <button id="toggle-emoji-panel" class="emoji-toggle">😀</button>
+                </div>
+                <div class="emoji-content">
+                    <div class="emoji-buttons">
+                        <button class="emoji-btn" data-emoji="👍" title="Thumbs up">👍</button>
+                        <button class="emoji-btn" data-emoji="😂" title="Laughing">😂</button>
+                        <button class="emoji-btn" data-emoji="😮" title="Surprised">😮</button>
+                        <button class="emoji-btn" data-emoji="🤔" title="Thinking">🤔</button>
+                        <button class="emoji-btn" data-emoji="👏" title="Clapping">👏</button>
+                        <button class="emoji-btn" data-emoji="😎" title="Cool">😎</button>
+                        <button class="emoji-btn" data-emoji="🙄" title="Eye roll">🙄</button>
+                        <button class="emoji-btn" data-emoji="❤️" title="Love">❤️</button>
+                    </div>
+                    <div id="emoji-messages" class="emoji-messages"></div>
+                </div>
+            </div>
             <h2 id="round-title"></h2>
             
             <div id="topic-selection-area" class="hidden">
@@ -142,7 +166,7 @@
                     <div class="custom-topic-input-group">
                         <input type="text" id="custom-topic-name" placeholder="Topic name (e.g., 'My Dreams')" maxlength="50">
                         <textarea id="custom-topic-description" placeholder="Brief description (optional)" maxlength="100" rows="2"></textarea>
-                        <textarea id="custom-topic-suggestions" placeholder="Add 3-5 example statements (one per line)" rows="4"></textarea>
+                        <textarea id="custom-topic-suggestions" placeholder="Add example statements (optional - one per line)" rows="3"></textarea>
                         <div class="custom-topic-options">
                             <label class="point-value-label">
                                 <span>Point Value:</span>
@@ -151,13 +175,8 @@
                                     <option value="2">2 points (Moderate)</option>
                                     <option value="3">3 points (Sensitive)</option>
                                     <option value="4">4 points (Deep)</option>
-                                    <option value="5">5 points (Adult)</option>
-                                    <option value="8">8 points (18+ Special)</option>
+                                    <option value="5">5 points (Challenging)</option>
                                 </select>
-                            </label>
-                            <label class="adult-content-label">
-                                <input type="checkbox" id="custom-topic-adult">
-                                <span>Adult content (18+)</span>
                             </label>
                         </div>
                         <div class="custom-topic-actions">
@@ -245,9 +264,6 @@
                 </div>
                 <div class="topic-preview-item">
                     <strong>Description:</strong> <span id="preview-topic-description"></span>
-                </div>
-                <div class="topic-preview-item">
-                    <strong>Adult Content:</strong> <span id="preview-topic-adult"></span>
                 </div>
                 <div class="topic-preview-item">
                     <strong>Suggestions:</strong>
