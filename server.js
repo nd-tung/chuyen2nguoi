@@ -201,6 +201,30 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('create custom topic', (room, customTopic) => {
+        if (rooms[room]) {
+            console.log(`Custom topic request in room ${room}:`, customTopic);
+            const otherPlayerSocketId = Object.keys(rooms[room].players).find(
+                id => id !== socket.id
+            );
+            if (otherPlayerSocketId) {
+                io.to(otherPlayerSocketId).emit('approve custom topic', customTopic);
+            }
+        }
+    });
+
+    socket.on('approve custom topic', (room, customTopic) => {
+        if (rooms[room]) {
+            console.log(`Custom topic approved in room ${room}:`, customTopic);
+            const topicKey = `custom_${Date.now()}`;
+            customTopic.key = topicKey;
+            // Add custom topic to the room's session
+            rooms[room].customTopics = rooms[room].customTopics || {};
+            rooms[room].customTopics[topicKey] = customTopic;
+            io.to(room).emit('custom topic approved', topicKey, customTopic);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
         for (let room in rooms) {

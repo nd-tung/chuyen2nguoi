@@ -1146,6 +1146,29 @@ function createTopicGrid() {
         
         topicGrid.appendChild(topicCard);
     });
+    
+    // Add "Create Custom Topic" template card
+    const customTopicCard = document.createElement('div');
+    customTopicCard.className = 'topic-card custom-topic-template';
+    customTopicCard.tabIndex = 0;
+    customTopicCard.innerHTML = `
+        <h4>✨ Create Custom Topic</h4>
+        <p>Click here to create your own topic with custom questions</p>
+    `;
+    
+    // Handle clicking on the custom topic template
+    customTopicCard.addEventListener('click', () => {
+        showCustomTopicForm();
+    });
+    
+    customTopicCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showCustomTopicForm();
+        }
+    });
+    
+    topicGrid.appendChild(customTopicCard);
 }
 
 function showTopicSuggestions(topicKey, topic) {
@@ -1257,8 +1280,66 @@ function removeTopic(topicKey) {
 }
 
 
+// Custom topic form functions
+function showCustomTopicForm() {
+    // Hide topic grid and suggestions
+    topicGrid.style.display = 'none';
+    topicSuggestions.classList.add('hidden');
+    
+    // Show custom topic form
+    const customTopicSection = document.getElementById('custom-topic-section');
+    customTopicSection.classList.remove('hidden');
+    
+    // Focus on the topic name input
+    const nameInput = document.getElementById('custom-topic-name');
+    if (nameInput) nameInput.focus();
+}
+
+function hideCustomTopicForm() {
+    // Hide custom topic form
+    const customTopicSection = document.getElementById('custom-topic-section');
+    customTopicSection.classList.add('hidden');
+    
+    // Show topic grid again
+    topicGrid.style.display = 'grid';
+    
+    // Clear form fields
+    document.getElementById('custom-topic-name').value = '';
+    document.getElementById('custom-topic-description').value = '';
+    document.getElementById('custom-topic-suggestions').value = '';
+    document.getElementById('custom-topic-points').value = '1';
+    document.getElementById('custom-topic-adult').checked = false;
+}
+
 // Confirm topics selection
-confirmTopicsBtn.addEventListener('click', () => {
+  document.getElementById('create-custom-topic').onclick = () => {
+    const customTopicName = document.getElementById('custom-topic-name').value.trim();
+    const customTopicDescription = document.getElementById('custom-topic-description').value.trim();
+    const customTopicSuggestions = document.getElementById('custom-topic-suggestions').value.trim().split('\n').filter(s => s.trim());
+    const customTopicPoints = parseInt(document.getElementById('custom-topic-points').value);
+    const isAdult = document.getElementById('custom-topic-adult').checked;
+    
+    if (customTopicName && customTopicSuggestions.length >= 3) {
+      const customTopic = {
+        title: customTopicName,
+        description: customTopicDescription,
+        suggestions: customTopicSuggestions,
+        points: customTopicPoints,
+        isAdult
+      };
+      socket.emit('create custom topic', roomName, customTopic);
+      hideCustomTopicForm(); // Hide the form after submission
+    } else {
+      alert('Please enter a topic name and at least 3 suggestions.');
+    }
+  };
+  
+  // Cancel custom topic creation
+  document.getElementById('cancel-custom-topic').onclick = () => {
+    hideCustomTopicForm();
+  };
+
+  confirmTopicsBtn.addEventListener('click', () => {
     console.log('Confirm topics clicked, selected topics:', selectedTopics); // Debug log
     console.log('Room name:', roomName); // Debug log
     if (selectedTopics.length >= 1) {
@@ -1999,6 +2080,71 @@ function showSessionDetails(item) {
         li.textContent = `Round ${r.round} (${r.topic}) - ${statementsText}`;
         detailList.appendChild(li);
     });
+}
+
+// Custom topic approval handlers
+socket.on('approve custom topic', (customTopic) => {
+    const popup = document.getElementById('custom-topic-approval-popup');
+    const titleEl = document.getElementById('preview-topic-title');
+    const descEl = document.getElementById('preview-topic-description');
+    const adultEl = document.getElementById('preview-topic-adult');
+    const suggestionsEl = document.getElementById('preview-topic-suggestions');
+    
+    // Populate popup with custom topic details
+    titleEl.textContent = customTopic.title;
+    descEl.textContent = customTopic.description || 'No description provided';
+    adultEl.textContent = customTopic.isAdult ? 'Yes' : 'No';
+    
+    suggestionsEl.innerHTML = '';
+    customTopic.suggestions.forEach(suggestion => {
+        const li = document.createElement('li');
+        li.textContent = suggestion;
+        suggestionsEl.appendChild(li);
+    });
+    
+    popup.classList.remove('hidden');
+    
+    // Handle approval/rejection
+    document.getElementById('approve-custom-topic').onclick = () => {
+        socket.emit('approve custom topic', roomName, customTopic);
+        popup.classList.add('hidden');
+    };
+    
+    document.getElementById('reject-custom-topic').onclick = () => {
+        popup.classList.add('hidden');
+        // Could emit a rejection event if needed
+    };
+});
+
+socket.on('custom topic approved', (topicKey, customTopic) => {
+    // Add the custom topic to our local topics for this session
+    const currentTopics = getCurrentTopics();
+    
+    // Use the points value from the custom topic (already set by the form)
+    
+    // Add to current language topics
+    currentTopics[topicKey] = customTopic;
+    
+    // Refresh topic grid to show the new custom topic
+    if (!topicSelectionArea.classList.contains('hidden')) {
+        createTopicGrid();
+    }
+    
+    // Clear the custom topic form
+    document.getElementById('custom-topic-name').value = '';
+    document.getElementById('custom-topic-description').value = '';
+    document.getElementById('custom-topic-suggestions').value = '';
+    document.getElementById('custom-topic-adult').checked = false;
+    
+    // Show success message
+    alert('Custom topic approved and added!');
+});
+
+// Modify the createTopicGrid function to include custom topics
+function getCurrentTopicsWithCustom() {
+    const baseTopics = getCurrentTopics();
+    // Custom topics are already added to baseTopics by the approval handler
+    return baseTopics;
 }
 
 // Radio button selection handling
