@@ -1348,6 +1348,10 @@ function hideCustomTopicForm() {
             alert('Room name error. Please refresh and try again.');
             return;
         }
+        
+        // Show selected topic immediately to the selector
+        showSelectedTopicToSelector();
+        
         if (!isViewer) {
             console.log('Sending topics selected event to server'); // Debug log
             socket.emit('topics selected', roomName, selectedTopics);
@@ -1573,6 +1577,9 @@ socket.on('viewer start statement creation', (data) => {
 socket.on('viewer statement typing', (statementsArray) => {
     if (!isViewer) return;
     [statement1Input.value, statement2Input.value, statement3Input.value] = statementsArray;
+    
+    // Update real-time display for viewers and other players
+    updateRealTimeStatementDisplay(statementsArray);
 });
 
 socket.on('viewer statements submitted', (submittedStatements, topicKey) => {
@@ -1652,6 +1659,7 @@ socket.on('start statement creation', (topicKey, round) => {
     topicSelectionArea.classList.add('hidden');
     guessArea.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
+    realTimeStatementsDisplay.classList.add('hidden');
 
     nextRoundBtn.classList.add('hidden');
     resultMessage.textContent = '';
@@ -1677,6 +1685,7 @@ socket.on('statements submitted', (submittedStatements, topicKey) => {
     topicSelectionArea.classList.add('hidden');
     inputArea.classList.add('hidden');
     currentTopicDiv.classList.add('hidden');
+    realTimeStatementsDisplay.classList.add('hidden');
 });
 
 socket.on('guess result', (guessIndex, correctIndex, isCorrect, newScores, roundOver, gameOverNext, pointsAwarded) => {
@@ -1820,6 +1829,123 @@ socket.on('room full', () => {
         joinViewerBtn.textContent = translations[currentLanguage].joinViewer || 'Join as Viewer';
     }
 });
+
+// Function to show selected topic to the selector
+function showSelectedTopicToSelector() {
+    if (selectedTopics.length > 0) {
+        const currentTopics = getCurrentTopics();
+        const selectedTopic = currentTopics[selectedTopics[0]];
+        if (selectedTopic) {
+            // Create a temporary display to show the selected topic
+            const selectedTopicDisplay = document.createElement('div');
+            selectedTopicDisplay.className = 'selected-topic-confirmation';
+            selectedTopicDisplay.innerHTML = `
+                <div class="topic-confirmation-card">
+                    <h3>✓ Topic Selected</h3>
+                    <h4>${selectedTopic.title}</h4>
+                    <p>${selectedTopic.description}</p>
+                    <div class="topic-points">${selectedTopic.points} points</div>
+                    <p class="waiting-message">Waiting for the other player to create statements...</p>
+                </div>
+            `;
+            
+            // Insert after topic selection area
+            topicSelectionArea.parentNode.insertBefore(selectedTopicDisplay, topicSelectionArea.nextSibling);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                if (selectedTopicDisplay.parentNode) {
+                    selectedTopicDisplay.parentNode.removeChild(selectedTopicDisplay);
+                }
+            }, 8000);
+        }
+    }
+}
+
+// Enhanced real-time statement creation display
+function setupRealTimeStatementDisplay() {
+    // Create a real-time statement display area
+    const realTimeDisplay = document.createElement('div');
+    realTimeDisplay.id = 'real-time-statements';
+    realTimeDisplay.className = 'real-time-display hidden';
+    realTimeDisplay.innerHTML = `
+        <div class="real-time-header">
+            <h3>🔍 Watching Player Create Statements</h3>
+            <p class="real-time-topic">Topic: <span id="real-time-topic-name"></span></p>
+        </div>
+        <div class="real-time-statements">
+            <div class="statement-preview">
+                <span class="statement-number">1.</span>
+                <span class="statement-text" id="real-time-stmt-1">...</span>
+                <span class="typing-indicator" id="typing-1"></span>
+            </div>
+            <div class="statement-preview">
+                <span class="statement-number">2.</span>
+                <span class="statement-text" id="real-time-stmt-2">...</span>
+                <span class="typing-indicator" id="typing-2"></span>
+            </div>
+            <div class="statement-preview">
+                <span class="statement-number">3.</span>
+                <span class="statement-text" id="real-time-stmt-3">...</span>
+                <span class="typing-indicator" id="typing-3"></span>
+            </div>
+        </div>
+        <div class="real-time-footer">
+            <p>💡 The truth will be revealed when you guess!</p>
+        </div>
+    `;
+    
+    // Insert before guess area
+    gameScreen.insertBefore(realTimeDisplay, guessArea);
+    
+    return realTimeDisplay;
+}
+
+// Initialize real-time display
+const realTimeStatementsDisplay = setupRealTimeStatementDisplay();
+
+// Function to update real-time statement display
+function updateRealTimeStatementDisplay(statementsArray) {
+    if (!realTimeStatementsDisplay) return;
+    
+    // Show the real-time display when statements are being typed
+    realTimeStatementsDisplay.classList.remove('hidden');
+    
+    // Update topic name if available
+    const realTimeTopicName = document.getElementById('real-time-topic-name');
+    if (realTimeTopicName && currentTopic) {
+        realTimeTopicName.textContent = currentTopic.title;
+    }
+    
+    // Update each statement display
+    statementsArray.forEach((statement, index) => {
+        const stmtElement = document.getElementById(`real-time-stmt-${index + 1}`);
+        const typingIndicator = document.getElementById(`typing-${index + 1}`);
+        
+        if (stmtElement && typingIndicator) {
+            if (statement && statement.trim()) {
+                stmtElement.textContent = statement;
+                typingIndicator.textContent = ''; // Hide typing indicator when text exists
+                stmtElement.style.opacity = '1';
+            } else {
+                stmtElement.textContent = '...';
+                typingIndicator.textContent = '⌨️'; // Show typing indicator
+                stmtElement.style.opacity = '0.5';
+            }
+        }
+    });
+}
+
+// Enhanced socket handler for non-viewer statement typing updates
+function handleStatementTypingUpdates() {
+    // Listen for statement typing updates from other players
+    socket.on('statement typing', (statementsArray) => {
+        // Only show real-time updates if we're not the one typing
+        if (playerNumber !== rooms[roomName]?.statementCreator) {
+            updateRealTimeStatementDisplay(statementsArray);
+        }
+    });
+}
 
 // Utility functions
 function addDesktopEnhancements() {
