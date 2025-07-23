@@ -10,6 +10,118 @@ app.use(express.static(__dirname));
 
 let rooms = {};
 
+// Random elements for story building
+const storyRandomElements = [
+    'a talking cat',
+    'a mysterious door',
+    'your biggest fear',
+    'something that sparkles',
+    'an unexpected phone call',
+    'a childhood memory',
+    'a rainy day',
+    'something you lost',
+    'a strange noise',
+    'an old friend',
+    'a secret passage',
+    'something blue',
+    'a forgotten dream',
+    'an unusual smell',
+    'a piece of advice',
+    'something from yesterday',
+    'a mirror',
+    'something that flies',
+    'a warm feeling',
+    'an unopened letter'
+];
+
+// Would You Rather Questions Database (Server-side)
+const wouldYouRatherQuestions = {
+    easy: [
+        {
+            question: "Would you rather have the ability to fly or be invisible?",
+            optionA: "Have the ability to fly",
+            optionB: "Be invisible",
+            category: "Superpowers"
+        },
+        {
+            question: "Would you rather always be 10 minutes late or always be 20 minutes early?",
+            optionA: "Always be 10 minutes late",
+            optionB: "Always be 20 minutes early",
+            category: "Time Management"
+        },
+        {
+            question: "Would you rather have unlimited money or unlimited time?",
+            optionA: "Unlimited money",
+            optionB: "Unlimited time",
+            category: "Life Choices"
+        },
+        {
+            question: "Would you rather live without music or live without movies?",
+            optionA: "Live without music",
+            optionB: "Live without movies",
+            category: "Entertainment"
+        },
+        {
+            question: "Would you rather be able to speak every language or play every instrument?",
+            optionA: "Speak every language",
+            optionB: "Play every instrument",
+            category: "Skills"
+        }
+    ],
+    moderate: [
+        {
+            question: "Would you rather know when you're going to die or how you're going to die?",
+            optionA: "Know when you're going to die",
+            optionB: "Know how you're going to die",
+            category: "Life & Death"
+        },
+        {
+            question: "Would you rather lose all your memories from birth to now or lose your ability to make new memories?",
+            optionA: "Lose all past memories",
+            optionB: "Lose ability to make new memories",
+            category: "Memory"
+        },
+        {
+            question: "Would you rather be feared by all or loved by all?",
+            optionA: "Be feared by all",
+            optionB: "Be loved by all",
+            category: "Relationships"
+        },
+        {
+            question: "Would you rather have the ability to change the past or see into the future?",
+            optionA: "Change the past",
+            optionB: "See into the future",
+            category: "Time Powers"
+        }
+    ],
+    extreme: [
+        {
+            question: "Would you rather sacrifice yourself to save 100 strangers or sacrifice 100 strangers to save yourself?",
+            optionA: "Sacrifice yourself for 100 strangers",
+            optionB: "Sacrifice 100 strangers for yourself",
+            category: "Moral Dilemma"
+        },
+        {
+            question: "Would you rather live in a world where you're the only human left or be trapped in a time loop of the worst day of your life?",
+            optionA: "Only human left in the world",
+            optionB: "Time loop of worst day",
+            category: "Existential Horror"
+        },
+        {
+            question: "Would you rather have to kill one innocent person to save your family or let your family die to save that innocent person?",
+            optionA: "Kill innocent person, save family",
+            optionB: "Let family die, save innocent person",
+            category: "Family vs Morality"
+        },
+        {
+            question: "Would you rather live forever but watch everyone you love die or die young but know everyone you love will live forever?",
+            optionA: "Live forever, watch loved ones die",
+            optionB: "Die young, loved ones live forever",
+            category: "Immortality Dilemma"
+        }
+    ]
+};
+
 io.on('connection', (socket) => {
     console.log('a user connected:', socket.id);
 
@@ -225,6 +337,164 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Story Building Challenge handlers
+    socket.on('start story building', (room) => {
+        console.log(`Starting story building mode in room ${room}`);
+        if (rooms[room]) {
+            initializeStoryBuildingMode(room);
+        }
+    });
+
+    socket.on('story contribution', (room, contribution, turn, playerNumber) => {
+        console.log(`Story contribution in room ${room} from Player ${playerNumber}: ${contribution}`);
+        if (rooms[room] && rooms[room].storyMode) {
+            // Add contribution to story
+            rooms[room].storyMode.contributions.push({
+                turn: turn,
+                player: playerNumber,
+                text: contribution,
+                timestamp: Date.now()
+            });
+            
+            // Update story text
+            rooms[room].storyMode.storyText += contribution + ' ';
+            rooms[room].storyMode.currentTurn++;
+            
+            // Get next random element
+            const nextElement = getRandomStoryElement();
+            rooms[room].storyMode.currentRandomElement = nextElement;
+            
+            // Broadcast story update to all players in room
+            io.in(room).emit('story updated', {
+                contributions: rooms[room].storyMode.contributions,
+                storyText: rooms[room].storyMode.storyText,
+                currentTurn: rooms[room].storyMode.currentTurn,
+                maxTurns: rooms[room].storyMode.maxTurns,
+                currentPlayer: rooms[room].storyMode.currentTurn % 2 === 1 ? 1 : 2,
+                randomElement: nextElement,
+                isComplete: rooms[room].storyMode.currentTurn > rooms[room].storyMode.maxTurns
+            });
+            
+            // Check if story is complete
+            if (rooms[room].storyMode.currentTurn > rooms[room].storyMode.maxTurns) {
+                completeStoryBuilding(room);
+            }
+        }
+    });
+
+    socket.on('get story state', (room) => {
+        if (rooms[room] && rooms[room].storyMode) {
+            socket.emit('story state', {
+                contributions: rooms[room].storyMode.contributions,
+                storyText: rooms[room].storyMode.storyText,
+                currentTurn: rooms[room].storyMode.currentTurn,
+                maxTurns: rooms[room].storyMode.maxTurns,
+                currentPlayer: rooms[room].storyMode.currentTurn % 2 === 1 ? 1 : 2,
+                randomElement: rooms[room].storyMode.currentRandomElement,
+                isComplete: rooms[room].storyMode.currentTurn > rooms[room].storyMode.maxTurns
+            });
+        }
+    });
+
+    // Would You Rather: Extreme Edition handlers
+    socket.on('start would you rather', (room) => {
+        console.log(`Starting Would You Rather mode in room ${room}`);
+        if (rooms[room]) {
+            initializeWouldYouRatherMode(room);
+        }
+    });
+
+    socket.on('wyr choice made', (room, playerNumber, choice) => {
+        console.log(`WYR choice made in room ${room}: Player ${playerNumber} chose ${choice}`);
+        if (rooms[room] && rooms[room].wyrMode) {
+            // Store player choice
+            rooms[room].wyrMode.playerChoices[playerNumber] = choice;
+            
+            // Broadcast choice made (without revealing what they chose)
+            socket.to(room).emit('wyr player choice', playerNumber, choice);
+            
+            console.log(`Player ${playerNumber} choice stored:`, choice);
+        }
+    });
+
+    socket.on('wyr explanation submitted', (room, playerNumber, explanation) => {
+        console.log(`WYR explanation submitted in room ${room}: Player ${playerNumber}`);
+        if (rooms[room] && rooms[room].wyrMode) {
+            // Store player explanation
+            rooms[room].wyrMode.playerExplanations[playerNumber] = explanation;
+            
+            // Broadcast explanation received
+            socket.to(room).emit('wyr explanation received', playerNumber, explanation);
+            
+            // Check if all players have submitted explanations
+            const totalPlayers = Object.keys(rooms[room].players).length;
+            const submittedExplanations = Object.keys(rooms[room].wyrMode.playerExplanations).length;
+            
+            console.log(`Explanations: ${submittedExplanations}/${totalPlayers}`);
+            
+            if (submittedExplanations >= totalPlayers) {
+                // All players have submitted, show results
+                const results = {
+                    choices: rooms[room].wyrMode.playerChoices,
+                    explanations: rooms[room].wyrMode.playerExplanations,
+                    question: rooms[room].wyrMode.currentQuestion
+                };
+                
+                io.in(room).emit('wyr round complete', results);
+                console.log(`Round ${rooms[room].wyrMode.currentRound} complete in room ${room}`);
+            }
+        }
+    });
+
+    socket.on('wyr next round', (room, round, question) => {
+        console.log(`WYR next round in room ${room}: Round ${round}`);
+        if (rooms[room] && rooms[room].wyrMode) {
+            // Store previous round data in history
+            if (rooms[room].wyrMode.currentQuestion) {
+                rooms[room].wyrMode.roundHistory.push({
+                    round: rooms[room].wyrMode.currentRound,
+                    question: rooms[room].wyrMode.currentQuestion,
+                    choices: { ...rooms[room].wyrMode.playerChoices },
+                    explanations: { ...rooms[room].wyrMode.playerExplanations }
+                });
+            }
+            
+            // Reset for next round
+            rooms[room].wyrMode.currentRound = round;
+            rooms[room].wyrMode.currentQuestion = question;
+            rooms[room].wyrMode.playerChoices = {};
+            rooms[room].wyrMode.playerExplanations = {};
+            
+            // Check if game should end
+            if (round > rooms[room].wyrMode.maxRounds) {
+                completeWouldYouRatherGame(room);
+                return;
+            }
+            
+            // Broadcast new question to all players
+            io.in(room).emit('wyr question', question, round);
+            
+            console.log(`Round ${round} started with question:`, question.question);
+        }
+    });
+
+    socket.on('wyr end game', (room) => {
+        console.log(`WYR end game requested in room ${room}`);
+        if (rooms[room] && rooms[room].wyrMode) {
+            // Store current round data in history if it exists
+            if (rooms[room].wyrMode.currentQuestion) {
+                rooms[room].wyrMode.roundHistory.push({
+                    round: rooms[room].wyrMode.currentRound,
+                    question: rooms[room].wyrMode.currentQuestion,
+                    choices: { ...rooms[room].wyrMode.playerChoices },
+                    explanations: { ...rooms[room].wyrMode.playerExplanations }
+                });
+            }
+            
+            completeWouldYouRatherGame(room);
+        }
+    });
+
     // Emoji interaction handling
     socket.on('send emoji', (data) => {
         console.log(`Emoji sent in room ${data.room}:`, data.emoji, 'from', data.sender);
@@ -345,6 +615,133 @@ function startStatementCreationPhase(room) {
             round: roomData.currentRound
         });
     });
+}
+
+// Story Building Challenge helper functions
+function initializeStoryBuildingMode(room) {
+    console.log(`Initializing story building mode for room ${room}`);
+    const roomData = rooms[room];
+    
+    // Initialize story mode state
+    roomData.storyMode = {
+        storyText: '',
+        currentTurn: 1,
+        maxTurns: 10,
+        contributions: [],
+        currentRandomElement: getRandomStoryElement(),
+        startTime: Date.now(),
+        isActive: true
+    };
+    
+    roomData.currentPhase = 'story_building';
+    
+    // Notify all players that story building has started
+    io.in(room).emit('story building started', {
+        currentTurn: roomData.storyMode.currentTurn,
+        maxTurns: roomData.storyMode.maxTurns,
+        currentPlayer: 1, // Player 1 starts
+        randomElement: roomData.storyMode.currentRandomElement,
+        playerNames: roomData.playerNames
+    });
+    
+    console.log(`Story building initialized for room ${room} with element: ${roomData.storyMode.currentRandomElement}`);
+}
+
+function getRandomStoryElement() {
+    return storyRandomElements[Math.floor(Math.random() * storyRandomElements.length)];
+}
+
+function completeStoryBuilding(room) {
+    console.log(`Completing story building for room ${room}`);
+    const roomData = rooms[room];
+    
+    if (roomData.storyMode) {
+        roomData.storyMode.isActive = false;
+        roomData.storyMode.endTime = Date.now();
+        
+        // Calculate some basic stats
+        const totalWords = roomData.storyMode.storyText.trim().split(/\s+/).length;
+        const averageWordsPerTurn = Math.round(totalWords / roomData.storyMode.contributions.length);
+        
+        // Create story summary
+        const storySummary = {
+            finalStory: roomData.storyMode.storyText.trim(),
+            contributions: roomData.storyMode.contributions,
+            totalTurns: roomData.storyMode.contributions.length,
+            totalWords: totalWords,
+            averageWordsPerTurn: averageWordsPerTurn,
+            duration: roomData.storyMode.endTime - roomData.storyMode.startTime,
+            playerNames: roomData.playerNames
+        };
+        
+        // Notify all players that story is complete
+        io.in(room).emit('story building complete', storySummary);
+        
+        console.log(`Story building completed for room ${room}. Final story: ${roomData.storyMode.storyText.substring(0, 100)}...`);
+    }
+}
+
+// Would You Rather: Extreme Edition helper functions
+function initializeWouldYouRatherMode(room) {
+    console.log(`Initializing Would You Rather mode for room ${room}`);
+    const roomData = rooms[room];
+    
+    // Initialize Would You Rather mode state
+    roomData.wyrMode = {
+        currentRound: 1,
+        maxRounds: 5,
+        currentQuestion: null,
+        playerChoices: {},
+        playerExplanations: {},
+        startTime: Date.now(),
+        isActive: true,
+        roundHistory: []
+    };
+    
+    roomData.currentPhase = 'would_you_rather';
+    
+    // Get first question (easy difficulty for round 1)
+    const firstQuestion = getRandomWYRQuestion('easy');
+    roomData.wyrMode.currentQuestion = firstQuestion;
+    
+    // Notify all players that Would You Rather has started
+    io.in(room).emit('wyr game started', {
+        round: roomData.wyrMode.currentRound,
+        maxRounds: roomData.wyrMode.maxRounds,
+        question: firstQuestion,
+        playerNames: roomData.playerNames
+    });
+    
+    console.log(`Would You Rather initialized for room ${room} with question: ${firstQuestion.question}`);
+}
+
+function getRandomWYRQuestion(difficulty = 'easy') {
+    const questionSet = wouldYouRatherQuestions[difficulty] || wouldYouRatherQuestions.easy;
+    return questionSet[Math.floor(Math.random() * questionSet.length)];
+}
+
+function completeWouldYouRatherGame(room) {
+    console.log(`Completing Would You Rather game for room ${room}`);
+    const roomData = rooms[room];
+    
+    if (roomData.wyrMode) {
+        roomData.wyrMode.isActive = false;
+        roomData.wyrMode.endTime = Date.now();
+        
+        // Calculate game statistics
+        const totalRounds = roomData.wyrMode.roundHistory.length;
+        const gameStats = {
+            totalRounds: totalRounds,
+            duration: roomData.wyrMode.endTime - roomData.wyrMode.startTime,
+            playerNames: roomData.playerNames,
+            roundHistory: roomData.wyrMode.roundHistory
+        };
+        
+        // Notify all players that game is complete
+        io.in(room).emit('wyr game complete', gameStats);
+        
+        console.log(`Would You Rather completed for room ${room} after ${totalRounds} rounds`);
+    }
 }
 
 const PORT = process.env.PORT || 3001;

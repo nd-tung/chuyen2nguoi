@@ -70,6 +70,32 @@
                 </div>
             </div>
             
+            <div class="game-mode-selection">
+                <h3 id="mode-selection-title">Choose Game Mode:</h3>
+                <div class="mode-grid">
+                    <div class="mode-card active" data-mode="two-truths">
+                        <div class="mode-icon">🎯</div>
+                        <h4>Two Truths & a Lie</h4>
+                        <p>Classic game - guess which statement is true</p>
+                    </div>
+                    <div class="mode-card" data-mode="story-building">
+                        <div class="mode-icon">📚</div>
+                        <h4>Story Building Challenge</h4>
+                        <p>Collaborate to create an amazing story together</p>
+                    </div>
+                    <div class="mode-card" data-mode="would-you-rather">
+                        <div class="mode-icon">🤔</div>
+                        <h4>Would You Rather: Extreme Edition</h4>
+                        <p>Make tough philosophical choices and explain your reasoning</p>
+                    </div>
+                    <div class="mode-card" data-mode="assumption-buster">
+                        <div class="mode-icon">💥</div>
+                        <h4>Assumption Buster</h4>
+                        <p>Challenge assumptions about each other and discover surprising truths</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="game-settings">
                 <h3 id="settings-title">Game Settings:</h3>
                 <div class="setting-group">
@@ -240,6 +266,194 @@
                 <button class="statement-btn" id="statement-btn-2"></button>
                 <button class="statement-btn" id="statement-btn-3"></button>
             </div>
+            
+            <!-- Story Building Challenge Area -->
+            <div id="story-building-area" class="hidden">
+                <div class="story-header">
+                    <h3 id="story-title">Our Story</h3>
+                    <div class="story-progress">
+                        <span id="story-turn-indicator">Player 1's Turn</span>
+                        <div class="story-counter">Turn <span id="turn-counter">1</span> of <span id="max-turns">10</span></div>
+                    </div>
+                </div>
+                
+                <div class="story-display">
+                    <div id="story-text" class="story-content">
+                        <p class="story-starter">Once upon a time...</p>
+                    </div>
+                </div>
+                
+                <div id="random-element" class="random-element hidden">
+                    <div class="random-element-header">
+                        <span class="random-icon">🎲</span>
+                        <span>Include this element:</span>
+                    </div>
+                    <div id="random-element-text" class="random-element-content"></div>
+                </div>
+                
+                <div class="story-input">
+                    <textarea id="story-input-text" placeholder="Add 2-3 sentences to continue the story..." maxlength="200" rows="3"></textarea>
+                    <div class="story-input-controls">
+                        <div class="character-count">
+                            <span id="char-count">0</span>/200 characters
+                        </div>
+                        <button id="submit-story-part" class="story-submit-btn">Add to Story</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Assumption Buster Area -->
+            <div id="assumption-buster-area" class="hidden">
+                <div class="ab-header">
+                    <h3 id="ab-title">Assumption Buster</h3>
+                    <div class="ab-progress">
+                        <span id="ab-round-indicator">Round 1</span>
+                        <div class="ab-phase">Phase: <span id="ab-phase-indicator">Making Assumptions</span></div>
+                    </div>
+                </div>
+                
+                <div id="ab-make-assumption" class="ab-phase-area">
+                    <div class="assumption-prompt">
+                        <h4>Make an assumption about <span id="ab-target-player">the other player</span>:</h4>
+                        <p class="assumption-hint">Think about their personality, preferences, or experiences. What do you assume to be true about them?</p>
+                    </div>
+                    <div class="assumption-templates">
+                        <h5>Quick templates (optional):</h5>
+                        <div class="template-buttons">
+                            <button class="template-btn" data-template="I think you prefer [A] over [B]">Preferences</button>
+                            <button class="template-btn" data-template="I assume you have [experience/trait]">Experiences</button>
+                            <button class="template-btn" data-template="I believe you would [action] in [situation]">Behavior</button>
+                            <button class="template-btn" data-template="I think your personality is more [trait] than [trait]">Personality</button>
+                        </div>
+                    </div>
+                    <textarea id="ab-assumption-input" placeholder="Write your assumption here..." maxlength="200" rows="3"></textarea>
+                    <div class="ab-input-controls">
+                        <div class="char-count">Character count: <span id="ab-assumption-char-count">0</span>/200</div>
+                        <button id="submit-assumption" class="ab-submit-btn">Submit Assumption</button>
+                    </div>
+                </div>
+                
+                <div id="ab-respond-assumption" class="ab-phase-area hidden">
+                    <div class="assumption-display">
+                        <h4>Assumption about you:</h4>
+                        <p id="assumption-text">Loading assumption...</p>
+                    </div>
+                    
+                    <div class="ab-responses">
+                        <h5>Is this assumption correct?</h5>
+                        <div class="response-options">
+                            <button id="response-true" class="ab-response-btn response-true">
+                                <span class="response-icon">✓</span>
+                                <span class="response-label">True</span>
+                            </button>
+                            <button id="response-false" class="ab-response-btn response-false">
+                                <span class="response-icon">✗</span>
+                                <span class="response-label">False</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="ab-explanation-area" class="ab-explanation hidden">
+                    <h4>Explain your response:</h4>
+                    <p class="explanation-prompt">Why is this assumption true or false? Share the story behind it!</p>
+                    <textarea id="ab-explanation-input" placeholder="Tell us more about why this assumption is correct or incorrect..." maxlength="300" rows="3"></textarea>
+                    <div class="ab-explanation-controls">
+                        <div class="char-count">Character count: <span id="ab-char-count">0</span>/300</div>
+                        <button id="submit-ab-explanation" class="ab-submit-btn">Submit Explanation</button>
+                    </div>
+                </div>
+                
+                <div id="ab-results-area" class="ab-results hidden">
+                    <h4>Results & Revelations</h4>
+                    <div id="ab-player-results">
+                        <!-- Player results will be populated here dynamically -->
+                    </div>
+                    <div class="ab-scoring">
+                        <div id="ab-surprise-scores">
+                            <h5>Surprise Points Awarded:</h5>
+                            <div class="score-breakdown">
+                                <span id="ab-player1-points">Player 1: +0 pts</span>
+                                <span id="ab-player2-points">Player 2: +0 pts</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ab-next-round">
+                        <button id="ab-next-round" class="ab-next-btn">Next Round</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Would You Rather Area -->
+            <div id="would-you-rather-area" class="hidden">
+                <div class="wyr-header">
+                    <h3 id="wyr-title">Would You Rather...</h3>
+                    <div class="wyr-progress">
+                        <span id="wyr-round-indicator">Round 1</span>
+                        <div class="wyr-timer">Time to decide: <span id="wyr-timer">30</span>s</div>
+                    </div>
+                </div>
+                
+                <div class="wyr-question-display">
+                    <div id="wyr-question" class="wyr-question">
+                        <p id="wyr-question-text">Loading question...</p>
+                        <div class="wyr-difficulty">
+                            <span id="wyr-category">Category</span>
+                            <span id="wyr-difficulty-level">Difficulty: Hard</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wyr-choices">
+                    <button id="wyr-choice-a" class="wyr-choice-btn">
+                        <div class="choice-letter">A</div>
+                        <div class="choice-text">Option A</div>
+                    </button>
+                    <button id="wyr-choice-b" class="wyr-choice-btn">
+                        <div class="choice-letter">B</div>
+                        <div class="choice-text">Option B</div>
+                    </button>
+                </div>
+                
+                <div id="wyr-explanation-area" class="wyr-explanation hidden">
+                    <h4>Explain your choice:</h4>
+                    <textarea id="wyr-explanation-input" placeholder="Why did you choose this option? Share your reasoning..." maxlength="300" rows="3"></textarea>
+                    <div class="wyr-explanation-controls">
+                        <div class="char-count">Character count: <span id="wyr-char-count">0</span>/300</div>
+                        <button id="submit-wyr-explanation" class="wyr-submit-btn">Submit Explanation</button>
+                    </div>
+                </div>
+                
+                <div id="wyr-results-area" class="wyr-results hidden">
+                    <h4>Results & Explanations</h4>
+                    <div id="wyr-player-results">
+                        <div class="wyr-player-result" id="wyr-player1-result">
+                            <div class="result-header">
+                                <span class="player-name">Player 1</span>
+                                <span class="player-choice">Choice A</span>
+                            </div>
+                            <div class="result-explanation">Player 1's explanation...</div>
+                        </div>
+                        <div class="wyr-player-result" id="wyr-player2-result">
+                            <div class="result-header">
+                                <span class="player-name">Player 2</span>
+                                <span class="player-choice">Choice B</span>
+                            </div>
+                            <div class="result-explanation">Player 2's explanation...</div>
+                        </div>
+                    </div>
+                    <div class="wyr-scoring">
+                        <div id="wyr-thoughtfulness-scores">
+                            <h5>Thoughtfulness Points Awarded:</h5>
+                            <div class="score-breakdown">
+                                <span id="wyr-player1-points">Player 1: +0 pts</span>
+                                <span id="wyr-player2-points">Player 2: +0 pts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <p id="result-message"></p>
             <button id="next-round" class="hidden">Next Round</button>
         </div>

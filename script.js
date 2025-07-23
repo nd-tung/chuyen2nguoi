@@ -105,6 +105,353 @@ let truthIndex;
 let selectedTruthIndex = -1;
 let currentLanguage = 'en';
 let isViewer = false;
+let currentGameMode = 'two-truths'; // 'two-truths', 'story-building', or 'would-you-rather'
+
+// Story Building state
+let storyText = '';
+let currentTurn = 1;
+let maxTurns = 10;
+let storyContributions = [];
+let randomElements = [
+    'a talking cat',
+    'a mysterious door',
+    'your biggest fear',
+    'something that sparkles',
+    'an unexpected phone call',
+    'a childhood memory',
+    'a rainy day',
+    'something you lost',
+    'a strange noise',
+    'an old friend',
+    'a secret passage',
+    'something blue',
+    'a forgotten dream',
+    'an unusual smell',
+    'a piece of advice',
+    'something from yesterday',
+    'a mirror',
+    'something that flies',
+    'a warm feeling',
+    'an unopened letter'
+];
+
+// Would You Rather state
+let currentWYRQuestion = null;
+let wyrQuestionTimer = null;
+let wyrTimeRemaining = 30;
+let wyrPlayerChoices = {};
+let wyrRound = 1;
+let maxWYRRounds = 5;
+let wyrExplanations = {};
+
+// Assumption Buster state
+let abRound = 1;
+let maxABRounds = 5;
+let abPhase = 'making'; // 'making', 'responding', 'explanation', 'results'
+let abCurrentAssumption = null;
+let abPlayerAssumptions = {};
+let abPlayerResponses = {};
+let abPlayerExplanations = {};
+let abResults = {};
+let abTemplates = [
+    'I bet you think I...',
+    'You probably assume that I...',
+    'Most people think I...',
+    'I\'m guessing you believe I...',
+    'You likely think I...',
+    'I assume you think I...',
+    'People usually assume I...',
+    'You probably imagine I...'
+];
+
+// Would You Rather Questions Database
+const wouldYouRatherQuestions = {
+    easy: [
+        {
+            question: "Would you rather have the ability to fly or be invisible?",
+            optionA: "Have the ability to fly",
+            optionB: "Be invisible",
+            category: "Superpowers"
+        },
+        {
+            question: "Would you rather always be 10 minutes late or always be 20 minutes early?",
+            optionA: "Always be 10 minutes late",
+            optionB: "Always be 20 minutes early",
+            category: "Time Management"
+        },
+        {
+            question: "Would you rather have unlimited money or unlimited time?",
+            optionA: "Unlimited money",
+            optionB: "Unlimited time",
+            category: "Life Choices"
+        },
+        {
+            question: "Would you rather live without music or live without movies?",
+            optionA: "Live without music",
+            optionB: "Live without movies",
+            category: "Entertainment"
+        },
+        {
+            question: "Would you rather be able to speak every language or play every instrument?",
+            optionA: "Speak every language",
+            optionB: "Play every instrument",
+            category: "Skills"
+        },
+        {
+            question: "Would you rather have a rewind button or a pause button for your life?",
+            optionA: "Rewind button",
+            optionB: "Pause button",
+            category: "Life Control"
+        },
+        {
+            question: "Would you rather always have to say everything on your mind or never be able to speak again?",
+            optionA: "Say everything on your mind",
+            optionB: "Never speak again",
+            category: "Communication"
+        },
+        {
+            question: "Would you rather be famous or be the best friend of someone famous?",
+            optionA: "Be famous",
+            optionB: "Be best friend of someone famous",
+            category: "Fame"
+        }
+    ],
+    moderate: [
+        {
+            question: "Would you rather know when you're going to die or how you're going to die?",
+            optionA: "Know when you're going to die",
+            optionB: "Know how you're going to die",
+            category: "Life & Death"
+        },
+        {
+            question: "Would you rather lose all your memories from birth to now or lose your ability to make new memories?",
+            optionA: "Lose all past memories",
+            optionB: "Lose ability to make new memories",
+            category: "Memory"
+        },
+        {
+            question: "Would you rather be feared by all or loved by all?",
+            optionA: "Be feared by all",
+            optionB: "Be loved by all",
+            category: "Relationships"
+        },
+        {
+            question: "Would you rather have the ability to change the past or see into the future?",
+            optionA: "Change the past",
+            optionB: "See into the future",
+            category: "Time Powers"
+        },
+        {
+            question: "Would you rather live a comfortable life but never leave your hometown or struggle financially but travel the world?",
+            optionA: "Comfortable life, never leave hometown",
+            optionB: "Struggle financially, travel the world",
+            category: "Life Choices"
+        },
+        {
+            question: "Would you rather be able to read minds but never turn it off or have everyone be able to read your mind?",
+            optionA: "Read minds (can't turn off)",
+            optionB: "Everyone can read your mind",
+            category: "Mind Powers"
+        }
+    ],
+    extreme: [
+        {
+            question: "Would you rather sacrifice yourself to save 100 strangers or sacrifice 100 strangers to save yourself?",
+            optionA: "Sacrifice yourself for 100 strangers",
+            optionB: "Sacrifice 100 strangers for yourself",
+            category: "Moral Dilemma"
+        },
+        {
+            question: "Would you rather live in a world where you're the only human left or be trapped in a time loop of the worst day of your life?",
+            optionA: "Only human left in the world",
+            optionB: "Time loop of worst day",
+            category: "Existential Horror"
+        },
+        {
+            question: "Would you rather have to kill one innocent person to save your family or let your family die to save that innocent person?",
+            optionA: "Kill innocent person, save family",
+            optionB: "Let family die, save innocent person",
+            category: "Family vs Morality"
+        },
+        {
+            question: "Would you rather live forever but watch everyone you love die or die young but know everyone you love will live forever?",
+            optionA: "Live forever, watch loved ones die",
+            optionB: "Die young, loved ones live forever",
+            category: "Immortality Dilemma"
+        },
+        {
+            question: "Would you rather have the power to end all suffering but also all joy, or keep the world as it is with both?",
+            optionA: "End all suffering and joy",
+            optionB: "Keep world with both suffering and joy",
+            category: "Ultimate Choice"
+        },
+        {
+            question: "Would you rather know that nothing you do matters in the grand scheme of the universe or believe your actions matter but never know if they actually do?",
+            optionA: "Know nothing matters",
+            optionB: "Believe it matters but never know",
+            category: "Existential Crisis"
+        }
+    ]
+};
+
+// Vietnamese Would You Rather Questions
+const wouldYouRatherQuestionsVi = {
+    easy: [
+        {
+            question: "Bạn thích có khả năng bay hay có thể tàng hình?",
+            optionA: "Có khả năng bay",
+            optionB: "Có thể tàng hình",
+            category: "Siêu năng lực"
+        },
+        {
+            question: "Bạn thích luôn trễ 10 phút hay luôn sớm 20 phút?",
+            optionA: "Luôn trễ 10 phút",
+            optionB: "Luôn sớm 20 phút",
+            category: "Quản lý thời gian"
+        },
+        {
+            question: "Bạn thích có tiền vô hạn hay có thời gian vô hạn?",
+            optionA: "Tiền vô hạn",
+            optionB: "Thời gian vô hạn",
+            category: "Lựa chọn cuộc sống"
+        },
+        {
+            question: "Bạn thích sống không có âm nhạc hay sống không có phim ảnh?",
+            optionA: "Sống không có âm nhạc",
+            optionB: "Sống không có phim ảnh",
+            category: "Giải trí"
+        },
+        {
+            question: "Bạn thích nói được mọi thứ tiếng hay chơi được mọi nhạc cụ?",
+            optionA: "Nói được mọi thứ tiếng",
+            optionB: "Chơi được mọi nhạc cụ",
+            category: "Kỹ năng"
+        },
+        {
+            question: "Bạn thích có nút tua lại hay nút tạm dừng cho cuộc đời mình?",
+            optionA: "Nút tua lại",
+            optionB: "Nút tạm dừng",
+            category: "Kiểm soát cuộc sống"
+        }
+    ],
+    moderate: [
+        {
+            question: "Bạn thích biết khi nào mình chết hay biết mình sẽ chết như thế nào?",
+            optionA: "Biết khi nào mình chết",
+            optionB: "Biết mình sẽ chết như thế nào",
+            category: "Sống & Chết"
+        },
+        {
+            question: "Bạn thích mất hết ký ức từ lúc sinh ra hay mất khả năng tạo ký ức mới?",
+            optionA: "Mất hết ký ức quá khứ",
+            optionB: "Mất khả năng tạo ký ức mới",
+            category: "Trí nhớ"
+        },
+        {
+            question: "Bạn thích được mọi người sợ hãi hay được mọi người yêu mến?",
+            optionA: "Được mọi người sợ hãi",
+            optionB: "Được mọi người yêu mến",
+            category: "Mối quan hệ"
+        },
+        {
+            question: "Bạn thích có khả năng thay đổi quá khứ hay nhìn thấy tương lai?",
+            optionA: "Thay đổi quá khứ",
+            optionB: "Nhìn thấy tương lai",
+            category: "Sức mạnh thời gian"
+        }
+    ],
+    extreme: [
+        {
+            question: "Bạn thích hy sinh bản thân để cứu 100 người lạ hay hy sinh 100 người lạ để cứu bản thân?",
+            optionA: "Hy sinh bản thân cho 100 người lạ",
+            optionB: "Hy sinh 100 người lạ cho bản thân",
+            category: "Tình huống đạo đức"
+        },
+        {
+            question: "Bạn thích sống trong thế giới chỉ còn mình là con người hay bị mắc kẹt trong vòng lặp thời gian của ngày tệ nhất?",
+            optionA: "Chỉ còn mình là con người",
+            optionB: "Vòng lặp thời gian ngày tệ nhất",
+            category: "Kinh dị hiện sinh"
+        },
+        {
+            question: "Bạn thích phải giết một người vô tội để cứu gia đình hay để gia đình chết để cứu người vô tội đó?",
+            optionA: "Giết người vô tội, cứu gia đình",
+            optionB: "Để gia đình chết, cứu người vô tội",
+            category: "Gia đình vs Đạo đức"
+        },
+        {
+            question: "Bạn thích sống mãi mãi nhưng nhìn mọi người yêu thương chết đi hay chết trẻ nhưng biết mọi người yêu thương sẽ sống mãi?",
+            optionA: "Sống mãi mãi, nhìn người thân chết",
+            optionB: "Chết trẻ, người thân sống mãi",
+            category: "Tình huống bất tử"
+        }
+    ]
+};
+
+// Story building functions
+function showStoryBuildingUI() {
+    const storyUI = document.getElementById('story-building-ui');
+    if (storyUI) storyUI.classList.remove('hidden');
+    resetStoryBuildingGame();
+}
+
+function hideStoryBuildingUI() {
+    const storyUI = document.getElementById('story-building-ui');
+    if (storyUI) storyUI.classList.add('hidden');
+}
+
+function resetStoryBuildingGame() {
+    storyText = '';
+    currentTurn = 1;
+    storyContributions = [];
+    const storyDisplay = document.getElementById('story-text-display');
+    if (storyDisplay) storyDisplay.innerHTML = '';
+    const turnIndicator = document.getElementById('story-turn-indicator');
+    if (turnIndicator) turnIndicator.textContent = `Turn ${currentTurn}/${maxTurns}`;
+    chooseRandomElement();
+}
+
+function chooseRandomElement() {
+    const randomElement = randomElements[Math.floor(Math.random() * randomElements.length)];
+    const randomElementDiv = document.getElementById('random-element-prompt');
+    if (randomElementDiv) randomElementDiv.textContent = `Incorporate: ${randomElement}`;
+}
+
+function addStoryContribution(contribution) {
+    storyText += contribution + ' ';
+    storyContributions.push({
+        turn: currentTurn,
+        player: currentTurn % 2 === 1 ? 1 : 2,
+        text: contribution
+    });
+    
+    const storyDisplay = document.getElementById('story-text-display');
+    if (storyDisplay) {
+        storyDisplay.innerHTML += `<span class="story-contribution player-${currentTurn % 2 === 1 ? 1 : 2}">${contribution}</span> `;
+    }
+    
+    currentTurn++;
+    const turnIndicator = document.getElementById('story-turn-indicator');
+    if (turnIndicator) {
+        if (currentTurn <= maxTurns) {
+            turnIndicator.textContent = `Turn ${currentTurn}/${maxTurns} - Player ${currentTurn % 2 === 1 ? 1 : 2}'s turn`;
+            chooseRandomElement();
+        } else {
+            turnIndicator.textContent = 'Story Complete!';
+            endStoryBuilding();
+        }
+    }
+}
+
+function endStoryBuilding() {
+    const storyInput = document.getElementById('story-input');
+    const submitStoryBtn = document.getElementById('submit-story-contribution');
+    if (storyInput) storyInput.disabled = true;
+    if (submitStoryBtn) submitStoryBtn.disabled = true;
+    
+    // Could add scoring/rating system here
+    alert('Story building complete! Check out your collaborative masterpiece!');
+}
 
 function applyViewerMode() {
     const elements = [
@@ -811,6 +1158,60 @@ function clearGameData() {
     }
 }
 
+function updateGameInstructions(mode) {
+    const instructionsContent = document.getElementById('instructions-content');
+    let instructionsHTML = '';
+    
+    if (mode === 'two-truths') {
+        instructionsHTML = `
+            <ol>
+                <li>Two players join the same room</li>
+                <li>Each player takes turns creating 3 statements about themselves</li>
+                <li>2 statements are lies, 1 statement is the truth</li>
+                <li>Mark which statement is TRUE using the check icon</li>
+                <li>The other player tries to guess which one is the truth</li>
+                <li>Score points for correct guesses!</li>
+                <li>Play multiple rounds and see who wins!</li>
+            </ol>
+        `;
+    } else if (mode === 'story-building') {
+        instructionsHTML = `
+            <ol>
+                <li>Players take turns contributing to a story</li>
+                <li>Each turn, a player adds a sentence or phrase</li>
+                <li>A random prompt may be incorporated for creativity</li>
+                <li>The goal is to create a fun and cohesive story</li>
+                <li>Continue until the story reaches a pre-set limit</li>
+            </ol>
+        `;
+    } else if (mode === 'would-you-rather') {
+        instructionsHTML = `
+            <ol>
+                <li>Players face a hypothetical question with two choices</li>
+                <li>Select the option you prefer and explain your reasoning</li>
+                <li>Compare answers with other players</li>
+                <li>Score points for creativity and reasoning</li>
+                <li>Play multiple rounds and compare choices!</li>
+            </ol>
+        `;
+    } else if (mode === 'assumption-buster') {
+        instructionsHTML = `
+            <ol>
+                <li>Create an assumption about the other player</li>
+                <li>The other player responds with true or false</li>
+                <li>Explain why your assumption was true or false</li>
+                <li>Gain insights into each other’s thinking</li>
+                <li>Continue through multiple rounds</li>
+            </ol>
+        `;
+    }
+    
+    if (instructionsContent) {
+        instructionsContent.innerHTML = instructionsHTML;
+    }
+}
+
+
 // Initialize
 function initializeApp() {
     console.log('DOM loaded, checking elements...');
@@ -953,6 +1354,9 @@ function initializeApp() {
                 localStorage.setItem('playerName', playerName);
                 joinRoomBtn.disabled = true;
                 joinRoomBtn.textContent = 'Joining...';
+                
+                // Store the selected game mode for later use
+                console.log('Selected game mode:', currentGameMode);
             }
         });
     }
@@ -981,6 +1385,109 @@ if (document.readyState === 'loading') {
 } else {
     initializeApp();
 }
+
+// Game mode selection event handlers
+document.addEventListener('DOMContentLoaded', () => {
+    // Handle game mode card selection
+document.querySelectorAll('.mode-card').forEach((card) => {
+        card.addEventListener('click', () => {
+            // Remove selected class from all cards
+document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+            // Add selected class to clicked card
+card.classList.add('active');
+            currentGameMode = card.dataset.mode;
+            
+            // Update instructions based on selected mode
+            updateGameInstructions(currentGameMode);
+            
+    // Handle UI transitions based on selected mode
+            if (currentGameMode === 'story-building') {
+                showStoryBuildingUI();
+                hideWouldYouRatherUI();
+                hideAssumptionBusterUI();
+            } else if (currentGameMode === 'would-you-rather') {
+                showWouldYouRatherUI();
+                hideStoryBuildingUI();
+                hideAssumptionBusterUI();
+            } else if (currentGameMode === 'assumption-buster') {
+                showAssumptionBusterUI();
+                hideStoryBuildingUI();
+                hideWouldYouRatherUI();
+            } else {
+                hideStoryBuildingUI();
+                hideWouldYouRatherUI();
+                hideAssumptionBusterUI();
+            }
+        });
+    });
+    
+    // Story building specific event handlers
+    const storyInput = document.getElementById('story-input');
+    const submitStoryBtn = document.getElementById('submit-story-contribution');
+    
+    if (submitStoryBtn) {
+        submitStoryBtn.addEventListener('click', () => {
+            const contribution = storyInput.value.trim();
+            if (contribution) {
+                // Send contribution to server for multiplayer sync
+                if (roomName && !isViewer) {
+                    socket.emit('story contribution', roomName, contribution, currentTurn, playerNumber);
+                    storyInput.value = '';
+                } else {
+                    // Local mode for testing
+                    addStoryContribution(contribution);
+                    storyInput.value = '';
+                }
+            } else {
+                alert('Please enter your story contribution!');
+            }
+        });
+    }
+    
+    // Enter key support for story input
+    if (storyInput) {
+        storyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitStoryBtn.click();
+            }
+        });
+    }
+    
+    // Would You Rather specific event handlers
+    const wyrChoiceA = document.getElementById('wyr-choice-a');
+    const wyrChoiceB = document.getElementById('wyr-choice-b');
+    const wyrSubmitBtn = document.getElementById('submit-wyr-explanation');
+    const wyrExplanationTextarea = document.getElementById('wyr-explanation-input');
+    
+    if (wyrChoiceA) {
+        wyrChoiceA.addEventListener('click', () => {
+            selectWYRChoice('A');
+        });
+    }
+    
+    if (wyrChoiceB) {
+        wyrChoiceB.addEventListener('click', () => {
+            selectWYRChoice('B');
+        });
+    }
+    
+    if (wyrSubmitBtn) {
+        wyrSubmitBtn.addEventListener('click', () => {
+            submitWYRChoice();
+        });
+    }
+    
+    // Enter key support for explanation input
+    if (wyrExplanationTextarea) {
+        wyrExplanationTextarea.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                submitWYRChoice();
+            }
+        });
+    }
+});
 
 // Remove duplicate initialization
 // console.log('Checking DOM elements...');
@@ -1788,6 +2295,19 @@ socket.on('player joined', (names) => {
     console.log('Player joined:', names);
     updatePlayerNames(names);
     gameStatusDisplay.textContent = 'Both players are ready!';
+    
+    // Auto-start game mode based on selection
+    if (currentGameMode === 'would-you-rather') {
+        console.log('Starting Would You Rather mode');
+        socket.emit('start would you rather', roomName);
+    } else if (currentGameMode === 'story-building') {
+        console.log('Starting Story Building mode');
+        socket.emit('start story building', roomName);
+    } else if (currentGameMode === 'assumption-buster') {
+        console.log('Starting Assumption Buster mode');
+        socket.emit('start assumption buster', roomName);
+    }
+    // Default to Two Truths and a Lie if no specific mode or 'two-truths' selected
 });
 
 socket.on('player left', (playerNum) => {
@@ -2370,6 +2890,118 @@ function createEmojiPopup(emoji, sender, isSent) {
     }
 }
 
+// Socket listeners for Story Building Challenge
+socket.on('story building started', (data) => {
+    console.log('Story building started:', data);
+    currentGameMode = 'story-building';
+    showStoryBuildingUI();
+    
+    // Reset story state
+    storyText = '';
+    currentTurn = data.currentTurn;
+    maxTurns = data.maxTurns;
+    storyContributions = [];
+    
+    // Update UI
+    const storyDisplay = document.getElementById('story-text-display');
+    if (storyDisplay) storyDisplay.innerHTML = '';
+    
+    const turnIndicator = document.getElementById('story-turn-indicator');
+    if (turnIndicator) {
+        turnIndicator.textContent = `Turn ${data.currentTurn}/${data.maxTurns} - ${data.playerNames[data.currentPlayer]}'s turn`;
+    }
+    
+    const randomElementDiv = document.getElementById('random-element-prompt');
+    if (randomElementDiv) randomElementDiv.textContent = `Incorporate: ${data.randomElement}`;
+    
+    gameStatusDisplay.textContent = 'Story Building Mode Started!';
+});
+
+socket.on('story updated', (data) => {
+    console.log('Story updated:', data);
+    
+    // Update local state
+    storyText = data.storyText;
+    currentTurn = data.currentTurn;
+    storyContributions = data.contributions;
+    
+    // Update story display
+    const storyDisplay = document.getElementById('story-text-display');
+    if (storyDisplay) {
+        storyDisplay.innerHTML = '';
+        data.contributions.forEach(contribution => {
+            const span = document.createElement('span');
+            span.className = `story-contribution player-${contribution.player}`;
+            span.textContent = contribution.text + ' ';
+            storyDisplay.appendChild(span);
+        });
+        
+        // Auto-scroll to bottom
+        storyDisplay.scrollTop = storyDisplay.scrollHeight;
+    }
+    
+    // Update turn indicator
+    const turnIndicator = document.getElementById('story-turn-indicator');
+    if (turnIndicator) {
+        if (data.isComplete) {
+            turnIndicator.textContent = 'Story Complete!';
+        } else {
+            turnIndicator.textContent = `Turn ${data.currentTurn}/${data.maxTurns} - Player ${data.currentPlayer}'s turn`;
+        }
+    }
+    
+    // Update random element
+    const randomElementDiv = document.getElementById('random-element-prompt');
+    if (randomElementDiv) randomElementDiv.textContent = `Incorporate: ${data.randomElement}`;
+    
+    // Disable input if story is complete
+    if (data.isComplete) {
+        const storyInput = document.getElementById('story-input');
+        const submitStoryBtn = document.getElementById('submit-story-contribution');
+        if (storyInput) storyInput.disabled = true;
+        if (submitStoryBtn) submitStoryBtn.disabled = true;
+    }
+});
+
+socket.on('story building complete', (summary) => {
+    console.log('Story building complete:', summary);
+    
+    // Show completion message with stats
+    const message = `Story building complete!\n\nFinal Story: "${summary.finalStory.substring(0, 100)}..."\n\nStats:\n- Total turns: ${summary.totalTurns}\n- Total words: ${summary.totalWords}\n- Average words per turn: ${summary.averageWordsPerTurn}\n- Duration: ${Math.round(summary.duration / 1000)} seconds`;
+    
+    alert(message);
+    
+    gameStatusDisplay.textContent = 'Story Building Complete!';
+});
+
+socket.on('story state', (data) => {
+    console.log('Received story state:', data);
+    
+    // Update UI with current story state
+    storyText = data.storyText;
+    currentTurn = data.currentTurn;
+    storyContributions = data.contributions;
+    
+    const storyDisplay = document.getElementById('story-text-display');
+    if (storyDisplay) {
+        storyDisplay.innerHTML = '';
+        data.contributions.forEach(contribution => {
+            const span = document.createElement('span');
+            span.className = `story-contribution player-${contribution.player}`;
+            span.textContent = contribution.text + ' ';
+            storyDisplay.appendChild(span);
+        });
+    }
+    
+    const turnIndicator = document.getElementById('story-turn-indicator');
+    if (turnIndicator) {
+        turnIndicator.textContent = data.isComplete ? 'Story Complete!' : `Turn ${data.currentTurn}/${data.maxTurns} - Player ${data.currentPlayer}'s turn`;
+    }
+    
+    const randomElementDiv = document.getElementById('random-element-prompt');
+    if (randomElementDiv) randomElementDiv.textContent = `Incorporate: ${data.randomElement}`;
+});
+
 // Socket listeners for emoji system
 socket.on('emoji received', (data) => {
     // Don't display our own emojis again
@@ -2404,4 +3036,820 @@ function hideEmojiPanel() {
         emojiPanel.classList.add('hidden');
     }
 }
+
+// Would You Rather Functions
+function showWouldYouRatherUI() {
+    const wyrUI = document.getElementById('would-you-rather-area');
+    if (wyrUI) wyrUI.classList.remove('hidden');
+    resetWouldYouRatherGame();
+}
+
+function hideWouldYouRatherUI() {
+    const wyrUI = document.getElementById('would-you-rather-area');
+    if (wyrUI) wyrUI.classList.add('hidden');
+}
+
+function resetWouldYouRatherGame() {
+    currentWYRQuestion = null;
+    wyrPlayerChoices = {};
+    wyrExplanations = {};
+    wyrRound = 1;
+    wyrTimeRemaining = 30;
+    
+    if (wyrQuestionTimer) {
+        clearInterval(wyrQuestionTimer);
+        wyrQuestionTimer = null;
+    }
+    
+    // Reset UI elements
+    const questionDisplay = document.getElementById('wyr-question-display');
+    if (questionDisplay) questionDisplay.textContent = '';
+    
+    const progressDisplay = document.getElementById('wyr-progress');
+    if (progressDisplay) progressDisplay.textContent = `Round ${wyrRound}/${maxWYRRounds}`;
+    
+    const timerDisplay = document.getElementById('wyr-timer');
+    if (timerDisplay) timerDisplay.textContent = `${wyrTimeRemaining}s`;
+    
+    // Reset choice buttons
+    const choiceA = document.getElementById('wyr-choice-a');
+    const choiceB = document.getElementById('wyr-choice-b');
+    if (choiceA) {
+        choiceA.textContent = '';
+        choiceA.classList.remove('selected', 'disabled');
+    }
+    if (choiceB) {
+        choiceB.textContent = '';
+        choiceB.classList.remove('selected', 'disabled');
+    }
+    
+    // Reset explanation textarea
+    const explanationTextarea = document.getElementById('wyr-explanation');
+    if (explanationTextarea) {
+        explanationTextarea.value = '';
+        explanationTextarea.disabled = true;
+    }
+    
+    // Reset submit button
+    const submitBtn = document.getElementById('wyr-submit-choice');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Make Your Choice First';
+    }
+    
+    // Hide results section
+    const resultsSection = document.getElementById('wyr-results');
+    if (resultsSection) resultsSection.classList.add('hidden');
+}
+
+function getCurrentWYRQuestions() {
+    return currentLanguage === 'vi' ? wouldYouRatherQuestionsVi : wouldYouRatherQuestions;
+}
+
+function getRandomWYRQuestion(difficulty = 'easy') {
+    const questions = getCurrentWYRQuestions();
+    const questionSet = questions[difficulty] || questions.easy;
+    return questionSet[Math.floor(Math.random() * questionSet.length)];
+}
+
+function displayWYRQuestion(question) {
+    currentWYRQuestion = question;
+    
+    // Update question display
+    const questionDisplay = document.getElementById('wyr-question-text');
+    if (questionDisplay) questionDisplay.textContent = question.question;
+    
+    // Update choice buttons
+    const choiceA = document.getElementById('wyr-choice-a');
+    const choiceB = document.getElementById('wyr-choice-b');
+    
+    if (choiceA) {
+        const choiceTextA = choiceA.querySelector('.choice-text');
+        if (choiceTextA) choiceTextA.textContent = question.optionA;
+        choiceA.classList.remove('selected', 'disabled');
+    }
+    if (choiceB) {
+        const choiceTextB = choiceB.querySelector('.choice-text');
+        if (choiceTextB) choiceTextB.textContent = question.optionB;
+        choiceB.classList.remove('selected', 'disabled');
+    }
+    
+    // Update category display
+    const categoryDisplay = document.getElementById('wyr-category');
+    if (categoryDisplay) categoryDisplay.textContent = question.category;
+    
+    // Reset and start timer
+    startWYRTimer();
+    
+    // Enable choice buttons
+    if (choiceA) choiceA.disabled = false;
+    if (choiceB) choiceB.disabled = false;
+    
+    // Reset explanation area
+    const explanationTextarea = document.getElementById('wyr-explanation-input');
+    if (explanationTextarea) {
+        explanationTextarea.value = '';
+        explanationTextarea.disabled = true;
+        explanationTextarea.placeholder = 'Select a choice first, then explain your reasoning...';
+    }
+    
+    // Show explanation area
+    const explanationArea = document.getElementById('wyr-explanation-area');
+    if (explanationArea) explanationArea.classList.remove('hidden');
+    
+    // Reset submit button
+    const submitBtn = document.getElementById('submit-wyr-explanation');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Make Your Choice First';
+    }
+}
+
+function startWYRTimer() {
+    wyrTimeRemaining = 30;
+    const timerDisplay = document.getElementById('wyr-timer');
+    const timerProgress = document.getElementById('wyr-timer-progress');
+    
+    if (wyrQuestionTimer) {
+        clearInterval(wyrQuestionTimer);
+    }
+    
+    wyrQuestionTimer = setInterval(() => {
+        wyrTimeRemaining--;
+        
+        if (timerDisplay) {
+            timerDisplay.textContent = `${wyrTimeRemaining}s`;
+            
+            // Change color as time runs out
+            if (wyrTimeRemaining <= 5) {
+                timerDisplay.style.color = '#e74c3c';
+            } else if (wyrTimeRemaining <= 10) {
+                timerDisplay.style.color = '#f39c12';
+            } else {
+                timerDisplay.style.color = '#27ae60';
+            }
+        }
+        
+        if (timerProgress) {
+            const percentage = (wyrTimeRemaining / 30) * 100;
+            timerProgress.style.width = `${percentage}%`;
+        }
+        
+        if (wyrTimeRemaining <= 0) {
+            clearInterval(wyrQuestionTimer);
+            handleWYRTimeUp();
+        }
+    }, 1000);
+}
+
+function handleWYRTimeUp() {
+    // Disable all interactions
+    const choiceA = document.getElementById('wyr-choice-a');
+    const choiceB = document.getElementById('wyr-choice-b');
+    const explanationTextarea = document.getElementById('wyr-explanation-input');
+    const submitBtn = document.getElementById('submit-wyr-explanation');
+    
+    if (choiceA) choiceA.disabled = true;
+    if (choiceB) choiceB.disabled = true;
+    if (explanationTextarea) explanationTextarea.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+    
+    // Show time up message
+    const timerDisplay = document.getElementById('wyr-timer');
+    if (timerDisplay) {
+        timerDisplay.textContent = 'Time Up!';
+        timerDisplay.style.color = '#e74c3c';
+    }
+    
+    // Auto-submit or move to results
+    setTimeout(() => {
+        showWYRResults();
+    }, 2000);
+}
+
+function selectWYRChoice(choice) {
+    if (wyrTimeRemaining <= 0) return;
+    
+    const choiceA = document.getElementById('wyr-choice-a');
+    const choiceB = document.getElementById('wyr-choice-b');
+    const explanationTextarea = document.getElementById('wyr-explanation-input');
+    const submitBtn = document.getElementById('submit-wyr-explanation');
+    
+    // Remove previous selection
+    if (choiceA) choiceA.classList.remove('selected');
+    if (choiceB) choiceB.classList.remove('selected');
+    
+    // Add selection to clicked choice
+    if (choice === 'A' && choiceA) {
+        choiceA.classList.add('selected');
+        wyrPlayerChoices[playerNumber] = 'A';
+    } else if (choice === 'B' && choiceB) {
+        choiceB.classList.add('selected');
+        wyrPlayerChoices[playerNumber] = 'B';
+    }
+    
+    // Enable explanation textarea
+    if (explanationTextarea) {
+        explanationTextarea.disabled = false;
+        explanationTextarea.placeholder = 'Explain why you chose this option...';
+        explanationTextarea.focus();
+    }
+    
+    // Enable submit button
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Choice & Explanation';
+    }
+    
+    // Send choice to server for multiplayer sync
+    if (roomName && !isViewer) {
+        socket.emit('wyr choice made', roomName, playerNumber, choice);
+    }
+}
+
+function submitWYRChoice() {
+    const explanationTextarea = document.getElementById('wyr-explanation-input');
+    const explanation = explanationTextarea ? explanationTextarea.value.trim() : '';
+    
+    if (!explanation) {
+        alert('Please provide an explanation for your choice!');
+        return;
+    }
+    
+    wyrExplanations[playerNumber] = explanation;
+    
+    // Send to server
+    if (roomName && !isViewer) {
+        socket.emit('wyr explanation submitted', roomName, playerNumber, explanation);
+    }
+    
+    // Disable submit button
+    const submitBtn = document.getElementById('submit-wyr-explanation');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Waiting for other player...';
+    }
+    
+    // Disable explanation textarea
+    if (explanationTextarea) {
+        explanationTextarea.disabled = true;
+    }
+}
+
+function showWYRResults() {
+    // Stop timer
+    if (wyrQuestionTimer) {
+        clearInterval(wyrQuestionTimer);
+        wyrQuestionTimer = null;
+    }
+    
+    // Hide main question area
+    const questionArea = document.getElementById('wyr-question-area');
+    if (questionArea) questionArea.style.display = 'none';
+    
+    // Show results section
+    const resultsSection = document.getElementById('wyr-results');
+    if (resultsSection) resultsSection.classList.remove('hidden');
+    
+    // Display results
+    updateWYRResults();
+}
+
+function updateWYRResults() {
+    const resultsGrid = document.getElementById('wyr-results-grid');
+    if (!resultsGrid) return;
+    
+    resultsGrid.innerHTML = '';
+    
+    // Show results for each player
+    Object.keys(playerNames).forEach(playerNum => {
+        const playerChoice = wyrPlayerChoices[playerNum];
+        const playerExplanation = wyrExplanations[playerNum] || 'No explanation provided';
+        
+        const resultCard = document.createElement('div');
+        resultCard.className = 'wyr-player-result';
+        
+        const chosenOption = playerChoice === 'A' ? currentWYRQuestion.optionA : currentWYRQuestion.optionB;
+        const choiceClass = playerChoice === 'A' ? 'choice-a' : 'choice-b';
+        
+        resultCard.innerHTML = `
+            <div class="wyr-player-info">
+                <h4>${playerNames[playerNum] || `Player ${playerNum}`}</h4>
+                <div class="wyr-choice ${choiceClass}">
+                    <strong>Choice:</strong> ${chosenOption || 'No choice made'}
+                </div>
+            </div>
+            <div class="wyr-explanation">
+                <strong>Explanation:</strong>
+                <p>${playerExplanation}</p>
+            </div>
+        `;
+        
+        resultsGrid.appendChild(resultCard);
+    });
+    
+    // Show statistics
+    const statsDiv = document.getElementById('wyr-statistics');
+    if (statsDiv) {
+        const choiceACount = Object.values(wyrPlayerChoices).filter(choice => choice === 'A').length;
+        const choiceBCount = Object.values(wyrPlayerChoices).filter(choice => choice === 'B').length;
+        const total = choiceACount + choiceBCount;
+        
+        if (total > 0) {
+            const choiceAPercentage = Math.round((choiceACount / total) * 100);
+            const choiceBPercentage = Math.round((choiceBCount / total) * 100);
+            
+            statsDiv.innerHTML = `
+                <h4>Results Breakdown:</h4>
+                <div class="wyr-stats-bar">
+                    <div class="wyr-stats-option choice-a" style="width: ${choiceAPercentage}%">
+                        ${choiceAPercentage}% chose A
+                    </div>
+                    <div class="wyr-stats-option choice-b" style="width: ${choiceBPercentage}%">
+                        ${choiceBPercentage}% chose B
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Show next round button or end game button
+    const nextBtn = document.getElementById('wyr-next-round');
+    if (nextBtn) {
+        if (wyrRound < maxWYRRounds) {
+            nextBtn.textContent = `Next Round (${wyrRound + 1}/${maxWYRRounds})`;
+            nextBtn.onclick = startNextWYRRound;
+        } else {
+            nextBtn.textContent = 'End Game';
+            nextBtn.onclick = endWYRGame;
+        }
+        nextBtn.style.display = 'block';
+    }
+}
+
+function startNextWYRRound() {
+    wyrRound++;
+    
+    // Reset for next round
+    wyrPlayerChoices = {};
+    wyrExplanations = {};
+    
+    // Update progress
+    const progressDisplay = document.getElementById('wyr-progress');
+    if (progressDisplay) progressDisplay.textContent = `Round ${wyrRound}/${maxWYRRounds}`;
+    
+    // Hide results and show question area
+    const resultsSection = document.getElementById('wyr-results');
+    if (resultsSection) resultsSection.classList.add('hidden');
+    
+    const questionArea = document.getElementById('wyr-question-area');
+    if (questionArea) questionArea.style.display = 'block';
+    
+    // Get difficulty based on round
+    let difficulty = 'easy';
+    if (wyrRound > 3) difficulty = 'extreme';
+    else if (wyrRound > 1) difficulty = 'moderate';
+    
+    // Start new question
+    const question = getRandomWYRQuestion(difficulty);
+    displayWYRQuestion(question);
+    
+    // Send to server for multiplayer sync
+    if (roomName && !isViewer) {
+        socket.emit('wyr next round', roomName, wyrRound, question);
+    }
+}
+
+function endWYRGame() {
+    // Show final results or return to main menu
+    const message = `Would You Rather: Extreme Edition Complete!\n\n${maxWYRRounds} rounds of tough choices completed.\n\nThanks for playing!`;
+    alert(message);
+    
+    // Could add scoring system here based on explanations, creativity, etc.
+    
+    // Return to main menu or show final screen
+    location.reload();
+}
+
+// Assumption Buster Functions
+function showAssumptionBusterUI() {
+    const abUI = document.getElementById('assumption-buster-area');
+    if (abUI) abUI.classList.remove('hidden');
+    resetAssumptionBusterGame();
+}
+
+function hideAssumptionBusterUI() {
+    const abUI = document.getElementById('assumption-buster-area');
+    if (abUI) abUI.classList.add('hidden');
+}
+
+function resetAssumptionBusterGame() {
+    abRound = 1;
+    abPhase = 'making';
+    abCurrentAssumption = null;
+    abPlayerAssumptions = {};
+    abPlayerResponses = {};
+    abPlayerExplanations = {};
+    abResults = {};
+    
+    // Reset UI elements
+    const roundIndicator = document.getElementById('ab-round-indicator');
+    if (roundIndicator) roundIndicator.textContent = `Round ${abRound}/${maxABRounds}`;
+    
+    const phaseIndicator = document.getElementById('ab-phase-indicator');
+    if (phaseIndicator) phaseIndicator.textContent = 'Making Assumptions';
+    
+    // Reset assumption input
+    const assumptionInput = document.getElementById('ab-assumption-input');
+    if (assumptionInput) {
+        assumptionInput.value = '';
+        assumptionInput.disabled = false;
+    }
+    
+    // Show making phase, hide others
+    showABPhase('making');
+}
+
+function showABPhase(phase) {
+    abPhase = phase;
+    
+    // Hide all phases first
+    const phases = ['ab-make-assumption', 'ab-respond-assumption', 'ab-explanation-area', 'ab-results-area'];
+    phases.forEach(phaseId => {
+        const element = document.getElementById(phaseId);
+        if (element) element.classList.add('hidden');
+    });
+    
+    // Show current phase
+    let currentPhaseId;
+    switch (phase) {
+        case 'making':
+            currentPhaseId = 'ab-make-assumption';
+            break;
+        case 'responding':
+            currentPhaseId = 'ab-respond-assumption';
+            break;
+        case 'explanation':
+            currentPhaseId = 'ab-explanation-area';
+            break;
+        case 'results':
+            currentPhaseId = 'ab-results-area';
+            break;
+    }
+    
+    if (currentPhaseId) {
+        const element = document.getElementById(currentPhaseId);
+        if (element) element.classList.remove('hidden');
+    }
+    
+    // Update phase indicator
+    const phaseIndicator = document.getElementById('ab-phase-indicator');
+    if (phaseIndicator) {
+        const phaseNames = {
+            making: 'Making Assumptions',
+            responding: 'Responding to Assumptions',
+            explanation: 'Explaining Responses',
+            results: 'Results'
+        };
+        phaseIndicator.textContent = phaseNames[phase] || phase;
+    }
+}
+
+function useAssumptionTemplate(template) {
+    const assumptionInput = document.getElementById('ab-assumption-input');
+    if (assumptionInput) {
+        assumptionInput.value = template;
+        assumptionInput.focus();
+        // Move cursor to end
+        assumptionInput.setSelectionRange(template.length, template.length);
+    }
+}
+
+function submitAssumption() {
+    const assumptionInput = document.getElementById('ab-assumption-input');
+    const assumption = assumptionInput ? assumptionInput.value.trim() : '';
+    
+    if (!assumption) {
+        alert('Please enter an assumption!');
+        return;
+    }
+    
+    if (assumption.length < 10) {
+        alert('Please make your assumption more detailed (at least 10 characters).');
+        return;
+    }
+    
+    // Store the assumption
+    abPlayerAssumptions[playerNumber] = assumption;
+    abCurrentAssumption = assumption;
+    
+    // Send to server for multiplayer sync
+    if (roomName && !isViewer) {
+        socket.emit('ab assumption submitted', roomName, playerNumber, assumption);
+    }
+    
+    // Disable input and show waiting state
+    assumptionInput.disabled = true;
+    const submitBtn = document.getElementById('ab-submit-assumption');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Waiting for other player...';
+    }
+}
+
+function displayAssumptionForResponse(assumption, fromPlayer) {
+    const assumptionDisplay = document.getElementById('ab-assumption-display');
+    if (assumptionDisplay) {
+        assumptionDisplay.textContent = assumption;
+    }
+    
+    const playerIndicator = document.getElementById('ab-assumption-from');
+    if (playerIndicator) {
+        playerIndicator.textContent = `${playerNames[fromPlayer] || `Player ${fromPlayer}`} assumes:`;
+    }
+    
+    // Enable response buttons
+    const trueBtn = document.getElementById('ab-response-true');
+    const falseBtn = document.getElementById('ab-response-false');
+    
+    if (trueBtn) {
+        trueBtn.disabled = false;
+        trueBtn.classList.remove('selected');
+    }
+    if (falseBtn) {
+        falseBtn.disabled = false;
+        falseBtn.classList.remove('selected');
+    }
+    
+    showABPhase('responding');
+}
+
+function selectABResponse(response) {
+    const trueBtn = document.getElementById('ab-response-true');
+    const falseBtn = document.getElementById('ab-response-false');
+    
+    // Remove previous selection
+    if (trueBtn) trueBtn.classList.remove('selected');
+    if (falseBtn) falseBtn.classList.remove('selected');
+    
+    // Add selection to clicked button
+    if (response === 'true' && trueBtn) {
+        trueBtn.classList.add('selected');
+    } else if (response === 'false' && falseBtn) {
+        falseBtn.classList.add('selected');
+    }
+    
+    // Store response
+    abPlayerResponses[playerNumber] = response;
+    
+    // Enable explanation area
+    const explanationInput = document.getElementById('ab-explanation-input');
+    if (explanationInput) {
+        explanationInput.disabled = false;
+        explanationInput.placeholder = 'Explain why this assumption is ' + (response === 'true' ? 'TRUE' : 'FALSE') + '...';
+        explanationInput.focus();
+    }
+    
+    // Enable submit button
+    const submitBtn = document.getElementById('ab-submit-explanation');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Explanation';
+    }
+    
+    // Send response to server
+    if (roomName && !isViewer) {
+        socket.emit('ab response made', roomName, playerNumber, response);
+    }
+    
+    showABPhase('explanation');
+}
+
+function submitABExplanation() {
+    const explanationInput = document.getElementById('ab-explanation-input');
+    const explanation = explanationInput ? explanationInput.value.trim() : '';
+    
+    if (!explanation) {
+        alert('Please provide an explanation for your response!');
+        return;
+    }
+    
+    if (explanation.length < 10) {
+        alert('Please provide a more detailed explanation (at least 10 characters).');
+        return;
+    }
+    
+    // Store explanation
+    abPlayerExplanations[playerNumber] = explanation;
+    
+    // Send to server
+    if (roomName && !isViewer) {
+        socket.emit('ab explanation submitted', roomName, playerNumber, explanation);
+    }
+    
+    // Disable input and show waiting state
+    explanationInput.disabled = true;
+    const submitBtn = document.getElementById('ab-submit-explanation');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Waiting for other player...';
+    }
+}
+
+function showABResults() {
+    showABPhase('results');
+    
+    const resultsContainer = document.getElementById('ab-player-results');
+    if (!resultsContainer) return;
+    
+    resultsContainer.innerHTML = '';
+    
+    // Display results for each player
+    Object.keys(playerNames).forEach(playerNum => {
+        const assumption = abPlayerAssumptions[playerNum];
+        const response = abPlayerResponses[playerNum];
+        const explanation = abPlayerExplanations[playerNum];
+        
+        if (assumption || response) {
+            const resultCard = document.createElement('div');
+            resultCard.className = 'ab-player-result-card';
+            
+            resultCard.innerHTML = `
+                <div class="ab-player-info">
+                    <h4>${playerNames[playerNum] || `Player ${playerNum}`}</h4>
+                </div>
+                ${assumption ? `
+                    <div class="ab-assumption-section">
+                        <strong>Made assumption:</strong>
+                        <p>"${assumption}"</p>
+                    </div>
+                ` : ''}
+                ${response ? `
+                    <div class="ab-response-section">
+                        <strong>Response:</strong>
+                        <span class="ab-response-indicator ${response}">${response.toUpperCase()}</span>
+                    </div>
+                    <div class="ab-explanation-section">
+                        <strong>Explanation:</strong>
+                        <p>${explanation || 'No explanation provided'}</p>
+                    </div>
+                ` : ''}
+            `;
+            
+            resultsContainer.appendChild(resultCard);
+        }
+    });
+    
+    // Calculate and display surprise points
+    calculateABSurprisePoints();
+    
+    // Show next round button
+    const nextBtn = document.getElementById('ab-next-round');
+    if (nextBtn && !isViewer) {
+        if (abRound < maxABRounds) {
+            nextBtn.textContent = `Next Round (${abRound + 1}/${maxABRounds})`;
+            nextBtn.onclick = startNextABRound;
+        } else {
+            nextBtn.textContent = 'End Game';
+            nextBtn.onclick = endABGame;
+        }
+        nextBtn.classList.remove('hidden');
+    }
+}
+
+function calculateABSurprisePoints() {
+    const surpriseScores = document.getElementById('ab-surprise-scores');
+    if (!surpriseScores) return;
+    
+    let surpriseText = 'Surprise Points: ';
+    let totalSurprises = 0;
+    
+    // Check each assumption for surprise factor
+    Object.keys(abPlayerAssumptions).forEach(makerNum => {
+        Object.keys(abPlayerResponses).forEach(responderNum => {
+            if (makerNum !== responderNum) {
+                const response = abPlayerResponses[responderNum];
+                // If response was 'false', the assumption was surprising/wrong
+                if (response === 'false') {
+                    totalSurprises++;
+                }
+            }
+        });
+    });
+    
+    surpriseText += `${totalSurprises} unexpected responses this round!`;
+    
+    if (totalSurprises > 0) {
+        surpriseText += ' 🎯';
+    }
+    
+    surpriseScores.textContent = surpriseText;
+}
+
+function startNextABRound() {
+    abRound++;
+    
+    // Reset for next round
+    abPlayerAssumptions = {};
+    abPlayerResponses = {};
+    abPlayerExplanations = {};
+    
+    // Update round indicator
+    const roundIndicator = document.getElementById('ab-round-indicator');
+    if (roundIndicator) roundIndicator.textContent = `Round ${abRound}/${maxABRounds}`;
+    
+    // Send to server for multiplayer sync
+    if (roomName && !isViewer) {
+        socket.emit('ab next round', roomName, abRound);
+    }
+    
+    // Reset to making phase
+    resetAssumptionBusterGame();
+}
+
+function endABGame() {
+    // Show final results
+    const message = `Assumption Buster Complete!\n\n${maxABRounds} rounds of assumptions and revelations completed.\n\nThanks for learning more about each other!`;
+    alert(message);
+    
+    // Return to main menu
+    location.reload();
+}
+
+// Socket listeners for Would You Rather
+socket.on('wyr game started', (data) => {
+    console.log('Would You Rather game started:', data);
+    currentGameMode = 'would-you-rather';
+    showWouldYouRatherUI();
+    
+    // Reset state
+    wyrRound = data.round || 1;
+    maxWYRRounds = data.maxRounds || 5;
+    currentWYRQuestion = data.question;
+    wyrPlayerChoices = {};
+    wyrExplanations = {};
+    
+    // Display the question
+    if (currentWYRQuestion) {
+        displayWYRQuestion(currentWYRQuestion);
+    }
+    
+    gameStatusDisplay.textContent = 'Would You Rather: Extreme Edition Started!';
+});
+
+socket.on('wyr question', (question, round) => {
+    console.log('Received WYR question:', question, round);
+    wyrRound = round;
+    currentWYRQuestion = question;
+    
+    // Update progress
+    const progressDisplay = document.getElementById('wyr-progress');
+    if (progressDisplay) progressDisplay.textContent = `Round ${wyrRound}/${maxWYRRounds}`;
+    
+    displayWYRQuestion(question);
+});
+
+socket.on('wyr player choice', (playerNum, choice) => {
+    console.log(`Player ${playerNum} chose:`, choice);
+    wyrPlayerChoices[playerNum] = choice;
+    
+    // Visual feedback for other players' choices (without revealing what they chose)
+    if (playerNum !== playerNumber) {
+        const statusDisplay = document.getElementById('wyr-other-player-status');
+        if (statusDisplay) {
+            statusDisplay.textContent = `${playerNames[playerNum] || `Player ${playerNum}`} has made their choice...`;
+        }
+    }
+});
+
+socket.on('wyr explanation received', (playerNum, explanation) => {
+    console.log(`Player ${playerNum} explanation:`, explanation);
+    wyrExplanations[playerNum] = explanation;
+    
+    // Check if all players have submitted
+    const totalPlayers = Object.keys(playerNames).length;
+    const submittedExplanations = Object.keys(wyrExplanations).length;
+    
+    if (submittedExplanations >= totalPlayers) {
+        showWYRResults();
+    }
+});
+
+socket.on('wyr round complete', (results) => {
+    console.log('WYR round complete:', results);
+    wyrPlayerChoices = results.choices || {};
+    wyrExplanations = results.explanations || {};
+    showWYRResults();
+});
+
+socket.on('wyr game complete', (finalResults) => {
+    console.log('WYR game complete:', finalResults);
+    
+    // Show final game statistics
+    const message = `Would You Rather: Extreme Edition Complete!\n\nGame Statistics:\n- Total rounds: ${finalResults.totalRounds}\n- Most popular choices: ${finalResults.stats?.mostPopular || 'N/A'}\n\nThanks for playing!`;
+    
+    alert(message);
+    
+    gameStatusDisplay.textContent = 'Would You Rather Game Complete!';
+});
 
