@@ -1778,7 +1778,7 @@ function initializeApp() {
             
             if (!hasError) {
                 console.log('Emitting create or join event');
-                socket.emit('create or join', roomName, totalRounds, playerName);
+                socket.emit('create or join', roomName, totalRounds, playerName, false, userSessionId);
                 // Save player name for future sessions
                 localStorage.setItem('playerName', playerName);
                 joinRoomBtn.disabled = true;
@@ -1802,7 +1802,7 @@ function initializeApp() {
             }
             isViewer = true;
             applyViewerMode();
-            socket.emit('create or join', roomName, totalRounds, playerName, true);
+            socket.emit('create or join', roomName, totalRounds, playerName, true, userSessionId);
             joinViewerBtn.disabled = true;
             joinViewerBtn.textContent = 'Joining...';
         });
@@ -2843,14 +2843,49 @@ socket.on('player left permanently', (playerNum) => {
 // Add comprehensive connection event handlers
 let wasInGame = false; // Track if we were actually in a game
 let hasAttemptedReconnection = false; // Prevent multiple reconnection attempts
+let userSessionId = null; // Track user session for authentication
+let isFirstConnection = true; // Track if this is the first connection
+
+// Generate a unique session ID for this browser session
+function generateSessionId() {
+    return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
+
+// Initialize session ID on first load
+if (!userSessionId) {
+    userSessionId = generateSessionId();
+    console.log('Generated new session ID:', userSessionId);
+}
 
 socket.on('connect', () => {
-    console.log('Connected to server');
+    console.log('Connected to server with session:', userSessionId);
     hideDisconnectionMessage();
     
-    // Only try to rejoin if we were actually in a game AND have valid room/player data
-    if (wasInGame && roomName && playerName && roomName.trim() !== '' && playerName.trim() !== '' && !hasAttemptedReconnection) {
+    // For first-time connections, do NOT attempt any reconnection
+    if (isFirstConnection) {
+        console.log('First connection - not attempting reconnection');
+        isFirstConnection = false;
+        return;
+    }
+    
+    // Only try to rejoin if ALL conditions are met:
+    // 1. User was actually in a game
+    // 2. Has valid room and player data
+    // 3. Not already attempting reconnection
+    // 4. Has a valid session ID
+    const canReconnect = (
+        wasInGame && 
+        roomName && 
+        playerName && 
+        userSessionId &&
+        roomName.trim().length >= 3 && 
+        playerName.trim().length >= 1 && 
+        !hasAttemptedReconnection
+    );
+    
+    if (canReconnect) {
         console.log('Attempting to rejoin room:', roomName);
+        console.log('Session validation - sessionId:', userSessionId, 'wasInGame:', wasInGame);
         console.log('Variables check - roomName:', roomName, 'playerName:', playerName, 'totalRounds:', totalRounds, 'isViewer:', isViewer);
         
         hasAttemptedReconnection = true; // Prevent multiple attempts
@@ -2873,7 +2908,8 @@ socket.on('connect', () => {
             console.log(`Reconnection attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
             
             try {
-                socket.emit('create or join', roomName, totalRounds, playerName, isViewer);
+                // Include session ID in reconnection attempt
+                socket.emit('create or join', roomName, totalRounds, playerName, isViewer, userSessionId);
             } catch (error) {
                 console.error('Error during reconnection attempt:', error);
                 
@@ -2892,7 +2928,12 @@ socket.on('connect', () => {
         // Initial attempt after a short delay
         setTimeout(attemptReconnection, 1000);
     } else {
-        console.log('Not attempting reconnection - wasInGame:', wasInGame, 'roomName:', roomName, 'playerName:', playerName, 'hasAttempted:', hasAttemptedReconnection);
+        console.log('Not attempting reconnection:');
+        console.log('  - wasInGame:', wasInGame);
+        console.log('  - roomName valid:', roomName && roomName.trim().length >= 3);
+        console.log('  - playerName valid:', playerName && playerName.trim().length >= 1);
+        console.log('  - hasAttempted:', hasAttemptedReconnection);
+        console.log('  - sessionId:', userSessionId);
     }
 });
 
