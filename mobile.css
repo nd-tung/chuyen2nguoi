@@ -1,0 +1,1074 @@
+/* Mobile-First Responsive Design */
+/* Keep desktop styles intact, add mobile overrides */
+
+/* Mobile Viewport Meta should be in HTML: */
+/* <meta name="viewport" content="width=device-width, initial-scale=1.0"> */
+
+/* Mobile Breakpoints */
+@media screen and (max-width: 768px) {
+    /* Reset and Base Mobile Styles */
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-size: 16px;
+        line-height: 1.4;
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    /* Mobile Container */
+    .container {
+        padding: 15px;
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    /* Welcome Screen - Mobile */
+    #welcome-screen {
+        padding: 20px 15px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    #main-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 20px;
+    }
+    
+    /* Game Mode Cards - Mobile */
+    .game-modes {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 20px 0 30px 0;
+    }
+    
+    .mode-card {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    }
+    
+    .mode-card.active {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .mode-card h3 {
+        margin: 0 0 8px 0;
+        font-size: 1.3rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .mode-card p {
+        margin: 0;
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+    
+    .mode-emoji {
+        font-size: 1.5rem;
+    }
+    
+    /* Join Form - Mobile */
+    .join-form {
+        background: rgba(255,255,255,0.95);
+        border-radius: 20px;
+        padding: 25px 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        font-size: 16px; /* Prevent zoom on iOS */
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group input.success {
+        border-color: #28a745;
+    }
+    
+    .form-group input.error {
+        border-color: #dc3545;
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    /* Buttons - Mobile */
+    .btn {
+        width: 100%;
+        padding: 16px 20px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover,
+    .btn-primary:active {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn-secondary {
+        background: rgba(255,255,255,0.9);
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+    
+    .btn-secondary:hover,
+    .btn-secondary:active {
+        background: #667eea;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+    
+    /* Instructions - Mobile */
+    .instructions {
+        background: rgba(255,255,255,0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .instructions h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.2rem;
+    }
+    
+    .instructions ol {
+        padding-left: 20px;
+        margin: 0;
+    }
+    
+    .instructions li {
+        margin-bottom: 8px;
+        color: #555;
+        line-height: 1.4;
+    }
+    
+    /* Game Screen - Mobile */
+    #game-screen {
+        padding: 15px;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Mobile Header */
+    .mobile-game-header {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .player-info h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #333;
+    }
+    
+    .player-info p {
+        margin: 5px 0 0 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .game-status {
+        text-align: right;
+    }
+    
+    .round-info {
+        font-weight: 600;
+        color: #667eea;
+        margin: 0;
+    }
+    
+    .status-text {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 5px 0 0 0;
+    }
+    
+    /* Mobile Scoreboard */
+    .mobile-scoreboard {
+        display: flex;
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .mobile-player-score {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+    }
+    
+    .mobile-player-score.current-player {
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 10px;
+    }
+    
+    .mobile-player-name {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    .mobile-player-points {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+    }
+    
+    .score-divider {
+        width: 2px;
+        background: #e1e5e9;
+        margin: 0 15px;
+    }
+    
+    /* Topic Selection - Mobile */
+    .mobile-topic-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .mobile-topic-card {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        position: relative;
+    }
+    
+    .mobile-topic-card.highlighted {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .mobile-topic-card.selected {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+    }
+    
+    .topic-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .topic-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+        flex-grow: 1;
+    }
+    
+    .topic-badges {
+        display: flex;
+        gap: 5px;
+        flex-shrink: 0;
+    }
+    
+    .icon-badge {
+        font-size: 1.2rem;
+    }
+    
+    .points-badge {
+        background: #667eea;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .topic-description {
+        color: #666;
+        font-size: 0.95rem;
+        margin: 0;
+        line-height: 1.4;
+    }
+    
+    /* Topic Suggestions - Mobile */
+    .mobile-topic-suggestions {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .suggestions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .suggestions-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .close-suggestions {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .suggestion-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .suggestion-list li {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 12px 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+    
+    .suggestion-list li:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Statement Creation - Mobile */
+    .mobile-statement-form {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .current-topic-mobile {
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .current-topic-mobile h4 {
+        margin: 0 0 5px 0;
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+    
+    .current-topic-mobile p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .statement-group {
+        margin-bottom: 20px;
+    }
+    
+    .statement-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .statement-label span {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .truth-selector {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        color: #667eea;
+    }
+    
+    .statement-input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        font-size: 16px;
+        resize: vertical;
+        min-height: 60px;
+        transition: all 0.3s ease;
+    }
+    
+    .statement-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .truth-radio {
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border: 2px solid #667eea;
+        border-radius: 50%;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .truth-radio:checked {
+        background: #667eea;
+        border-color: #667eea;
+    }
+    
+    .truth-radio:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    /* Guessing - Mobile */
+    .mobile-guess-area {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .guess-prompt {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .opponent-topic-mobile {
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .statement-option {
+        background: white;
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        position: relative;
+    }
+    
+    .statement-option:hover,
+    .statement-option:active {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    .statement-number {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #667eea;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 24px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+    
+    .statement-text {
+        display: inline;
+        color: #333;
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+    
+    /* Results - Mobile */
+    .mobile-result {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+    
+    .result-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    
+    .result-message {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .result-message.correct {
+        color: #28a745;
+    }
+    
+    .result-message.wrong {
+        color: #dc3545;
+    }
+    
+    .result-details {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+    
+    /* Bottom Action Bar - Mobile */
+    .mobile-action-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .mobile-action-bar .btn {
+        margin-bottom: 0;
+    }
+    
+    /* Add padding to prevent content from being hidden behind action bar */
+    .has-action-bar {
+        padding-bottom: 80px;
+    }
+    
+    /* Topic Help - Mobile */
+    .mobile-topic-help {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .topic-help-content {
+        background: white;
+        border-radius: 20px 20px 0 0;
+        padding: 20px;
+        width: 100%;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .topic-help-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+    
+    .topic-help-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .close-help {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    /* Menu Button - Mobile */
+    .mobile-menu-btn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 44px;
+        height: 44px;
+        background: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Side Menu - Mobile */
+    .side-menu {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 20px;
+        overflow-y: auto;
+    }
+    
+    .side-menu.open {
+        right: 0;
+    }
+    
+    .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+    
+    .menu-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .close-menu {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .menu-section {
+        margin-bottom: 25px;
+    }
+    
+    .menu-section h4 {
+        margin: 0 0 15px 0;
+        color: #667eea;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .menu-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .menu-btn {
+        background: none;
+        border: 1px solid #e1e5e9;
+        padding: 12px 15px;
+        border-radius: 10px;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #333;
+    }
+    
+    .menu-btn.active {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+        color: #667eea;
+    }
+    
+    .menu-btn:hover,
+    .menu-btn:active {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+    }
+    
+    /* Emoji Panel - Mobile */
+    .mobile-emoji-panel {
+        position: fixed;
+        bottom: 90px; /* Above action bar */
+        right: 15px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 25px;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+    
+    .emoji-toggle {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .emoji-content {
+        display: none;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #e1e5e9;
+    }
+    
+    .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+    
+    .emoji-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .emoji-btn:hover,
+    .emoji-btn:active {
+        background: rgba(102, 126, 234, 0.1);
+        transform: scale(1.1);
+    }
+    
+    /* Loading States - Mobile */
+    .mobile-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e1e5e9;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        color: #666;
+        font-size: 1rem;
+        text-align: center;
+    }
+    
+    /* Animations - Mobile */
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .scale-in {
+        animation: scaleIn 0.3s ease-out;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    /* Hide desktop elements on mobile */
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* Small Mobile (iPhone SE, etc.) */
+@media screen and (max-width: 375px) {
+    #main-title {
+        font-size: 1.8rem;
+    }
+    
+    .mobile-topic-card {
+        padding: 15px;
+    }
+    
+    .btn {
+        padding: 14px 18px;
+        font-size: 1rem;
+    }
+    
+    .statement-input {
+        padding: 12px;
+        min-height: 50px;
+    }
+    
+    .statement-option {
+        padding: 15px;
+    }
+}
+
+/* Tablet Portrait (768px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+    .mobile-topic-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .game-modes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .join-form {
+        max-width: 500px;
+        margin: 20px auto;
+    }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-topic-card:active,
+    .statement-option:active,
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    /* Larger touch targets */
+    .truth-radio {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .close-suggestions,
+    .close-help,
+    .close-menu {
+        padding: 12px;
+        margin: -12px;
+    }
+}
+
+/* Dark Mode Support for Mobile */
+@media screen and (max-width: 768px) {
+    .dark-mode {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    }
+    
+    .dark-mode .mode-card,
+    .dark-mode .join-form,
+    .dark-mode .instructions,
+    .dark-mode .mobile-game-header,
+    .dark-mode .mobile-scoreboard,
+    .dark-mode .mobile-topic-card,
+    .dark-mode .mobile-topic-suggestions,
+    .dark-mode .mobile-statement-form,
+    .dark-mode .mobile-guess-area,
+    .dark-mode .mobile-result {
+        background: rgba(45, 55, 72, 0.95);
+        color: #e2e8f0;
+    }
+    
+    .dark-mode .mobile-topic-card h4,
+    .dark-mode .topic-title,
+    .dark-mode .suggestions-title,
+    .dark-mode .statement-label span {
+        color: #e2e8f0;
+    }
+    
+    .dark-mode .topic-description,
+    .dark-mode .mobile-player-name,
+    .dark-mode .status-text {
+        color: #a0aec0;
+    }
+    
+    .dark-mode .statement-input,
+    .dark-mode .form-group input,
+    .dark-mode .form-group select {
+        background: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
+    }
+    
+    .dark-mode .statement-option {
+        background: #4a5568;
+        border-color: #718096;
+        color: #e2e8f0;
+    }
+}
