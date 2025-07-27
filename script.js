@@ -2380,6 +2380,9 @@ socket.on('room created', (room, player, rounds, names) => {
     playerNumber = player;
     totalRounds = rounds;
     if (names) playerNames = names;
+    wasInGame = true; // Mark that we're now in an actual game
+    hasAttemptedReconnection = false; // Reset reconnection flag
+    
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = `Player ${playerNumber}`;
@@ -2406,6 +2409,9 @@ socket.on('room joined', (room, player, rounds, names) => {
     playerNumber = player;
     totalRounds = rounds;
     if (names) playerNames = names;
+    wasInGame = true; // Mark that we're now in an actual game
+    hasAttemptedReconnection = false; // Reset reconnection flag
+    
     welcomeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     playerNumberDisplay.textContent = `Player ${playerNumber}`;
@@ -2835,19 +2841,58 @@ socket.on('player left permanently', (playerNum) => {
 });
 
 // Add comprehensive connection event handlers
+let wasInGame = false; // Track if we were actually in a game
+let hasAttemptedReconnection = false; // Prevent multiple reconnection attempts
+
 socket.on('connect', () => {
     console.log('Connected to server');
     hideDisconnectionMessage();
     
-    // If we were in a room, try to rejoin
-    if (roomName && playerName) {
+    // Only try to rejoin if we were actually in a game AND have valid room/player data
+    if (wasInGame && roomName && playerName && roomName.trim() !== '' && playerName.trim() !== '' && !hasAttemptedReconnection) {
         console.log('Attempting to rejoin room:', roomName);
+        console.log('Variables check - roomName:', roomName, 'playerName:', playerName, 'totalRounds:', totalRounds, 'isViewer:', isViewer);
+        
+        hasAttemptedReconnection = true; // Prevent multiple attempts
+        
+        // Validate all required variables are set
+        if (!totalRounds || totalRounds < 1) {
+            console.warn('totalRounds not properly set, defaulting to 5');
+            totalRounds = 5;
+        }
+        
         const t = translations[currentLanguage];
         showReconnectionMessage(t.reconnecting || 'Reconnecting to game...');
         
-        setTimeout(() => {
-            socket.emit('create or join', roomName, totalRounds, playerName, isViewer);
-        }, 1000);
+        // Add retry logic with exponential backoff
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 3;
+        
+        const attemptReconnection = () => {
+            reconnectAttempts++;
+            console.log(`Reconnection attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
+            
+            try {
+                socket.emit('create or join', roomName, totalRounds, playerName, isViewer);
+            } catch (error) {
+                console.error('Error during reconnection attempt:', error);
+                
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    const retryDelay = Math.min(1000 * Math.pow(2, reconnectAttempts - 1), 5000);
+                    console.log(`Retrying reconnection in ${retryDelay}ms`);
+                    setTimeout(attemptReconnection, retryDelay);
+                } else {
+                    console.error('Max reconnection attempts reached');
+                    showDisconnectionMessage('Failed to reconnect. Please refresh the page.');
+                    hasAttemptedReconnection = false; // Reset for potential manual retry
+                }
+            }
+        };
+        
+        // Initial attempt after a short delay
+        setTimeout(attemptReconnection, 1000);
+    } else {
+        console.log('Not attempting reconnection - wasInGame:', wasInGame, 'roomName:', roomName, 'playerName:', playerName, 'hasAttempted:', hasAttemptedReconnection);
     }
 });
 
