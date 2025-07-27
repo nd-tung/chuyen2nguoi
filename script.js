@@ -1008,6 +1008,13 @@ const translations = {
         roomPlaceholder: 'Enter Room Name',
         joinRoom: 'Join Room',
         joinViewer: 'Join as Viewer',
+        exitGame: 'Exit Game',
+        viewHistory: 'View History',
+        backToMenu: 'Back to Menu',
+        clearHistory: 'Clear History',
+        backToHistory: 'Back to History',
+        playAgain: 'Play Again',
+        exitFinal: 'Exit',
         topicSelectionPrompt: 'Select 1 topic for Player {player} to create statements about:',
         selectedTopicsTitle: 'Selected Topics:',
         confirmTopics: 'Confirm Topic Selection',
@@ -1028,7 +1035,6 @@ const translations = {
         finalScore: 'Final Score',
         winner: 'Winner: Player {player}',
         tie: 'It\'s a tie!',
-        playAgain: 'Play Again',
         statement1: 'Statement 1:',
         statement2: 'Statement 2:',
         statement3: 'Statement 3:',
@@ -1044,6 +1050,69 @@ const translations = {
         showResults: 'Show Results',
         clearData: 'Clear Saved Data',
         specialMessage: 'This topic encourages creative and personal statements. Use your imagination!',
+        // Instructions for each game mode
+        instruction1: 'Two players join the same room',
+        instruction2: 'Each player takes turns creating 3 statements about themselves',
+        instruction3: '2 statements are lies, 1 statement is the truth',
+        instruction4: 'Mark which statement is TRUE using the check icon',
+        instruction5: 'The other player tries to guess which one is the truth',
+        instruction6: 'Score points for correct guesses!',
+        instruction7: 'Play multiple rounds and see who wins!',
+        // Story Building instructions
+        storyInstruction1: 'Players take turns contributing to a story',
+        storyInstruction2: 'Each turn, a player adds a sentence or phrase',
+        storyInstruction3: 'A random prompt may be incorporated for creativity',
+        storyInstruction4: 'The goal is to create a fun and cohesive story',
+        storyInstruction5: 'Continue until the story reaches a pre-set limit',
+        // Would You Rather instructions
+        wyrInstruction1: 'Players face a hypothetical question with two choices',
+        wyrInstruction2: 'Select the option you prefer and explain your reasoning',
+        wyrInstruction3: 'Compare answers with other players',
+        wyrInstruction4: 'Score points for creativity and reasoning',
+        wyrInstruction5: 'Play multiple rounds and compare choices!',
+        // Assumption Buster instructions
+        abInstruction1: 'Create an assumption about the other player',
+        abInstruction2: 'The other player responds with true or false',
+        abInstruction3: 'Explain why your assumption was true or false',
+        abInstruction4: 'Gain insights into each other\'s thinking',
+        abInstruction5: 'Continue through multiple rounds',
+        // Additional UI elements
+        noHistoryYet: 'No history yet',
+        roomFull: 'This room is full! Only 2 players can join a room.',
+        enterName: 'Please enter your name.',
+        enterRoomName: 'Please enter a room name with at least 3 characters.',
+        roomNameError: 'Room name error. Please refresh and try again.',
+        fillAllStatements: 'Please fill in all three statements.',
+        selectTruthStatement: 'Please select which statement is the TRUTH by clicking the check icon.',
+        onlySelectOneTopic: 'You can only select 1 topic per round.',
+        selectAtLeastOneTopic: 'Please select at least 1 topic.',
+        customTopicCreated: 'Custom topic approved and added!',
+        customTopicRequirements: 'Please enter a topic name and at least 3 suggestions.',
+        clearDataConfirm: 'Clear saved data and cookies?',
+        dataCleared: 'Data cleared!',
+        exitGameConfirm: 'Are you sure you want to exit the game?',
+        storyBuildingComplete: 'Story building complete! Check out your collaborative masterpiece!',
+        enterStoryContribution: 'Please enter your story contribution!',
+        provideExplanation: 'Please provide an explanation for your choice!',
+        enterAssumption: 'Please enter an assumption!',
+        detailedAssumption: 'Please make your assumption more detailed (at least 10 characters).',
+        provideExplanationResponse: 'Please provide an explanation for your response!',
+        detailedExplanation: 'Please provide a more detailed explanation (at least 10 characters).',
+        // Disconnection and reconnection messages
+        playerLeft: 'Player {player} left the game. Waiting for new player...',
+        waitingForPlayer: 'Waiting for the other player to reconnect or a new player to join...',
+        reconnecting: 'Reconnecting...',
+        reconnected: 'Reconnected successfully!',
+        connectionLost: 'Connection lost. Attempting to reconnect...',
+        connectionError: 'Connection error. Please check your internet connection.',
+        serverDisconnect: 'Server disconnected. Please refresh the page.',
+        reconnectAttempt: 'Reconnecting... (attempt {attempt})',
+        reconnectFailed: 'Reconnection failed. Please refresh the page.',
+        reconnectGiveUp: 'Could not reconnect to server. Please refresh the page.',
+        playerDisconnected: '{playerName} disconnected. Waiting for reconnection...',
+        reconnectedSuccessfully: 'Reconnected successfully! Resuming game...',
+        playerReconnected: '{playerName} reconnected to the game!',
+        playerLeftPermanently: 'Player {player} left the game permanently. Waiting for new player...',
         instructions: [
             'Two players join the same room',
             'Each player takes turns creating 3 statements about themselves',
@@ -1063,6 +1132,13 @@ const translations = {
         roomPlaceholder: 'Nhập Tên Phòng',
         joinRoom: 'Tham Gia Phòng',
         joinViewer: 'Xem Trực Tiếp',
+        exitGame: 'Thoát Game',
+        viewHistory: 'Xem Lịch Sử',
+        backToMenu: 'Về Menu Chính',
+        clearHistory: 'Xóa Lịch Sử',
+        backToHistory: 'Quay Lại Lịch Sử',
+        playAgain: 'Chơi Lại',
+        exitFinal: 'Thoát',
         topicSelectionPrompt: 'Chọn 1 chủ đề cho Người chơi {player} tạo câu nói:',
         selectedTopicsTitle: 'Chủ Đề Đã Chọn:',
         confirmTopics: 'Xác Nhận Chọn Chủ Đề',
@@ -1083,7 +1159,6 @@ const translations = {
         finalScore: 'Điểm Cuối Cùng',
         winner: 'Người Thắng: Người chơi {player}',
         tie: 'Hòa!',
-        playAgain: 'Chơi Lại',
         statement1: 'Câu nói 1:',
         statement2: 'Câu nói 2:',
         statement3: 'Câu nói 3:',
@@ -1099,6 +1174,69 @@ const translations = {
         showResults: 'Xem Kết Quả',
         clearData: 'Xóa Dữ Liệu',
         specialMessage: 'Chủ đề này khuyến khích những câu nói sáng tạo và cá nhân. Hãy sử dụng trí tưởng tượng của bạn!',
+        // Instructions for each game mode
+        instruction1: 'Hai người chơi tham gia cùng một phòng',
+        instruction2: 'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
+        instruction3: '2 câu nói là dối trá, 1 câu nói là sự thật',
+        instruction4: 'Đánh dấu câu nói ĐÚNG bằng biểu tượng dấu tích',
+        instruction5: 'Người chơi kia cố gắng đoán câu nào là sự thật',
+        instruction6: 'Ghi điểm khi đoán đúng!',
+        instruction7: 'Chơi nhiều vòng và xem ai thắng!',
+        // Story Building instructions
+        storyInstruction1: 'Người chơi lần lượt đóng góp vào câu chuyện',
+        storyInstruction2: 'Mỗi lượt, một người chơi thêm một câu hoặc cụm từ',
+        storyInstruction3: 'Có thể kết hợp gợi ý ngẫu nhiên để sáng tạo',
+        storyInstruction4: 'Mục tiêu là tạo ra một câu chuyện thú vị và liền mạch',
+        storyInstruction5: 'Tiếp tục cho đến khi câu chuyện đạt giới hạn định trước',
+        // Would You Rather instructions
+        wyrInstruction1: 'Người chơi đối diện với câu hỏi giả định có hai lựa chọn',
+        wyrInstruction2: 'Chọn lựa chọn bạn thích và giải thích lý do',
+        wyrInstruction3: 'So sánh câu trả lời với người chơi khác',
+        wyrInstruction4: 'Ghi điểm cho sự sáng tạo và lý luận',
+        wyrInstruction5: 'Chơi nhiều vòng và so sánh lựa chọn!',
+        // Assumption Buster instructions
+        abInstruction1: 'Tạo một giả định về người chơi khác',
+        abInstruction2: 'Người chơi kia trả lời đúng hoặc sai',
+        abInstruction3: 'Giải thích tại sao giả định của bạn đúng hoặc sai',
+        abInstruction4: 'Hiểu rõ hơn về suy nghĩ của nhau',
+        abInstruction5: 'Tiếp tục qua nhiều vòng',
+        // Additional UI elements
+        noHistoryYet: 'Chưa có lịch sử',
+        roomFull: 'Phòng này đã đầy! Chỉ có 2 người chơi có thể tham gia một phòng.',
+        enterName: 'Vui lòng nhập tên của bạn.',
+        enterRoomName: 'Vui lòng nhập tên phòng có ít nhất 3 ký tự.',
+        roomNameError: 'Lỗi tên phòng. Vui lòng làm mới và thử lại.',
+        fillAllStatements: 'Vui lòng điền đầy đủ cả ba câu nói.',
+        selectTruthStatement: 'Vui lòng chọn câu nói là SỰ THẬT bằng cách nhấp vào biểu tượng dấu tích.',
+        onlySelectOneTopic: 'Bạn chỉ có thể chọn 1 chủ đề mỗi vòng.',
+        selectAtLeastOneTopic: 'Vui lòng chọn ít nhất 1 chủ đề.',
+        customTopicCreated: 'Chủ đề tùy chỉnh đã được phê duyệt và thêm vào!',
+        customTopicRequirements: 'Vui lòng nhập tên chủ đề và ít nhất 3 gợi ý.',
+        clearDataConfirm: 'Xóa dữ liệu đã lưu và cookies?',
+        dataCleared: 'Dữ liệu đã được xóa!',
+        exitGameConfirm: 'Bạn có chắc chắn muốn thoát khỏi game?',
+        storyBuildingComplete: 'Hoàn thành xây dựng câu chuyện! Hãy xem kiệt tác hợp tác của bạn!',
+        enterStoryContribution: 'Vui lòng nhập đóng góp câu chuyện của bạn!',
+        provideExplanation: 'Vui lòng cung cấp lời giải thích cho lựa chọn của bạn!',
+        enterAssumption: 'Vui lòng nhập một giả định!',
+        detailedAssumption: 'Vui lòng làm cho giả định của bạn chi tiết hơn (ít nhất 10 ký tự).',
+        provideExplanationResponse: 'Vui lòng cung cấp lời giải thích cho phản hồi của bạn!',
+        detailedExplanation: 'Vui lòng cung cấp lời giải thích chi tiết hơn (ít nhất 10 ký tự).',
+        // Disconnection and reconnection messages
+        playerLeft: 'Người chơi {player} đã rời khỏi game. Đang chờ người chơi mới...',
+        waitingForPlayer: 'Đang chờ người chơi khác kết nối lại hoặc người chơi mới tham gia...',
+        reconnecting: 'Đang kết nối lại...',
+        reconnected: 'Kết nối lại thành công!',
+        connectionLost: 'Mất kết nối. Đang cố gắng kết nối lại...',
+        connectionError: 'Lỗi kết nối. Vui lòng kiểm tra kết nối internet của bạn.',
+        serverDisconnect: 'Máy chủ ngắt kết nối. Vui lòng làm mới trang.',
+        reconnectAttempt: 'Đang kết nối lại... (lần thử {attempt})',
+        reconnectFailed: 'Kết nối lại thất bại. Vui lòng làm mới trang.',
+        reconnectGiveUp: 'Không thể kết nối lại với máy chủ. Vui lòng làm mới trang.',
+        playerDisconnected: '{playerName} đã mất kết nối. Đang chờ kết nối lại...',
+        reconnectedSuccessfully: 'Kết nối lại thành công! Đang tiếp tục game...',
+        playerReconnected: '{playerName} đã kết nối lại game!',
+        playerLeftPermanently: 'Người chơi {player} đã rời khỏi game hoàn toàn. Đang chờ người chơi mới...',
         instructions: [
             'Hai người chơi tham gia cùng một phòng',
             'Mỗi người chơi lần lượt tạo 3 câu nói về bản thân',
@@ -1162,46 +1300,48 @@ function updateGameInstructions(mode) {
     const instructionsContent = document.getElementById('instructions-content');
     let instructionsHTML = '';
     
+    const t = translations[currentLanguage];
+    
     if (mode === 'two-truths') {
         instructionsHTML = `
             <ol>
-                <li>Two players join the same room</li>
-                <li>Each player takes turns creating 3 statements about themselves</li>
-                <li>2 statements are lies, 1 statement is the truth</li>
-                <li>Mark which statement is TRUE using the check icon</li>
-                <li>The other player tries to guess which one is the truth</li>
-                <li>Score points for correct guesses!</li>
-                <li>Play multiple rounds and see who wins!</li>
+                <li>${t.instruction1}</li>
+                <li>${t.instruction2}</li>
+                <li>${t.instruction3}</li>
+                <li>${t.instruction4}</li>
+                <li>${t.instruction5}</li>
+                <li>${t.instruction6}</li>
+                <li>${t.instruction7}</li>
             </ol>
         `;
     } else if (mode === 'story-building') {
         instructionsHTML = `
             <ol>
-                <li>Players take turns contributing to a story</li>
-                <li>Each turn, a player adds a sentence or phrase</li>
-                <li>A random prompt may be incorporated for creativity</li>
-                <li>The goal is to create a fun and cohesive story</li>
-                <li>Continue until the story reaches a pre-set limit</li>
+                <li>${t.storyInstruction1}</li>
+                <li>${t.storyInstruction2}</li>
+                <li>${t.storyInstruction3}</li>
+                <li>${t.storyInstruction4}</li>
+                <li>${t.storyInstruction5}</li>
             </ol>
         `;
     } else if (mode === 'would-you-rather') {
         instructionsHTML = `
             <ol>
-                <li>Players face a hypothetical question with two choices</li>
-                <li>Select the option you prefer and explain your reasoning</li>
-                <li>Compare answers with other players</li>
-                <li>Score points for creativity and reasoning</li>
-                <li>Play multiple rounds and compare choices!</li>
+                <li>${t.wyrInstruction1}</li>
+                <li>${t.wyrInstruction2}</li>
+                <li>${t.wyrInstruction3}</li>
+                <li>${t.wyrInstruction4}</li>
+                <li>${t.wyrInstruction5}</li>
             </ol>
         `;
     } else if (mode === 'assumption-buster') {
         instructionsHTML = `
             <ol>
-                <li>Create an assumption about the other player</li>
-                <li>The other player responds with true or false</li>
-                <li>Explain why your assumption was true or false</li>
-                <li>Gain insights into each other’s thinking</li>
-                <li>Continue through multiple rounds</li>
+                <li>${t.abInstruction1}</li>
+                <li>${t.abInstruction2}</li>
+                <li>${t.abInstruction3}</li>
+                <li>${t.abInstruction4}</li>
+                <li>${t.abInstruction5}</li>
             </ol>
         `;
     }
@@ -2312,13 +2452,161 @@ socket.on('player joined', (names) => {
 
 socket.on('player left', (playerNum) => {
     console.log('Player left:', playerNum);
-    gameStatusDisplay.textContent = `Player ${playerNum} left the game. Waiting for new player...`;
+    const t = translations[currentLanguage];
+    gameStatusDisplay.textContent = t.playerLeft || `Player ${playerNum} left the game. Waiting for new player...`;
+    
+    // Hide all game UI elements
     topicSelectionArea.classList.add('hidden');
     inputArea.classList.add('hidden');
     guessArea.classList.add('hidden');
     currentTopicDiv.classList.add('hidden');
     opponentTopicDiv.classList.add('hidden');
     nextRoundBtn.classList.add('hidden');
+    
+    // Hide all game mode UIs
+    hideAllGameModeUIs();
+    
+    // Show reconnection message
+    showDisconnectionMessage(t.waitingForPlayer || 'Waiting for the other player to reconnect or a new player to join...');
+});
+
+// Handle player disconnection (temporary)
+socket.on('player disconnected', (playerNum, playerName) => {
+    console.log('Player disconnected temporarily:', playerNum, playerName);
+    const t = translations[currentLanguage];
+    const message = t.playerDisconnected || `${playerName || `Player ${playerNum}`} disconnected. Waiting for reconnection...`;
+    showDisconnectionMessage(message);
+    gameStatusDisplay.textContent = message;
+});
+
+// Handle successful player reconnection
+socket.on('player reconnected', (room, player, rounds, names, gameState) => {
+    console.log('Player reconnected successfully:', room, player, rounds, names, gameState);
+    
+    // Update local state
+    roomName = room;
+    playerNumber = player;
+    totalRounds = rounds;
+    playerNames = names;
+    scores = gameState.scores || { 1: 0, 2: 0 };
+    currentRound = gameState.round || 1;
+    
+    // Update UI
+    welcomeScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    playerNumberDisplay.textContent = `Player ${playerNumber}`;
+    if (playerNameDisplay) playerNameDisplay.textContent = playerName || 'Anonymous';
+    
+    updatePlayerNames(playerNames);
+    updateScores();
+    
+    // Hide disconnection message
+    hideDisconnectionMessage();
+    
+    const t = translations[currentLanguage];
+    const reconnectedMessage = t.reconnectedSuccessfully || 'Reconnected successfully! Resuming game...';
+    gameStatusDisplay.textContent = reconnectedMessage;
+    
+    // The server will send appropriate game state events to resume the game
+});
+
+// Handle notification that another player reconnected
+socket.on('player reconnected notification', (playerNum, playerName) => {
+    console.log('Another player reconnected:', playerNum, playerName);
+    const t = translations[currentLanguage];
+    const message = t.playerReconnected || `${playerName} reconnected to the game!`;
+    gameStatusDisplay.textContent = message;
+    
+    // Hide disconnection message since the other player is back
+    hideDisconnectionMessage();
+    
+    // Update player names
+    if (playerNames) {
+        playerNames[playerNum] = playerName;
+        updatePlayerNames(playerNames);
+    }
+});
+
+// Handle permanent player departure after timeout
+socket.on('player left permanently', (playerNum) => {
+    console.log('Player left permanently:', playerNum);
+    const t = translations[currentLanguage];
+    gameStatusDisplay.textContent = t.playerLeftPermanently || `Player ${playerNum} left the game permanently. Waiting for new player...`;
+    
+    // Reset to waiting state
+    topicSelectionArea.classList.add('hidden');
+    inputArea.classList.add('hidden');
+    guessArea.classList.add('hidden');
+    currentTopicDiv.classList.add('hidden');
+    opponentTopicDiv.classList.add('hidden');
+    nextRoundBtn.classList.add('hidden');
+    hideAllGameModeUIs();
+    
+    showDisconnectionMessage(t.waitingForPlayer || 'Waiting for a new player to join...');
+});
+
+// Add comprehensive connection event handlers
+socket.on('connect', () => {
+    console.log('Connected to server');
+    hideDisconnectionMessage();
+    
+    // If we were in a room, try to rejoin
+    if (roomName && playerName) {
+        console.log('Attempting to rejoin room:', roomName);
+        const t = translations[currentLanguage];
+        showReconnectionMessage(t.reconnecting || 'Reconnecting to game...');
+        
+        setTimeout(() => {
+            socket.emit('create or join', roomName, roundCount, playerName, isViewer);
+        }, 1000);
+    }
+});
+
+socket.on('disconnect', (reason) => {
+    console.log('Disconnected from server:', reason);
+    const t = translations[currentLanguage];
+    
+    if (reason === 'io server disconnect') {
+        // Server initiated disconnect
+        showDisconnectionMessage(t.serverDisconnect || 'Server disconnected. Please refresh the page.');
+    } else {
+        // Network issue or client disconnect
+        showDisconnectionMessage(t.connectionLost || 'Connection lost. Attempting to reconnect...');
+    }
+});
+
+socket.on('connect_error', (error) => {
+    console.log('Connection error:', error);
+    const t = translations[currentLanguage];
+    showDisconnectionMessage(t.connectionError || 'Connection error. Please check your internet connection.');
+});
+
+socket.on('reconnect', (attemptNumber) => {
+    console.log('Reconnected after', attemptNumber, 'attempts');
+    const t = translations[currentLanguage];
+    showReconnectionMessage(t.reconnected || 'Reconnected successfully!');
+    
+    setTimeout(() => {
+        hideDisconnectionMessage();
+    }, 2000);
+});
+
+socket.on('reconnect_attempt', (attemptNumber) => {
+    console.log('Reconnection attempt:', attemptNumber);
+    const t = translations[currentLanguage];
+    showReconnectionMessage(t.reconnectAttempt || `Reconnecting... (attempt ${attemptNumber})`);
+});
+
+socket.on('reconnect_error', (error) => {
+    console.log('Reconnection failed:', error);
+    const t = translations[currentLanguage];
+    showDisconnectionMessage(t.reconnectFailed || 'Reconnection failed. Please refresh the page.');
+});
+
+socket.on('reconnect_failed', () => {
+    console.log('Reconnection failed completely');
+    const t = translations[currentLanguage];
+    showDisconnectionMessage(t.reconnectGiveUp || 'Could not reconnect to server. Please refresh the page.');
 });
 
 // Handle room full error
@@ -3436,11 +3724,32 @@ function showAssumptionBusterUI() {
     const abUI = document.getElementById('assumption-buster-area');
     if (abUI) abUI.classList.remove('hidden');
     resetAssumptionBusterGame();
+    setupAssumptionBusterEventListeners();
 }
 
 function hideAssumptionBusterUI() {
     const abUI = document.getElementById('assumption-buster-area');
     if (abUI) abUI.classList.add('hidden');
+}
+
+function setupAssumptionBusterEventListeners() {
+    // Character counting for assumption input
+    const assumptionInput = document.getElementById('ab-assumption-input');
+    const assumptionCharCount = document.getElementById('ab-assumption-char-count');
+    if (assumptionInput && assumptionCharCount) {
+        assumptionInput.addEventListener('input', () => {
+            assumptionCharCount.textContent = assumptionInput.value.length;
+        });
+    }
+    
+    // Character counting for explanation input
+    const explanationInput = document.getElementById('ab-explanation-input');
+    const explanationCharCount = document.getElementById('ab-explanation-char-count');
+    if (explanationInput && explanationCharCount) {
+        explanationInput.addEventListener('input', () => {
+            explanationCharCount.textContent = explanationInput.value.length;
+        });
+    }
 }
 
 function resetAssumptionBusterGame() {
@@ -3774,6 +4083,55 @@ function endABGame() {
     
     // Return to main menu
     location.reload();
+}
+
+// Disconnection and reconnection handling functions
+function showDisconnectionMessage(message) {
+    let disconnectionOverlay = document.getElementById('disconnection-overlay');
+    if (!disconnectionOverlay) {
+        // Create disconnection overlay
+        disconnectionOverlay = document.createElement('div');
+        disconnectionOverlay.id = 'disconnection-overlay';
+        disconnectionOverlay.className = 'disconnection-overlay';
+        disconnectionOverlay.innerHTML = `
+            <div class="disconnection-content">
+                <div class="disconnection-icon">⚠️</div>
+                <div class="disconnection-message" id="disconnection-message"></div>
+                <div class="disconnection-spinner"></div>
+            </div>
+        `;
+        document.body.appendChild(disconnectionOverlay);
+    }
+    
+    const messageEl = document.getElementById('disconnection-message');
+    if (messageEl) messageEl.textContent = message;
+    
+    disconnectionOverlay.classList.remove('hidden');
+    disconnectionOverlay.classList.add('show');
+}
+
+function showReconnectionMessage(message) {
+    const messageEl = document.getElementById('disconnection-message');
+    if (messageEl) messageEl.textContent = message;
+    
+    const overlay = document.getElementById('disconnection-overlay');
+    if (overlay) {
+        overlay.classList.add('reconnecting');
+    }
+}
+
+function hideDisconnectionMessage() {
+    const disconnectionOverlay = document.getElementById('disconnection-overlay');
+    if (disconnectionOverlay) {
+        disconnectionOverlay.classList.remove('show', 'reconnecting');
+        disconnectionOverlay.classList.add('hidden');
+    }
+}
+
+function hideAllGameModeUIs() {
+    hideStoryBuildingUI();
+    hideWouldYouRatherUI();
+    hideAssumptionBusterUI();
 }
 
 // Socket listeners for Would You Rather

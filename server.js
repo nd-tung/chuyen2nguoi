@@ -146,47 +146,87 @@ io.on('connection', (socket) => {
                     player1Turn: false,
                     player2Turn: false
                 },
-                playerNames: { 1: playerName, 2: 'Player 2' }
+                playerNames: { 1: playerName, 2: 'Player 2' },
+                disconnectedPlayers: {} // Track disconnected players for reconnection
             };
             socket.join(room);
             rooms[room].players[socket.id] = { player: 1, name: playerName };
             rooms[room].playerCount++;
             console.log(`User ${socket.id} created room ${room} as Player 1 (${playerName})`);
             socket.emit('room created', room, 1, roundCount, rooms[room].playerNames);
-        } else if (rooms[room].playerCount < 2) {
-            console.log(`User ${socket.id} joining existing room: ${room}`);
-            socket.join(room);
-            rooms[room].players[socket.id] = { player: 2, name: playerName };
-            rooms[room].playerNames[2] = playerName;
-            rooms[room].playerCount++;
-            console.log(`User ${socket.id} joined room ${room} as Player 2 (${playerName})`);
-            socket.emit('room joined', room, 2, rooms[room].totalRounds, rooms[room].playerNames);
-
-            // Notify all players about updated names
-            io.to(room).emit('player names updated', rooms[room].playerNames);
-            // Inform players that the second participant has joined
-            io.to(room).emit('player joined', rooms[room].playerNames);
-
-            // Start the game with topic selection
-            startTopicSelectionPhase(room);
         } else {
-            if (isViewer) {
+            // Check if this is a reconnection attempt
+            const reconnectionAttempt = checkForReconnection(room, playerName);
+            
+            if (reconnectionAttempt) {
+                // Handle reconnection
+                const { playerNumber, wasDisconnected } = reconnectionAttempt;
+                console.log(`Player ${playerName} reconnecting to room ${room} as Player ${playerNumber}`);
+                
                 socket.join(room);
-                if (!rooms[room].viewers) rooms[room].viewers = {};
-                rooms[room].viewers[socket.id] = { name: playerName };
-                console.log(`User ${socket.id} joined room ${room} as Viewer`);
-                socket.emit('viewer joined', {
-                    room,
-                    rounds: rooms[room].totalRounds,
-                    playerNames: rooms[room].playerNames,
+                rooms[room].players[socket.id] = { player: playerNumber, name: playerName };
+                
+                // Remove from disconnected players list
+                delete rooms[room].disconnectedPlayers[playerNumber];
+                
+                // Restore player count if necessary
+                if (wasDisconnected && rooms[room].playerCount < 2) {
+                    rooms[room].playerCount++;
+                }
+                
+                // Update player name
+                rooms[room].playerNames[playerNumber] = playerName;
+                
+                // Emit reconnection event
+                socket.emit('player reconnected', room, playerNumber, rooms[room].totalRounds, rooms[room].playerNames, {
                     phase: rooms[room].currentPhase,
                     round: rooms[room].currentRound,
+                    scores: rooms[room].gameState.scores,
                     selectedTopics: rooms[room].selectedTopics,
-                    typing: rooms[room].currentTyping || []
+                    currentTopic: rooms[room].currentTopic
                 });
+                
+                // Notify other players about reconnection
+                socket.to(room).emit('player reconnected notification', playerNumber, playerName);
+                
+                // Resume game state if appropriate
+                resumeGameStateForReconnectedPlayer(room, socket.id, playerNumber);
+                
+            } else if (rooms[room].playerCount < 2) {
+                console.log(`User ${socket.id} joining existing room: ${room}`);
+                socket.join(room);
+                rooms[room].players[socket.id] = { player: 2, name: playerName };
+                rooms[room].playerNames[2] = playerName;
+                rooms[room].playerCount++;
+                console.log(`User ${socket.id} joined room ${room} as Player 2 (${playerName})`);
+                socket.emit('room joined', room, 2, rooms[room].totalRounds, rooms[room].playerNames);
+
+                // Notify all players about updated names
+                io.to(room).emit('player names updated', rooms[room].playerNames);
+                // Inform players that the second participant has joined
+                io.to(room).emit('player joined', rooms[room].playerNames);
+
+                // Start the game with topic selection
+                startTopicSelectionPhase(room);
             } else {
-                console.log(`Room ${room} is full, rejecting user ${socket.id}`);
-                socket.emit('room full');
+                if (isViewer) {
+                    socket.join(room);
+                    if (!rooms[room].viewers) rooms[room].viewers = {};
+                    rooms[room].viewers[socket.id] = { name: playerName };
+                    console.log(`User ${socket.id} joined room ${room} as Viewer`);
+                    socket.emit('viewer joined', {
+                        room,
+                        rounds: rooms[room].totalRounds,
+                        playerNames: rooms[room].playerNames,
+                        phase: rooms[room].currentPhase,
+                        round: rooms[room].currentRound,
+                        selectedTopics: rooms[room].selectedTopics,
+                        typing: rooms[room].currentTyping || []
+                    });
+                } else {
+                    console.log(`Room ${room} is full, rejecting user ${socket.id}`);
+                    socket.emit('room full');
+                }
             }
         }
         
@@ -510,20 +550,56 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('user disconnected:', socket.id);
         for (let room in rooms) {
             if (rooms[room].players[socket.id]) {
                 const leavingPlayer = rooms[room].players[socket.id].player;
-                delete rooms[room].players[socket.id];
-                rooms[room].playerNames[leavingPlayer] = `Player ${leavingPlayer}`;
-                rooms[room].playerCount--;
-                if (rooms[room].playerCount === 0 && Object.keys(rooms[room].viewers || {}).length === 0) {
-                    delete rooms[room];
-                } else {
-                    rooms[room].currentPhase = 'waiting';
-                    io.to(room).emit('player left', leavingPlayer);
-                    io.to(room).emit('player names updated', rooms[room].playerNames);
+                const playerName = rooms[room].players[socket.id].name;
+                
+                console.log(`Player ${leavingPlayer} (${playerName}) disconnected from room ${room}`);
+                
+                // Store disconnected player info for potential reconnection
+                if (!rooms[room].disconnectedPlayers) {
+                    rooms[room].disconnectedPlayers = {};
                 }
+                
+                rooms[room].disconnectedPlayers[leavingPlayer] = {
+                    name: playerName,
+                    disconnectedAt: Date.now(),
+                    socketId: socket.id
+                };
+                
+                // Remove from active players but keep room state
+                delete rooms[room].players[socket.id];
+                rooms[room].playerCount--;
+                
+                // Set a timeout to permanently remove the player if they don't reconnect
+                const reconnectionTimeout = setTimeout(() => {
+                    if (rooms[room] && rooms[room].disconnectedPlayers[leavingPlayer]) {
+                        console.log(`Player ${leavingPlayer} reconnection timeout expired`);
+                        delete rooms[room].disconnectedPlayers[leavingPlayer];
+                        
+                        // Reset player name to default
+                        rooms[room].playerNames[leavingPlayer] = `Player ${leavingPlayer}`;
+                        
+                        // If no players left, clean up room
+                        if (rooms[room].playerCount === 0 && Object.keys(rooms[room].viewers || {}).length === 0) {
+                            delete rooms[room];
+                        } else {
+                            // Set phase to waiting and notify remaining players
+                            rooms[room].currentPhase = 'waiting';
+                            io.to(room).emit('player left permanently', leavingPlayer);
+                            io.to(room).emit('player names updated', rooms[room].playerNames);
+                        }
+                    }
+                }, 60000); // 60 seconds to reconnect
+                
+                // Store timeout reference
+                rooms[room].disconnectedPlayers[leavingPlayer].timeout = reconnectionTimeout;
+                
+                // Immediately notify other players about temporary disconnection
+                io.to(room).emit('player disconnected', leavingPlayer, playerName);
+                
                 break;
             } else if (rooms[room].viewers && rooms[room].viewers[socket.id]) {
                 delete rooms[room].viewers[socket.id];
@@ -678,6 +754,99 @@ function completeStoryBuilding(room) {
         io.in(room).emit('story building complete', storySummary);
         
         console.log(`Story building completed for room ${room}. Final story: ${roomData.storyMode.storyText.substring(0, 100)}...`);
+    }
+}
+
+// Reconnection helper functions
+function checkForReconnection(room, playerName) {
+    if (!rooms[room] || !rooms[room].disconnectedPlayers) {
+        return null;
+    }
+    
+    // Check if this player name matches any disconnected player
+    for (const [playerNumber, disconnectedInfo] of Object.entries(rooms[room].disconnectedPlayers)) {
+        if (disconnectedInfo.name === playerName) {
+            // Clear timeout if it exists
+            if (disconnectedInfo.timeout) {
+                clearTimeout(disconnectedInfo.timeout);
+            }
+            
+            return {
+                playerNumber: parseInt(playerNumber),
+                wasDisconnected: true,
+                disconnectedInfo
+            };
+        }
+    }
+    
+    return null;
+}
+
+function resumeGameStateForReconnectedPlayer(room, socketId, playerNumber) {
+    const roomData = rooms[room];
+    if (!roomData) return;
+    
+    console.log(`Resuming game state for Player ${playerNumber} in room ${room}, phase: ${roomData.currentPhase}`);
+    
+    switch (roomData.currentPhase) {
+        case 'topic_selection':
+            if (roomData.topicSelector === playerNumber) {
+                // This player should be selecting topics
+                io.to(socketId).emit('start topic selection', roomData.statementCreator, roomData.currentRound);
+            } else {
+                // This player should be waiting
+                io.to(socketId).emit('status update', `Player ${roomData.topicSelector} is selecting a topic for you...`);
+            }
+            break;
+            
+        case 'statement_creation':
+            if (roomData.statementCreator === playerNumber) {
+                // This player should be creating statements
+                io.to(socketId).emit('start statement creation', roomData.currentTopic, roomData.currentRound);
+            } else {
+                // This player should be waiting
+                io.to(socketId).emit('status update', `Player ${roomData.statementCreator} is creating statements...`);
+            }
+            break;
+            
+        case 'guessing':
+            const guesserPlayer = Object.keys(roomData.players).find(
+                id => roomData.players[id].player !== roomData.statementCreator
+            );
+            
+            if (guesserPlayer && roomData.players[guesserPlayer].player === playerNumber) {
+                // This player should be guessing
+                io.to(socketId).emit('statements submitted', roomData.currentStatements, roomData.currentTopic);
+            } else {
+                // This player should be waiting for guess
+                io.to(socketId).emit('status update', `Player ${roomData.players[guesserPlayer]?.player || 'other'} is making their guess...`);
+            }
+            break;
+            
+        case 'story_building':
+            if (roomData.storyMode) {
+                io.to(socketId).emit('story state', {
+                    contributions: roomData.storyMode.contributions,
+                    storyText: roomData.storyMode.storyText,
+                    currentTurn: roomData.storyMode.currentTurn,
+                    maxTurns: roomData.storyMode.maxTurns,
+                    currentPlayer: roomData.storyMode.currentTurn % 2 === 1 ? 1 : 2,
+                    randomElement: roomData.storyMode.currentRandomElement,
+                    isComplete: roomData.storyMode.currentTurn > roomData.storyMode.maxTurns
+                });
+            }
+            break;
+            
+        case 'would_you_rather':
+            if (roomData.wyrMode) {
+                io.to(socketId).emit('wyr question', roomData.wyrMode.currentQuestion, roomData.wyrMode.currentRound);
+            }
+            break;
+            
+        default:
+            // Game is waiting or in unknown state
+            io.to(socketId).emit('status update', 'Game is waiting for players...');
+            break;
     }
 }
 

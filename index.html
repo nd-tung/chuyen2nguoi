@@ -303,50 +303,56 @@
             </div>
             
             <!-- Assumption Buster Area -->
-            <div id="assumption-buster-area" class="hidden">
-                <div class="ab-header">
+            <div id="assumption-buster-area" class="game-mode-area hidden">
+                <div class="mode-header">
                     <h3 id="ab-title">Assumption Buster</h3>
-                    <div class="ab-progress">
-                        <span id="ab-round-indicator">Round 1</span>
-                        <div class="ab-phase">Phase: <span id="ab-phase-indicator">Making Assumptions</span></div>
+                    <div class="mode-progress">
+                        <span id="ab-round-indicator">Round 1/5</span>
+                        <div class="phase-indicator">Phase: <span id="ab-phase-indicator">Making Assumptions</span></div>
                     </div>
                 </div>
                 
-                <div id="ab-make-assumption" class="ab-phase-area">
-                    <div class="assumption-prompt">
+                <div id="ab-make-assumption" class="phase-area">
+                    <div class="prompt-section">
                         <h4>Make an assumption about <span id="ab-target-player">the other player</span>:</h4>
-                        <p class="assumption-hint">Think about their personality, preferences, or experiences. What do you assume to be true about them?</p>
-                    </div>
-                    <div class="assumption-templates">
-                        <h5>Quick templates (optional):</h5>
-                        <div class="template-buttons">
-                            <button class="template-btn" data-template="I think you prefer [A] over [B]">Preferences</button>
-                            <button class="template-btn" data-template="I assume you have [experience/trait]">Experiences</button>
-                            <button class="template-btn" data-template="I believe you would [action] in [situation]">Behavior</button>
-                            <button class="template-btn" data-template="I think your personality is more [trait] than [trait]">Personality</button>
-                        </div>
-                    </div>
-                    <textarea id="ab-assumption-input" placeholder="Write your assumption here..." maxlength="200" rows="3"></textarea>
-                    <div class="ab-input-controls">
-                        <div class="char-count">Character count: <span id="ab-assumption-char-count">0</span>/200</div>
-                        <button id="submit-assumption" class="ab-submit-btn">Submit Assumption</button>
-                    </div>
-                </div>
-                
-                <div id="ab-respond-assumption" class="ab-phase-area hidden">
-                    <div class="assumption-display">
-                        <h4>Assumption about you:</h4>
-                        <p id="assumption-text">Loading assumption...</p>
+                        <p class="hint-text">Think about their personality, preferences, or experiences. What do you assume to be true about them?</p>
                     </div>
                     
-                    <div class="ab-responses">
+                    <div class="template-section">
+                        <h5>Quick templates (optional):</h5>
+                        <div class="template-grid">
+                            <button class="template-btn" onclick="useAssumptionTemplate('I think you prefer [A] over [B]')">Preferences</button>
+                            <button class="template-btn" onclick="useAssumptionTemplate('I assume you have [experience/trait]')">Experiences</button>
+                            <button class="template-btn" onclick="useAssumptionTemplate('I believe you would [action] in [situation]')">Behavior</button>
+                            <button class="template-btn" onclick="useAssumptionTemplate('I think your personality is more [trait] than [trait]')">Personality</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-section">
+                        <textarea id="ab-assumption-input" placeholder="Write your assumption here..." maxlength="200" rows="3"></textarea>
+                        <div class="input-controls">
+                            <div class="char-count">Character count: <span id="ab-assumption-char-count">0</span>/200</div>
+                            <button id="ab-submit-assumption" class="primary-btn" onclick="submitAssumption()">Submit Assumption</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="ab-respond-assumption" class="phase-area hidden">
+                    <div class="assumption-display">
+                        <h4><span id="ab-assumption-from">Player assumes:</span></h4>
+                        <div class="assumption-text">
+                            <p id="ab-assumption-display">Loading assumption...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="response-section">
                         <h5>Is this assumption correct?</h5>
-                        <div class="response-options">
-                            <button id="response-true" class="ab-response-btn response-true">
+                        <div class="response-buttons">
+                            <button id="ab-response-true" class="response-btn true-btn" onclick="selectABResponse('true')">
                                 <span class="response-icon">✓</span>
                                 <span class="response-label">True</span>
                             </button>
-                            <button id="response-false" class="ab-response-btn response-false">
+                            <button id="ab-response-false" class="response-btn false-btn" onclick="selectABResponse('false')">
                                 <span class="response-icon">✗</span>
                                 <span class="response-label">False</span>
                             </button>
@@ -354,32 +360,33 @@
                     </div>
                 </div>
                 
-                <div id="ab-explanation-area" class="ab-explanation hidden">
-                    <h4>Explain your response:</h4>
-                    <p class="explanation-prompt">Why is this assumption true or false? Share the story behind it!</p>
-                    <textarea id="ab-explanation-input" placeholder="Tell us more about why this assumption is correct or incorrect..." maxlength="300" rows="3"></textarea>
-                    <div class="ab-explanation-controls">
-                        <div class="char-count">Character count: <span id="ab-char-count">0</span>/300</div>
-                        <button id="submit-ab-explanation" class="ab-submit-btn">Submit Explanation</button>
+                <div id="ab-explanation-area" class="phase-area hidden">
+                    <div class="explanation-section">
+                        <h4>Explain your response:</h4>
+                        <p class="hint-text">Why is this assumption true or false? Share the story behind it!</p>
+                        <textarea id="ab-explanation-input" placeholder="Tell us more about why this assumption is correct or incorrect..." maxlength="300" rows="3"></textarea>
+                        <div class="input-controls">
+                            <div class="char-count">Character count: <span id="ab-explanation-char-count">0</span>/300</div>
+                            <button id="ab-submit-explanation" class="primary-btn" onclick="submitABExplanation()">Submit Explanation</button>
+                        </div>
                     </div>
                 </div>
                 
-                <div id="ab-results-area" class="ab-results hidden">
-                    <h4>Results & Revelations</h4>
-                    <div id="ab-player-results">
-                        <!-- Player results will be populated here dynamically -->
-                    </div>
-                    <div class="ab-scoring">
-                        <div id="ab-surprise-scores">
-                            <h5>Surprise Points Awarded:</h5>
-                            <div class="score-breakdown">
-                                <span id="ab-player1-points">Player 1: +0 pts</span>
-                                <span id="ab-player2-points">Player 2: +0 pts</span>
+                <div id="ab-results-area" class="phase-area hidden">
+                    <div class="results-section">
+                        <h4>Results & Revelations</h4>
+                        <div id="ab-player-results" class="results-grid">
+                            <!-- Player results will be populated here dynamically -->
+                        </div>
+                        <div class="scoring-section">
+                            <div id="ab-surprise-scores" class="score-display">
+                                <h5>Surprise Points:</h5>
+                                <p>Points awarded for unexpected revelations!</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="ab-next-round">
-                        <button id="ab-next-round" class="ab-next-btn">Next Round</button>
+                        <div class="next-action">
+                            <button id="ab-next-round" class="primary-btn hidden">Next Round</button>
+                        </div>
                     </div>
                 </div>
             </div>
