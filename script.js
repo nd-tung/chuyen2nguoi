@@ -469,7 +469,7 @@ function applyViewerMode() {
 
 // Topics data with suggestions
 const topics = {
-    // Safe topics - Childhood & Youth
+    // EASY TOPICS (1 point) - Safe, light topics
     childhood: {
         title: 'Childhood Memories',
         description: 'Share stories from when you were young',
@@ -479,6 +479,42 @@ const topics = {
             'I won first place in a school talent show singing contest',
             'My family moved 5 times before I turned 10',
             'I was afraid of the dark until I was 12 years old'
+        ],
+        isAdult: false
+    },
+    favorite_things: {
+        title: 'Favorite Things',
+        description: 'Share your favorite activities, foods, or hobbies',
+        suggestions: [
+            'My favorite color has always been purple',
+            'I could eat pizza every day for the rest of my life',
+            'I have watched the same movie over 20 times',
+            'My favorite season is winter because I love snow',
+            'I prefer cats over dogs as pets'
+        ],
+        isAdult: false
+    },
+    simple_preferences: {
+        title: 'Simple Preferences',
+        description: 'Basic likes and dislikes',
+        suggestions: [
+            'I always choose stairs over elevators',
+            'I prefer tea over coffee in the morning',
+            'I like rainy days more than sunny days',
+            'I always sleep on the left side of the bed',
+            'I prefer books over movies for entertainment'
+        ],
+        isAdult: false
+    },
+    daily_habits: {
+        title: 'Daily Habits',
+        description: 'Your everyday routines and habits',
+        suggestions: [
+            'I brush my teeth exactly 3 times every day',
+            'I always make my bed immediately after waking up',
+            'I check my phone within 5 minutes of waking up',
+            'I drink at least 8 glasses of water daily',
+            'I always eat breakfast, no matter how rushed I am'
         ],
         isAdult: false
     },
@@ -518,6 +554,7 @@ const topics = {
         ],
         isAdult: false
     },
+    // MODERATE TOPICS (2 points) - Slightly more personal
     travel: {
         title: 'Travel Adventures',
         description: 'Share your travel experiences or dream destinations',
@@ -527,6 +564,42 @@ const topics = {
             'I went skydiving in New Zealand',
             'I\'ve never left my home country',
             'I lived in a hostel for 3 months while backpacking'
+        ],
+        isAdult: false
+    },
+    achievements: {
+        title: 'Personal Achievements',
+        description: 'Things you\'re proud of accomplishing',
+        suggestions: [
+            'I ran a marathon without any prior training',
+            'I learned to speak a foreign language fluently in 6 months',
+            'I saved someone\'s life once',
+            'I\'ve never won any competition or contest in my life',
+            'I built my own house from scratch'
+        ],
+        isAdult: false
+    },
+    social_situations: {
+        title: 'Social Situations',
+        description: 'How you handle social interactions',
+        suggestions: [
+            'I once gave a speech to over 1000 people',
+            'I\'ve never been to a party with more than 10 people',
+            'I always arrive fashionably late to social events',
+            'I\'ve crashed a wedding reception without knowing anyone',
+            'I prefer texting over phone calls, even with close friends'
+        ],
+        isAdult: false
+    },
+    personal_quirks: {
+        title: 'Personal Quirks',
+        description: 'Your unique habits and behaviors',
+        suggestions: [
+            'I always count steps when walking up stairs',
+            'I have a lucky charm I carry everywhere',
+            'I can\'t sleep without white noise playing',
+            'I always knock on wood after saying something hopeful',
+            'I rearrange furniture in my room at least once a month'
         ],
         isAdult: false
     },
@@ -626,6 +699,7 @@ const topics = {
         ],
         isAdult: false
     },
+    // CHALLENGING TOPICS (3 points) - More personal, might be sensitive
     fears: {
         title: 'Fears & Phobias',
         description: 'What makes you scared or nervous?',
@@ -635,6 +709,42 @@ const topics = {
             'I can\'t sleep without a nightlight on',
             'I\'ve never been on a roller coaster because of my fear of heights',
             'I hyperventilate in elevators and take stairs to the 10th floor'
+        ],
+        isAdult: false
+    },
+    past_mistakes: {
+        title: 'Learning from Mistakes',
+        description: 'Times when things didn\'t go as planned',
+        suggestions: [
+            'I once accidentally sent a private email to my entire workplace',
+            'I\'ve never made a major mistake that I truly regret',
+            'I once forgot my best friend\'s birthday for three years in a row',
+            'I accidentally broke something valuable and never told anyone',
+            'I once got lost for 6 hours because I refused to ask for directions'
+        ],
+        isAdult: false
+    },
+    personal_beliefs: {
+        title: 'Personal Beliefs',
+        description: 'Your thoughts on life and values',
+        suggestions: [
+            'I believe in ghosts and have had paranormal experiences',
+            'I think everything happens for a reason',
+            'I\'ve completely changed my political views in the past 5 years',
+            'I believe in aliens and think they\'ve visited Earth',
+            'I think social media has made the world a worse place'
+        ],
+        isAdult: false
+    },
+    relationship_patterns: {
+        title: 'Relationship Patterns',
+        description: 'How you connect with others',
+        suggestions: [
+            'I\'ve never had a friendship last longer than 2 years',
+            'I always become friends with my neighbors wherever I live',
+            'I\'ve reconnected with someone after 10+ years of no contact',
+            'I\'m still best friends with someone from elementary school',
+            'I prefer having many acquaintances over a few close friends'
         ],
         isAdult: false
     },
@@ -674,6 +784,7 @@ const topics = {
         ],
         isAdult: false
     },
+    // DEEP TOPICS (4 points) - More vulnerable, requires trust
     embarrassing: {
         title: 'Embarrassing Moments',
         description: 'Share those cringe-worthy experiences',
@@ -686,6 +797,42 @@ const topics = {
         ],
         isAdult: false
     },
+    life_changing_moments: {
+        title: 'Life-Changing Moments',
+        description: 'Experiences that shaped who you are',
+        suggestions: [
+            'I had a near-death experience that changed my perspective on life',
+            'I\'ve never had a single moment I\'d call "life-changing"',
+            'I decided to completely change careers at age 40',
+            'Meeting one specific person changed the entire course of my life',
+            'A book I read in college completely shifted my worldview'
+        ],
+        isAdult: false
+    },
+    personal_struggles: {
+        title: 'Overcoming Challenges',
+        description: 'Difficulties you\'ve faced and conquered',
+        suggestions: [
+            'I overcame a major addiction that controlled my life for years',
+            'I\'ve never faced any truly serious challenges in my life',
+            'I conquered a phobia that limited me for decades',
+            'I rebuilt my life completely after losing everything',
+            'I learned to manage a mental health condition that affected my daily life'
+        ],
+        isAdult: false
+    },
+    regrets_and_wishes: {
+        title: 'Regrets & Wishes',
+        description: 'Things you wish you had done differently',
+        suggestions: [
+            'I regret not telling someone I loved them before they died',
+            'I\'ve never done anything I truly regret',
+            'I wish I had been braver in my younger years',
+            'I regret choosing safety over following my dreams',
+            'I wish I had traveled more when I was younger and had fewer responsibilities'
+        ],
+        isAdult: false
+    },
     family: {
         title: 'Family Stories',
         description: 'Tell us about your family members',
@@ -695,6 +842,30 @@ const topics = {
             'My family owns a farm with over 100 animals',
             'I was adopted and found out when I was 18',
             'My uncle is a famous actor but uses a stage name'
+        ],
+        isAdult: false
+    },
+    hidden_talents_advanced: {
+        title: 'Extraordinary Abilities',
+        description: 'Unusual or impressive skills you possess',
+        suggestions: [
+            'I can remember every conversation I\'ve had in the past 5 years',
+            'I have synesthesia and see colors when I hear music',
+            'I can predict what people are going to say before they say it',
+            'I\'ve never forgotten a face, even after meeting someone once briefly',
+            'I can sense when people are lying with 95% accuracy'
+        ],
+        isAdult: false
+    },
+    moral_dilemmas: {
+        title: 'Moral Choices',
+        description: 'Difficult decisions you\'ve had to make',
+        suggestions: [
+            'I once had to choose between helping a friend and following the law',
+            'I\'ve never faced a situation where my morals were truly tested',
+            'I kept a secret that could have helped someone but would have hurt others',
+            'I had to decide whether to expose someone\'s wrongdoing',
+            'I chose personal gain over doing what I knew was right'
         ],
         isAdult: false
     },
@@ -823,7 +994,7 @@ const topics = {
 
 // Vietnamese Topics
 const topicsVi = {
-    // Chủ đề an toàn
+    // CHUYÊN DỀ DỄ (1 điểm) - Chủ đề an toàn, nhẹ nhàng
     childhood: {
         title: 'Kỷ Niệm Tuổi Thơ',
         description: 'Chia sẻ những câu chuyện khi bạn còn nhỏ',
@@ -833,6 +1004,42 @@ const topicsVi = {
             'Tôi đã thắng giải nhất cuộc thi hát tài năng ở trường',
             'Gia đình tôi chuyển nhà 5 lần trước khi tôi 10 tuổi',
             'Tôi sợ bóng tối cho đến khi 12 tuổi'
+        ],
+        isAdult: false
+    },
+    favorite_things: {
+        title: 'Những Điều Yêu Thích',
+        description: 'Chia sẻ về hoạt động, đồ ăn hay sở thích yêu thích',
+        suggestions: [
+            'Màu tím luôn là màu yêu thích của tôi',
+            'Tôi có thể ăn pizza mỗi ngày suốt đời',
+            'Tôi đã xem cùng một bộ phim hơn 20 lần',
+            'Mùa đông là mùa yêu thích vì tôi thích tuyết',
+            'Tôi thích mèo hơn chó'
+        ],
+        isAdult: false
+    },
+    simple_preferences: {
+        title: 'Sở Thích Đơn Giản',
+        description: 'Những thứ cơ bản bạn thích và không thích',
+        suggestions: [
+            'Tôi luôn chọn cầu thang thay vì thang máy',
+            'Tôi thích trà hơn cà phê vào buổi sáng',
+            'Tôi thích những ngày mưa hơn ngày nắng',
+            'Tôi luôn ngủ bên trái giường',
+            'Tôi thích sách hơn phim để giải trí'
+        ],
+        isAdult: false
+    },
+    daily_habits: {
+        title: 'Thói Quen Hàng Ngày',
+        description: 'Các thói quen và sinh hoạt hàng ngày của bạn',
+        suggestions: [
+            'Tôi đánh răng đúng 3 lần mỗi ngày',
+            'Tôi luôn dọn giường ngay sau khi thức dậy',
+            'Tôi kiểm tra điện thoại trong vòng 5 phút sau khi thức dậy',
+            'Tôi uống ít nhất 8 ly nước mỗi ngày',
+            'Tôi luôn ăn sáng dù có vội đến mấy'
         ],
         isAdult: false
     },
@@ -848,15 +1055,52 @@ const topicsVi = {
         ],
         isAdult: false
     },
+    // CHUYÊN DỀ VỪA PHẢI (2 điểm) - Hơi cá nhân hơn một chút
     travel: {
         title: 'Cuộc Phiêu Lưu Du Lịch',
-        description: 'Chia sẻ trải nghiệm du lịch hoặc điểm đến mơ ước',
+        description: 'Chia sẻ trải nghiệm du llịch hoặc điểm đến mơ ước',
         suggestions: [
             'Tôi đã đi qua cả 7 châu lục',
             'Tôi bị lạc ở Tokyo 6 tiếng mà không biết tiếng Nhật',
             'Tôi đã nhảy dù ở New Zealand',
             'Tôi chưa bao giờ rời khỏi quê hương',
             'Tôi sống ở hostel 3 tháng khi du lịch bụi'
+        ],
+        isAdult: false
+    },
+    achievements: {
+        title: 'Thành Tựu Cá Nhân',
+        description: 'Những điều bạn tự hào đã hoàn thành',
+        suggestions: [
+            'Tôi chạy marathon mà không tập luyện trước',
+            'Tôi học thành thạo ngoại ngữ trong 6 tháng',
+            'Tôi đã cứu mạng ai đó một lần',
+            'Tôi chưa bao giờ thắng cuộc thi hay thi đấu nào trong đời',
+            'Tôi tự xây nhà từ đầu'
+        ],
+        isAdult: false
+    },
+    social_situations: {
+        title: 'Tình Huống Xã Hội',
+        description: 'Cách bạn xử lý các tương tác xã hội',
+        suggestions: [
+            'Tôi từng phát biểu trước hơn 1000 người',
+            'Tôi chưa bao giờ đi tiệc có hơn 10 người',
+            'Tôi luôn đến muộn một cách \"thời trang\" trong các sự kiện',
+            'Tôi từng đột nhập đám cưới mà không quen ai',
+            'Tôi thích nhắn tin hơn gọi điện, ngay cả với bạn thân'
+        ],
+        isAdult: false
+    },
+    personal_quirks: {
+        title: 'Những Tính Cách Độc Đáo',
+        description: 'Thói quen và hành vi độc đáo của bạn',
+        suggestions: [
+            'Tôi luôn đếm bậc khi đi cầu thang',
+            'Tôi có một vật may mắn mang theo mọi lúc',
+            'Tôi không thể ngủ nếu không có tiếng ồn trắng',
+            'Tôi luôn gõ gỗ sau khi nói điều gì đó tích cực',
+            'Tôi sắp xếp lại đồ đạc trong phòng ít nhất mỗi tháng một lần'
         ],
         isAdult: false
     },
@@ -908,6 +1152,7 @@ const topicsVi = {
         ],
         isAdult: false
     },
+    // CHUYÊN DỀ THÁCH THỨC (3 điểm) - Cá nhân hơn, có thể nhạy cảm
     fears: {
         title: 'Nỗi Sợ & Ám Ảnh',
         description: 'Điều gì khiến bạn sợ hãi hoặc lo lắng?',
@@ -917,6 +1162,42 @@ const topicsVi = {
             'Tôi không thể ngủ nếu không có đèn ngủ',
             'Tôi chưa bao giờ đi tàu lượn siêu tốc vì sợ độ cao',
             'Tôi khó thở trong thang máy và leo bộ lên tầng 10'
+        ],
+        isAdult: false
+    },
+    past_mistakes: {
+        title: 'Học Hỏi Từ Sai Lầm',
+        description: 'Những lúc mọi thứ không diễn ra như kế hoạch',
+        suggestions: [
+            'Tôi từng vô tình gửi email riêng tư cho toàn công ty',
+            'Tôi chưa bao giờ mắc sai lầm lớn nào mà thực sự hối hận',
+            'Tôi từng quên sinh nhật bạn thân suốt 3 năm liên tiếp',
+            'Tôi vô tình làm hỏng thứ gì đó có giá trị và không bao giờ nói',
+            'Tôi từng lạc đường 6 tiếng vì từ chối hỏi đường'
+        ],
+        isAdult: false
+    },
+    personal_beliefs: {
+        title: 'Niềm Tin Cá Nhân',
+        description: 'Suy nghĩ của bạn về cuộc sống và giá trị',
+        suggestions: [
+            'Tôi tin vào ma và đã có trải nghiệm siêu nhiên',
+            'Tôi nghĩ mọi thứ đều xảy ra có lý do',
+            'Tôi đã hoàn toàn thay đổi quan điểm chính trị trong 5 năm qua',
+            'Tôi tin vào người ngoài hành tinh và nghĩ họ đã đến Trái Đất',
+            'Tôi nghĩ mạng xã hội đã làm thế giới trở nên tệ hơn'
+        ],
+        isAdult: false
+    },
+    relationship_patterns: {
+        title: 'Mô Hình Mối Quan Hệ',
+        description: 'Cách bạn kết nối với người khác',
+        suggestions: [
+            'Tôi chưa bao giờ có tình bạn nào kéo dài hơn 2 năm',
+            'Tôi luôn kết bạn với hàng xóm ở bất cứ nơi nào tôi sống',
+            'Tôi đã tái kết nối với ai đó sau 10+ năm không liên lạc',
+            'Tôi vẫn là bạn thân với người bạn từ tiểu học',
+            'Tôi thích có nhiều người quen hơn là vài người bạn thân'
         ],
         isAdult: false
     },
@@ -932,6 +1213,7 @@ const topicsVi = {
         ],
         isAdult: false
     },
+    // CHUYÊN DỀ SÂU SẮC (4 điểm) - Dễ bị tổn thương hơn, cần sự tin tưởng
     embarrassing: {
         title: 'Khoảnh Khắc Xấu Hổ',
         description: 'Chia sẻ những trải nghiệm đáng xấu hổ',
@@ -944,6 +1226,42 @@ const topicsVi = {
         ],
         isAdult: false
     },
+    life_changing_moments: {
+        title: 'Khoảnh Khắc Thay Đổi Cuộc Đời',
+        description: 'Những trải nghiệm đã định hình con người bạn',
+        suggestions: [
+            'Tôi có trải nghiệm cận tử thay đổi quan điểm sống',
+            'Tôi chưa bao giờ có khoảnh khắc nào gọi là "thay đổi cuộc đời"',
+            'Tôi quyết định đổi nghề hoàn toàn ở tuổi 40',
+            'Gặp một người cụ thể đã thay đổi toàn bộ hướng đi cuộc đời tôi',
+            'Một cuốn sách đọc hồi đại học đã hoàn toàn thay đổi thế giới quan'
+        ],
+        isAdult: false
+    },
+    personal_struggles: {
+        title: 'Vượt Qua Thử Thách',
+        description: 'Những khó khăn bạn đã đối mặt và chinh phục',
+        suggestions: [
+            'Tôi đã vượt qua một chứng nghiện nghiêm trọng kiểm soát cuộc đời nhiều năm',
+            'Tôi chưa bao giờ đối mặt với thử thách thực sự nghiêm trọng nào',
+            'Tôi đã chinh phục nỗi ám ảnh hạn chế tôi hàng thập kỷ',
+            'Tôi xây dựng lại cuộc sống hoàn toàn sau khi mất tất cả',
+            'Tôi học cách quản lý tình trạng sức khỏe tâm thần ảnh hưởng đến sinh hoạt hàng ngày'
+        ],
+        isAdult: false
+    },
+    regrets_and_wishes: {
+        title: 'Hối Tiếc & Ước Muốn',
+        description: 'Những điều bạn ước mình đã làm khác đi',
+        suggestions: [
+            'Tôi hối tiếc vì không nói với ai đó rằng tôi yêu họ trước khi họ qua đời',
+            'Tôi chưa bao giờ làm điều gì thực sự hối tiếc',
+            'Tôi ước mình đã dũng cảm hơn khi còn trẻ',
+            'Tôi hối tiếc vì đã chọn an toàn thay vì theo đuổi ước mơ',
+            'Tôi ước mình đã đi du lịch nhiều hơn khi còn trẻ và ít trách nhiệm'
+        ],
+        isAdult: false
+    },
     family: {
         title: 'Câu Chuyện Gia Đình',
         description: 'Chia sẻ về gia đình và người thân',
@@ -953,6 +1271,30 @@ const topicsVi = {
             'Tôi được sinh ra trong xe taxi trên đường đến bệnh viện',
             'Tôi có người anh/chị em sinh đôi mà ít ai biết',
             'Gia đình tôi từng nổi tiếng địa phương vì lý do kỳ lạ'
+        ],
+        isAdult: false
+    },
+    hidden_talents_advanced: {
+        title: 'Khả Năng Phi Thường',
+        description: 'Những kỹ năng bất thường hoặc ấn tượng bạn sở hữu',
+        suggestions: [
+            'Tôi có thể nhớ mọi cuộc trò chuyện trong 5 năm qua',
+            'Tôi có hiện tượng synesthesia và thấy màu sắc khi nghe nhạc',
+            'Tôi có thể đoán trước người ta sắp nói gì',
+            'Tôi không bao giờ quên mặt ai, dù chỉ gặp một lần ngắn ngủi',
+            'Tôi có thể phát hiện khi người ta nói dối với độ chính xác 95%'
+        ],
+        isAdult: false
+    },
+    moral_dilemmas: {
+        title: 'Lựa Chọn Đạo Đức',
+        description: 'Những quyết định khó khăn bạn đã phải đưa ra',
+        suggestions: [
+            'Tôi từng phải chọn giữa giúp bạn và tuân theo pháp luật',
+            'Tôi chưa bao giờ đối mặt với tình huống thực sự thử thách đạo đức',
+            'Tôi giữ bí mật có thể giúp ai đó nhưng sẽ làm tổn thương người khác',
+            'Tôi phải quyết định có nên vạch trần hành vi sai trái của ai đó',
+            'Tôi đã chọn lợi ích cá nhân thay vì làm điều đúng đắn'
         ],
         isAdult: false
     },
@@ -1226,17 +1568,48 @@ const topicsVi = {
 };
 
 const topicPoints = {
+    // Easy topics (1 point)
     childhood: 1,
+    favorite_things: 1,
+    simple_preferences: 1,
+    daily_habits: 1,
     school: 1,
-    travel: 1,
     food: 1,
     pets: 1,
     hobbies: 1,
+    
+    // Moderate topics (2 points)
+    travel: 2,
+    achievements: 2,
+    social_situations: 2,
+    personal_quirks: 2,
     work: 2,
     talents: 2,
+    cooking_disasters: 2,
+    weird_foods: 2,
+    weird_jobs: 2,
+    boss_stories: 2,
+    useless_skills: 2,
+    body_quirks: 2,
+    
+    // Challenging topics (3 points)
     fears: 3,
-    embarrassing: 3,
+    past_mistakes: 3,
+    personal_beliefs: 3,
+    relationship_patterns: 3,
+    
+    // Deep topics (4 points)
+    embarrassing: 4,
+    life_changing_moments: 4,
+    personal_struggles: 4,
+    regrets_and_wishes: 4,
     family: 4,
+    family_secrets: 4,
+    siblings: 4,
+    hidden_talents_advanced: 4,
+    moral_dilemmas: 4,
+    
+    // Adult topics (5+ points)
     dating: 5,
     party: 5,
     secrets: 5,
@@ -2760,17 +3133,13 @@ socket.on('player left', (playerNum) => {
     
     // Hide all game mode UIs
     hideAllGameModeUIs();
-    
-    // Show reconnection message
-    showDisconnectionMessage(t.waitingForPlayer || 'Waiting for the other player to reconnect or a new player to join...');
 });
 
 // Handle player disconnection (temporary)
 socket.on('player disconnected', (playerNum, playerName) => {
     console.log('Player disconnected temporarily:', playerNum, playerName);
     const t = translations[currentLanguage];
-    const message = t.playerDisconnected || `${playerName || `Player ${playerNum}`} disconnected. Waiting for reconnection...`;
-    showDisconnectionMessage(message);
+    const message = t.playerDisconnected ? t.playerDisconnected.replace('{playerName}', playerName || `Player ${playerNum}`) : `${playerName || `Player ${playerNum}`} disconnected. Waiting for reconnection...`;
     gameStatusDisplay.textContent = message;
 });
 
@@ -2795,9 +3164,6 @@ socket.on('player reconnected', (room, player, rounds, names, gameState) => {
     updatePlayerNames(playerNames);
     updateScores();
     
-    // Hide disconnection message
-    hideDisconnectionMessage();
-    
     const t = translations[currentLanguage];
     const reconnectedMessage = t.reconnectedSuccessfully || 'Reconnected successfully! Resuming game...';
     gameStatusDisplay.textContent = reconnectedMessage;
@@ -2809,11 +3175,8 @@ socket.on('player reconnected', (room, player, rounds, names, gameState) => {
 socket.on('player reconnected notification', (playerNum, playerName) => {
     console.log('Another player reconnected:', playerNum, playerName);
     const t = translations[currentLanguage];
-    const message = t.playerReconnected || `${playerName} reconnected to the game!`;
+    const message = t.playerReconnected ? t.playerReconnected.replace('{playerName}', playerName) : `${playerName} reconnected to the game!`;
     gameStatusDisplay.textContent = message;
-    
-    // Hide disconnection message since the other player is back
-    hideDisconnectionMessage();
     
     // Update player names
     if (playerNames) {
@@ -2836,8 +3199,6 @@ socket.on('player left permanently', (playerNum) => {
     opponentTopicDiv.classList.add('hidden');
     nextRoundBtn.classList.add('hidden');
     hideAllGameModeUIs();
-    
-    showDisconnectionMessage(t.waitingForPlayer || 'Waiting for a new player to join...');
 });
 
 // Add comprehensive connection event handlers
@@ -2855,11 +3216,47 @@ function generateSessionId() {
 if (!userSessionId) {
     userSessionId = generateSessionId();
     console.log('Generated new session ID:', userSessionId);
+
+    // Attempt to reconnect to existing room
+    const savedRoomName = localStorage.getItem('roomName');
+    const savedPlayerName = localStorage.getItem('playerName');
+    const savedPlayerNumber = localStorage.getItem('playerNumber');
+    const savedIsViewer = localStorage.getItem('isViewer') === 'true';
+
+    if (savedRoomName && savedPlayerName) {
+        console.log('Attempting to reconnect to room:', savedRoomName);
+        roomName = savedRoomName;
+        playerName = savedPlayerName;
+        playerNumber = parseInt(savedPlayerNumber) || 1;
+        isViewer = savedIsViewer;
+        socket.emit('create or join', roomName, totalRounds, playerName, isViewer, userSessionId);
+    }
+
+    // Save session state for reconnection attempts
+    socket.on('room created', () => {
+        localStorage.setItem('roomName', roomName);
+        localStorage.setItem('playerName', playerName);
+        localStorage.setItem('playerNumber', playerNumber);
+        localStorage.setItem('isViewer', isViewer);
+    });
+    
+    socket.on('room joined', () => {
+        localStorage.setItem('roomName', roomName);
+        localStorage.setItem('playerName', playerName);
+        localStorage.setItem('playerNumber', playerNumber);
+        localStorage.setItem('isViewer', isViewer);
+    });
+    
+    socket.on('disconnect', () => {
+        localStorage.removeItem('roomName');
+        localStorage.removeItem('playerName');
+        localStorage.removeItem('playerNumber');
+        localStorage.removeItem('isViewer');
+    });
 }
 
 socket.on('connect', () => {
     console.log('Connected to server with session:', userSessionId);
-    hideDisconnectionMessage();
     
     // For first-time connections, do NOT attempt any reconnection
     if (isFirstConnection) {
@@ -2897,7 +3294,7 @@ socket.on('connect', () => {
         }
         
         const t = translations[currentLanguage];
-        showReconnectionMessage(t.reconnecting || 'Reconnecting to game...');
+        gameStatusDisplay.textContent = t.reconnecting || 'Reconnecting to game...';
         
         // Add retry logic with exponential backoff
         let reconnectAttempts = 0;
@@ -2943,45 +3340,41 @@ socket.on('disconnect', (reason) => {
     
     if (reason === 'io server disconnect') {
         // Server initiated disconnect
-        showDisconnectionMessage(t.serverDisconnect || 'Server disconnected. Please refresh the page.');
+        gameStatusDisplay.textContent = t.serverDisconnect || 'Server disconnected. Please refresh the page.';
     } else {
         // Network issue or client disconnect
-        showDisconnectionMessage(t.connectionLost || 'Connection lost. Attempting to reconnect...');
+        gameStatusDisplay.textContent = t.connectionLost || 'Connection lost. Attempting to reconnect...';
     }
 });
 
 socket.on('connect_error', (error) => {
     console.log('Connection error:', error);
     const t = translations[currentLanguage];
-    showDisconnectionMessage(t.connectionError || 'Connection error. Please check your internet connection.');
+    gameStatusDisplay.textContent = t.connectionError || 'Connection error. Please check your internet connection.';
 });
 
 socket.on('reconnect', (attemptNumber) => {
     console.log('Reconnected after', attemptNumber, 'attempts');
     const t = translations[currentLanguage];
-    showReconnectionMessage(t.reconnected || 'Reconnected successfully!');
-    
-    setTimeout(() => {
-        hideDisconnectionMessage();
-    }, 2000);
+    gameStatusDisplay.textContent = t.reconnected || 'Reconnected successfully!';
 });
 
 socket.on('reconnect_attempt', (attemptNumber) => {
     console.log('Reconnection attempt:', attemptNumber);
     const t = translations[currentLanguage];
-    showReconnectionMessage(t.reconnectAttempt || `Reconnecting... (attempt ${attemptNumber})`);
+    gameStatusDisplay.textContent = (t.reconnectAttempt || `Reconnecting... (attempt ${attemptNumber})`).replace('{attempt}', attemptNumber);
 });
 
 socket.on('reconnect_error', (error) => {
     console.log('Reconnection failed:', error);
     const t = translations[currentLanguage];
-    showDisconnectionMessage(t.reconnectFailed || 'Reconnection failed. Please refresh the page.');
+    gameStatusDisplay.textContent = t.reconnectFailed || 'Reconnection failed. Please refresh the page.';
 });
 
 socket.on('reconnect_failed', () => {
     console.log('Reconnection failed completely');
     const t = translations[currentLanguage];
-    showDisconnectionMessage(t.reconnectGiveUp || 'Could not reconnect to server. Please refresh the page.');
+    gameStatusDisplay.textContent = t.reconnectGiveUp || 'Could not reconnect to server. Please refresh the page.';
 });
 
 // Handle room full error
@@ -4460,48 +4853,7 @@ function endABGame() {
     location.reload();
 }
 
-// Disconnection and reconnection handling functions
-function showDisconnectionMessage(message) {
-    let disconnectionOverlay = document.getElementById('disconnection-overlay');
-    if (!disconnectionOverlay) {
-        // Create disconnection overlay
-        disconnectionOverlay = document.createElement('div');
-        disconnectionOverlay.id = 'disconnection-overlay';
-        disconnectionOverlay.className = 'disconnection-overlay';
-        disconnectionOverlay.innerHTML = `
-            <div class="disconnection-content">
-                <div class="disconnection-icon">⚠️</div>
-                <div class="disconnection-message" id="disconnection-message"></div>
-                <div class="disconnection-spinner"></div>
-            </div>
-        `;
-        document.body.appendChild(disconnectionOverlay);
-    }
-    
-    const messageEl = document.getElementById('disconnection-message');
-    if (messageEl) messageEl.textContent = message;
-    
-    disconnectionOverlay.classList.remove('hidden');
-    disconnectionOverlay.classList.add('show');
-}
-
-function showReconnectionMessage(message) {
-    const messageEl = document.getElementById('disconnection-message');
-    if (messageEl) messageEl.textContent = message;
-    
-    const overlay = document.getElementById('disconnection-overlay');
-    if (overlay) {
-        overlay.classList.add('reconnecting');
-    }
-}
-
-function hideDisconnectionMessage() {
-    const disconnectionOverlay = document.getElementById('disconnection-overlay');
-    if (disconnectionOverlay) {
-        disconnectionOverlay.classList.remove('show', 'reconnecting');
-        disconnectionOverlay.classList.add('hidden');
-    }
-}
+// Connection status is now handled through the game status display only
 
 function hideAllGameModeUIs() {
     hideStoryBuildingUI();
