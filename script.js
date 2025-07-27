@@ -469,7 +469,7 @@ function applyViewerMode() {
 
 // Topics data with suggestions
 const topics = {
-    // Safe topics
+    // Safe topics - Childhood & Youth
     childhood: {
         title: 'Childhood Memories',
         description: 'Share stories from when you were young',
@@ -479,6 +479,30 @@ const topics = {
             'I won first place in a school talent show singing contest',
             'My family moved 5 times before I turned 10',
             'I was afraid of the dark until I was 12 years old'
+        ],
+        isAdult: false
+    },
+    teenage_years: {
+        title: 'Teenage Years',
+        description: 'Your memorable teenage experiences',
+        suggestions: [
+            'I had my first kiss at a school dance in 10th grade',
+            'I got grounded for 3 months for sneaking out at night',
+            'I started a small business selling candy at school',
+            'I never went to my high school prom',
+            'I dyed my hair bright purple without telling my parents'
+        ],
+        isAdult: false
+    },
+    first_times: {
+        title: 'First Times',
+        description: 'Memorable first experiences in your life',
+        suggestions: [
+            'My first job was working at a fast food restaurant',
+            'I got my first car when I was 23 years old',
+            'The first time I flew on a plane, I threw up',
+            'My first concert was a classical music performance',
+            'I never had a "first love" until I was in college'
         ],
         isAdult: false
     },
@@ -518,6 +542,30 @@ const topics = {
         ],
         isAdult: false
     },
+    cooking_disasters: {
+        title: 'Kitchen Disasters',
+        description: 'Your worst cooking and kitchen experiences',
+        suggestions: [
+            'I once set my kitchen on fire making toast',
+            'I accidentally used salt instead of sugar in a birthday cake',
+            'I burned water while trying to boil pasta',
+            'I served raw chicken to dinner guests without realizing',
+            'I created a recipe that was so bad, my dog wouldn\'t eat it'
+        ],
+        isAdult: false
+    },
+    weird_foods: {
+        title: 'Strange Food Habits',
+        description: 'Your unusual eating habits and preferences',
+        suggestions: [
+            'I eat pizza with a fork and knife every time',
+            'I put ketchup on everything, including ice cream',
+            'I\'ve never eaten a hamburger in my entire life',
+            'I only eat foods that are one specific color',
+            'I can\'t eat anything that has touched something else on my plate'
+        ],
+        isAdult: false
+    },
     pets: {
         title: 'Pets & Animals',
         description: 'Share stories about animals in your life',
@@ -554,6 +602,30 @@ const topics = {
         ],
         isAdult: false
     },
+    weird_jobs: {
+        title: 'Unusual Jobs',
+        description: 'Strange or unique jobs you\'ve had',
+        suggestions: [
+            'I was paid to stand in line for other people',
+            'I worked as a professional mourner at funerals',
+            'My job was to test slides at water parks',
+            'I got paid to watch Netflix and write reviews',
+            'I worked as a human statue in the city center'
+        ],
+        isAdult: false
+    },
+    boss_stories: {
+        title: 'Boss Horror Stories',
+        description: 'Your worst or weirdest boss experiences',
+        suggestions: [
+            'My boss made me water fake plants for 6 months',
+            'I had a boss who communicated only through sticky notes',
+            'My manager insisted we all wear matching outfits every Friday',
+            'I worked for someone who held meetings in their bathroom',
+            'My boss was actually my high school nemesis'
+        ],
+        isAdult: false
+    },
     fears: {
         title: 'Fears & Phobias',
         description: 'What makes you scared or nervous?',
@@ -578,6 +650,30 @@ const topics = {
         ],
         isAdult: false
     },
+    useless_skills: {
+        title: 'Completely Useless Skills',
+        description: 'Talents that serve no practical purpose',
+        suggestions: [
+            'I can recite the alphabet backwards in under 3 seconds',
+            'I know every single line from a movie nobody has heard of',
+            'I can identify any dog breed just by looking at their tail',
+            'I memorized all 50 state capitals in alphabetical order',
+            'I can make 12 different animal sounds perfectly'
+        ],
+        isAdult: false
+    },
+    body_quirks: {
+        title: 'Body Quirks',
+        description: 'Unusual things your body can or cannot do',
+        suggestions: [
+            'I can bend my thumb backwards to touch my wrist',
+            'I\'ve never been able to whistle, no matter how hard I try',
+            'I can raise one eyebrow but not the other',
+            'I have a third nipple (it\'s very small)',
+            'I can\'t burp - it\'s physically impossible for me'
+        ],
+        isAdult: false
+    },
     embarrassing: {
         title: 'Embarrassing Moments',
         description: 'Share those cringe-worthy experiences',
@@ -599,6 +695,30 @@ const topics = {
             'My family owns a farm with over 100 animals',
             'I was adopted and found out when I was 18',
             'My uncle is a famous actor but uses a stage name'
+        ],
+        isAdult: false
+    },
+    family_secrets: {
+        title: 'Family Secrets',
+        description: 'Hidden truths about your family',
+        suggestions: [
+            'My "aunt" is actually my half-sister',
+            'My family has a secret recipe worth thousands of dollars',
+            'One of my relatives was in witness protection',
+            'My great-grandfather was a famous outlaw in the Old West',
+            'My parents eloped and didn\'t tell anyone for 5 years'
+        ],
+        isAdult: false
+    },
+    siblings: {
+        title: 'Sibling Rivalry',
+        description: 'Stories about your brothers and sisters',
+        suggestions: [
+            'My brother sold my diary to my crush in 7th grade',
+            'I\'m an only child but always told people I had siblings',
+            'My sister and I didn\'t speak for 3 years over a board game',
+            'I have 8 siblings and I\'m the middle child',
+            'My twin and I swapped identities for an entire school year'
         ],
         isAdult: false
     },
@@ -833,6 +953,175 @@ const topicsVi = {
             'Tôi được sinh ra trong xe taxi trên đường đến bệnh viện',
             'Tôi có người anh/chị em sinh đôi mà ít ai biết',
             'Gia đình tôi từng nổi tiếng địa phương vì lý do kỳ lạ'
+        ],
+        isAdult: false
+    },
+    // Additional Vietnamese topics
+    space_exploration: {
+        title: 'Khám Phá Không Gian',
+        description: 'Chia sẻ suy nghĩ về vũ trụ và không gian',
+        suggestions: [
+            'Tôi muốn đến sao Hỏa một ngày nào đó',
+            'Tôi theo dõi chặt chẽ mọi sứ mệnh của NASA',
+            'Tôi đã tự chế kính thiên văn khi còn nhỏ',
+            'Tôi mơ về việc sống trên trạm vũ trụ',
+            'Tôi từng thấy mưa sao băng từ sân sau nhà'
+        ],
+        isAdult: false
+    },
+    technology_innovations: {
+        title: 'Đổi Mới Công Nghệ',
+        description: 'Thảo luận về xu hướng công nghệ hoặc phát minh',
+        suggestions: [
+            'Tôi lập trình ít nhất 3 ngôn ngữ khác nhau',
+            'Tôi từng chế tạo robot để chơi',
+            'Tôi thích dùng bàn phím cơ hơn bàn phím thường',
+            'Tôi theo dõi tiến bộ AI hàng ngày',
+            'Tôi có hơn 10 thiết bị thông minh trong nhà'
+        ],
+        isAdult: false
+    },
+    famous_movies: {
+        title: 'Phim Nổi Tiếng',
+        description: 'Nói về những bộ phim nổi tiếng hoặc trải nghiệm xem phim',
+        suggestions: [
+            'Tôi đã xem toàn bộ saga Star Wars hai lần',
+            'Tôi khóc khi xem cái kết của Vua Sư Tử',
+            'Tôi đã gặp một diễn viên từ bộ phim yêu thích',
+            'Tôi thích phim kinh dị nhưng ghét cảnh giật mình',
+            'Tôi sở hữu bộ sưu tập poster phim cổ điển'
+        ],
+        isAdult: false
+    },
+    favorite_books: {
+        title: 'Sách Yêu Thích',
+        description: 'Chia sẻ những cuốn sách đã tác động đến bạn',
+        suggestions: [
+            'Tôi đọc trung bình một cuốn sách mỗi tuần',
+            'Harry Potter là sách yêu thích thời thơ ấu',
+            'Tôi thích sách phi hư cấu hơn tiểu thuyết',
+            'Tôi gấp góc mọi cuốn sách tôi đọc',
+            'Tôi có một cuốn tiểu thuyết yêu thích có chữ ký tác giả'
+        ],
+        isAdult: false
+    },
+    fitness_and_health: {
+        title: 'Thể Dục & Sức Khỏe',
+        description: 'Thảo luận về thói quen tập luyện hoặc mẹo sức khỏe',
+        suggestions: [
+            'Tôi chạy 5km mỗi sáng',
+            'Tôi theo chế độ ăn keto nghiêm ngặt',
+            'Tôi thiền định hàng ngày cho sức khỏe tinh thần',
+            'Tôi từng hoàn thành một cuộc triathlon',
+            'Tôi tập yoga để giữ sự linh hoạt'
+        ],
+        isAdult: false
+    },
+    travel_phobias: {
+        title: 'Nỗi Sợ Du Lịch',
+        description: 'Những nỗi sợ hoặc lo lắng liên quan đến du lịch',
+        suggestions: [
+            'Tôi sợ đi máy bay',
+            'Tôi dễ bị say xe khi đi du lịch',
+            'Tôi không thích bị lạc ở nơi xa lạ',
+            'Sân bay đông đúc khiến tôi căng thẳng',
+            'Tôi tránh đi du lịch một mình vào ban đêm'
+        ],
+        isAdult: false
+    },
+    environmental_concerns: {
+        title: 'Mối Quan Tâm Môi Trường',
+        description: 'Chia sẻ quan điểm hoặc hành động vì môi trường',
+        suggestions: [
+            'Tôi tái chế thường xuyên và khuyến khích người khác',
+            'Tôi đã tham gia dọn dẹp bãi biển',
+            'Tôi cố gắng giảm sử dụng nhựa',
+            'Biến đổi khí hậu khiến tôi rất lo lắng',
+            'Tôi trồng rau sạch ở nhà'
+        ],
+        isAdult: false
+    },
+    culinary_experiments: {
+        title: 'Thử Nghiệm Ẩm Thực',
+        description: 'Nói về món ăn lạ hoặc thử nghiệm nấu nướng',
+        suggestions: [
+            'Tôi từng thử nấu ăn với gia vị lạ',
+            'Tôi thích tự làm bánh mì',
+            'Tôi vô tình tạo ra món fusion',
+            'Tôi thất bại khi làm bánh soufflé',
+            'Tôi thích thử nghiệm công thức thuần chay'
+        ],
+        isAdult: false
+    },
+    classical_music: {
+        title: 'Nhạc Cổ Điển',
+        description: 'Thảo luận về nhạc sĩ, buổi hòa nhạc hoặc sở thích âm nhạc',
+        suggestions: [
+            'Tôi chơi violin từ khi còn nhỏ',
+            'Tôi đã tham dự buổi biểu diễn dàn nhạc trực tiếp',
+            'Beethoven là nhạc sĩ yêu thích của tôi',
+            'Tôi thấy nhạc cổ điển thư giãn',
+            'Tôi từng chỉ huy buổi tập của dàn hợp xướng'
+        ],
+        isAdult: false
+    },
+    urban_legends: {
+        title: 'Truyền Thuyết Đô Thị',
+        description: 'Chia sẻ những truyền thuyết đô thị đáng sợ hoặc hài hước',
+        suggestions: [
+            'Tôi nghe câu chuyện về ngôi nhà ma gần đây',
+            'Truyền thuyết về bóng người khiến tôi sợ',
+            'Tôi từng tham gia tour khám phá ma',
+            'Tôi đã kể truyền thuyết đô thị để trêu bạn bè',
+            'Tôi không tin vào bất kỳ truyền thuyết đô thị nào'
+        ],
+        isAdult: false
+    },
+    vietnamese_culture: {
+        title: 'Văn Hóa Việt Nam',
+        description: 'Chia sẻ về truyền thống và văn hóa Việt',
+        suggestions: [
+            'Tôi biết làm bánh chưng ngon',
+            'Tôi từng biểu diễn múa lân trong Tết',
+            'Tôi có thể hát dân ca Nam Bộ',
+            'Tôi sưu tập áo dài cổ điển',
+            'Tôi biết cách pha cà phê phin đúng cách'
+        ],
+        isAdult: false
+    },
+    local_food: {
+        title: 'Món Ăn Địa Phương',
+        description: 'Những món ăn đặc trưng quê hương',
+        suggestions: [
+            'Tôi có thể làm phở bò từ đầu',
+            'Tôi biết 20 cách làm gỏi cuốn khác nhau',
+            'Tôi từng ăn thử côn trùng ở miền Tây',
+            'Tôi không thể sống thiếu nước mắm',
+            'Tôi biết phân biệt bánh mì Sài Gòn và Hà Nội'
+        ],
+        isAdult: false
+    },
+    motorcycle_culture: {
+        title: 'Văn Hóa Xe Máy',
+        description: 'Trải nghiệm với xe máy tại Việt Nam',
+        suggestions: [
+            'Tôi học lái xe máy khi 14 tuổi',
+            'Tôi từng chở 5 người trên một chiếc xe máy',
+            'Tôi có thể lái xe máy qua ngõ nhỏ 1 mét',
+            'Tôi từng ngủ gật khi lái xe máy',
+            'Tôi sửa chữa xe máy tốt hơn thợ máy'
+        ],
+        isAdult: false
+    },
+    street_life: {
+        title: 'Cuộc Sống Đường Phố',
+        description: 'Trải nghiệm với cuộc sống đường phố Việt Nam',
+        suggestions: [
+            'Tôi từng ngủ trên vỉa hè khi chờ mua vé concert',
+            'Tôi biết tất cả quán ăn vặt ngon trong khu vực',
+            'Tôi từng bị mưa lớn kẹt dưới gầm cầu',
+            'Tôi có thể mặc cả giá ở chợ như một chuyên gia',
+            'Tôi quen với tất cả người bán hàng rong trong khu'
         ],
         isAdult: false
     },
@@ -2557,7 +2846,7 @@ socket.on('connect', () => {
         showReconnectionMessage(t.reconnecting || 'Reconnecting to game...');
         
         setTimeout(() => {
-            socket.emit('create or join', roomName, roundCount, playerName, isViewer);
+            socket.emit('create or join', roomName, totalRounds, playerName, isViewer);
         }, 1000);
     }
 });
